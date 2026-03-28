@@ -7,9 +7,9 @@ export const siteConfig = {
   url: "https://clearlineautodetail.ca",
 
   // ── Update these with your real info ──────────────────────────────
-  phone: "(587) 000-0000",
-  phoneRaw: "+15870000000",
-  email: "book@clearlineautodetail.ca",
+  phone: "(403) 813-9276",
+  phoneRaw: "+14038139276",
+  email: "clearlinedetailyyc@gmail.com",
   // ──────────────────────────────────────────────────────────────────
 
   // Square booking link — add when you set it up
