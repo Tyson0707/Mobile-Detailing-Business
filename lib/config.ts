@@ -1,153 +1,191 @@
 export const siteConfig = {
-  name: "Clear Line Auto Detail",
-  tagline: "Mobile Car Detailing That Comes To You",
+  name: "Clearline Auto Detail",
+  tagline: "Premium Mobile Detailing. We Come to You.",
   description:
-    "Calgary's premium mobile car detailing service. We come to your home, office, or anywhere in Calgary. Professional detailing, ceramic coatings & paint correction. Book online today.",
+    "Mobile car detailing in NW Calgary and surrounding areas. We come to your driveway — professional interior resets, exterior details, and full details for busy homeowners who want it done right.",
   domain: "clearlineautodetail.ca",
   url: "https://clearlineautodetail.ca",
 
-  // Business contact — fill these in
+  // ── Update these with your real info ──────────────────────────────
   phone: "(587) 000-0000",
   phoneRaw: "+15870000000",
   email: "book@clearlineautodetail.ca",
-  address: "Calgary, AB",
+  // ──────────────────────────────────────────────────────────────────
 
-  // Square booking link — replace when ready
+  // Square booking link — add when you set it up
   squareBookingUrl: "#booking",
 
-  // Service area
   city: "Calgary",
   province: "AB",
+
+  primaryArea: "NW Calgary",
   serviceAreas: [
-    "Calgary",
     "NW Calgary",
-    "SW Calgary",
-    "SE Calgary",
-    "NE Calgary",
-    "Airdrie",
-    "Cochrane",
-    "Okotoks",
-    "Chestermere",
+    "Bearspaw",
+    "Watermark",
+    "Rocky Ridge",
+    "Tuscany",
+    "Nolan Hill",
+    "Evanston",
+    "Sage Hill",
+    "Royal Oak",
+    "Sherwood",
   ],
 
-  // Social
   social: {
     instagram: "https://instagram.com/clearlineautodetail",
     facebook: "https://facebook.com/clearlineautodetail",
     google: "#",
   },
 
-  // Stats shown on homepage
   stats: [
-    { value: "500+", label: "Cars Detailed" },
-    { value: "100%", label: "Mobile — We Come To You" },
-    { value: "5★", label: "Average Google Rating" },
-    { value: "Insured", label: "Fully Insured & Certified" },
+    { value: "500+", label: "Details Completed" },
+    { value: "5★", label: "Google Rating" },
+    { value: "100%", label: "Mobile — No Drop-Off" },
+    { value: "Insured", label: "Fully Insured" },
   ],
 } as const;
 
+// Vehicle size labels used throughout the site
+export const vehicleSizes = ["Small", "Mid", "Large"] as const;
+export type VehicleSize = (typeof vehicleSizes)[number];
+
+export const vehicleSizeLabels: Record<VehicleSize, string> = {
+  Small: "Small (sedan / coupe)",
+  Mid: "Mid (SUV / truck)",
+  Large: "Large (3-row SUV / minivan)",
+};
+
 export const services = [
   {
-    id: "express-exterior",
-    name: "Express Exterior",
-    slug: "express-exterior",
-    price: "$79",
-    duration: "60–90 min",
-    badge: null,
+    id: "interior-reset",
+    name: "Interior Reset",
+    slug: "interior-reset",
+    badge: null as string | null,
     description:
-      "A thorough exterior refresh to make your paint pop. Perfect for regular maintenance.",
+      "A full reset for your interior. We go through every surface, crevice, and carpet — the kind of clean you can't get at a drive-through wash.",
+    pricing: { Small: 170, Mid: 220, Large: 270 },
+    duration: "2–3 hrs",
     features: [
-      "Hand wash & rinse",
-      "Clay bar decontamination",
-      "Tire & wheel cleaning",
-      "Window cleaning (exterior)",
-      "Tire dressing",
-      "Spray wax protection",
+      "Full vacuum — seats, carpets, trunk",
+      "Deep clean: dash, doors, center console",
+      "Crevice & vent cleaning",
+      "Interior glass cleaning",
+      "Light stain removal",
     ],
   },
   {
-    id: "interior-detail",
-    name: "Interior Detail",
-    slug: "interior-detail",
-    price: "$149",
-    duration: "2–3 hrs",
-    badge: null,
+    id: "exterior-detail",
+    name: "Exterior Detail",
+    slug: "exterior-detail",
+    badge: null as string | null,
     description:
-      "Deep-clean your cabin from top to bottom. Every surface vacuumed, wiped, and treated.",
+      "Foam wash, hand wash, wheels, tires, and a protective sealant. Paint-safe technique every time.",
+    pricing: { Small: 110, Mid: 130, Large: 150 },
+    duration: "1–2 hrs",
     features: [
-      "Full vacuum (seats, carpet, trunk)",
-      "Dashboard & console wipe-down",
-      "Door jamb & panel cleaning",
-      "Leather/vinyl conditioning",
-      "Window cleaning (interior)",
-      "Odour elimination treatment",
+      "Foam pre-wash & hand wash",
+      "Wheels and tires cleaned",
+      "Tire shine applied",
+      "Bug and tar removal",
+      "Spray sealant protection",
+      "Exterior glass cleaning",
     ],
   },
   {
     id: "full-detail",
     name: "Full Detail",
     slug: "full-detail",
-    price: "$249",
-    duration: "3–5 hrs",
-    badge: "Most Popular",
+    badge: "Most Popular" as string | null,
     description:
-      "The complete package — showroom clean inside and out. Our most popular service.",
+      "The full package. Interior Reset + Exterior Detail combined — showroom results at your driveway.",
+    pricing: { Small: 240, Mid: 300, Large: 360 },
+    duration: "3–4 hrs",
     features: [
-      "Everything in Express Exterior",
-      "Everything in Interior Detail",
-      "Engine bay wipe-down",
-      "Paint sealant application",
-      "Plastic trim restoration",
+      "Full Interior Reset (all items)",
+      "Full Exterior Detail (all items)",
+      "Door jamb cleaning",
       "Post-service inspection",
     ],
+    note: "Includes everything in both packages above.",
   },
   {
-    id: "ceramic-coating",
-    name: "Ceramic Coating",
-    slug: "ceramic-coating",
-    price: "From $799",
-    duration: "1–2 days",
-    badge: "Premium",
+    id: "premium-detail",
+    name: "Premium Detail",
+    slug: "premium-detail",
+    badge: "Premium" as string | null,
     description:
-      "Professional-grade ceramic coating for years of protection. Includes full prep detail.",
+      "Our highest-level service. Adds extraction, ceramic interior protection, and professional trim restoration on top of the Full Detail.",
+    pricing: { Small: 300, Mid: 360, Large: 420 },
+    duration: "4–5 hrs",
     features: [
-      "Full decontamination wash",
-      "Paint correction (1-stage)",
-      "Professional ceramic coating application",
-      "2–5 year protection warranty",
-      "Hydrophobic & UV protection",
-      "Post-cure inspection",
+      "Everything in Full Detail",
+      "Light stain extraction",
+      "Interior ceramic protection",
+      "Interior trim & plastic restoration",
+      "Restored, even finish on all surfaces",
     ],
+  },
+] as const;
+
+export const addOns = [
+  {
+    name: "Interior Ceramic Protection",
+    price: "$60",
+    note: "Available on non-Premium packages only",
+    description:
+      "Bonds to interior surfaces to repel stains and spills — keeps your interior cleaner for longer.",
+  },
+  {
+    name: "Interior Trim / Plastic Restoration",
+    price: "$30",
+    note: null,
+    description:
+      "Brings faded, uneven plastics and trim back to a clean, consistent finish.",
+  },
+  {
+    name: "Excessive Pet Hair Removal",
+    price: "$40",
+    note: null,
+    description:
+      "Heavy pet hair embedded in seats and carpet — we remove it properly, not just vacuum over it.",
+  },
+  {
+    name: "Deep Extraction",
+    price: "$30–$80",
+    note: "Price depends on severity",
+    description:
+      "Hot water extraction for stains, odours, or heavily soiled carpets and seats.",
   },
 ] as const;
 
 export const testimonials = [
   {
     name: "Mike T.",
-    location: "NW Calgary",
+    location: "Rocky Ridge, NW Calgary",
     rating: 5,
-    text: "Absolutely blew me away. Booked the Full Detail for my F-150 and it looks better than when I drove it off the lot. So convenient having them come to my driveway.",
+    text: "Had the Full Detail done on my truck. I've been to shops before and nothing comes close — they came to my driveway, were done in under 4 hours, and the truck looked better than when I bought it.",
     vehicle: "2021 Ford F-150",
   },
   {
     name: "Sarah K.",
-    location: "SW Calgary",
+    location: "Tuscany, NW Calgary",
     rating: 5,
-    text: "Used Clear Line for my SUV before a road trip. The interior was completely transformed — even got the dog smell out! Will never go to a car wash again.",
+    text: "I have two kids and a dog. My SUV was destroyed. After the Premium Detail it smelled brand new — they got every single dog hair out. Won't use anyone else.",
     vehicle: "2020 Toyota RAV4",
   },
   {
     name: "Jason W.",
-    location: "Airdrie",
+    location: "Bearspaw",
     rating: 5,
-    text: "Had the ceramic coating done on my Model 3. These guys are pros — the prep work alone was worth it. Paint looks incredible and beads water like nothing I've seen.",
+    text: "Booked the Premium Detail on my Model 3. Super professional, no mess left behind, paint looks insane. The ceramic interior protection is worth every penny.",
     vehicle: "2022 Tesla Model 3",
   },
   {
     name: "Lisa M.",
-    location: "SE Calgary",
+    location: "Watermark",
     rating: 5,
-    text: "Booked them for my mom's car as a gift. She literally cried when she saw it. Incredibly detailed work, friendly service, and they were right on time.",
+    text: "I travel for work constantly and my car was a disaster. Booked Clearline and they came while I worked from home. Done by lunch. Looked incredible. Zero effort on my part.",
     vehicle: "2019 Honda Civic",
   },
 ] as const;
@@ -156,31 +194,36 @@ export const faqItems = [
   {
     question: "Do you bring your own water and equipment?",
     answer:
-      "Yes — we are 100% self-sufficient. We bring our own water, pressure washers, vacuums, and all professional-grade products. All you need to do is give us access to your vehicle.",
+      "Yes — completely self-contained. We bring our own water, pressure washer, vacuums, extractors, and all professional detailing products. You don't need to provide anything.",
   },
   {
     question: "Where do you service in Calgary?",
     answer:
-      "We cover all of Calgary (NW, SW, NE, SE, and Downtown) plus surrounding areas including Airdrie, Cochrane, Okotoks, and Chestermere. Not sure if we cover your area? Just reach out — we'll make it work.",
+      "Our primary service area is NW Calgary including Bearspaw, Watermark, Rocky Ridge, Tuscany, Nolan Hill, Evanston, Sage Hill, Royal Oak, and Sherwood. Not sure if we cover your area? Message us — we're flexible.",
   },
   {
     question: "How do I pay?",
     answer:
-      "We accept all major credit cards, debit, and e-transfer through our secure Square payment system. Payment is collected after the service is complete and you're 100% satisfied.",
+      "We accept all major credit and debit cards via Square, plus e-transfer. Payment is collected after the service is complete and you've inspected the results.",
   },
   {
     question: "How long does a detail take?",
     answer:
-      "Express Exterior takes 60–90 minutes, Interior Detail 2–3 hours, Full Detail 3–5 hours, and Ceramic Coating 1–2 days. We'll confirm the exact timeframe when you book.",
+      "Interior Reset: 2–3 hours. Exterior Detail: 1–2 hours. Full Detail: 3–4 hours. Premium Detail: 4–5 hours. We'll confirm the timeframe when we book based on your vehicle.",
   },
   {
-    question: "What if I'm not satisfied with the result?",
+    question: "What's the difference between Full Detail and Premium?",
     answer:
-      "We have a 100% satisfaction guarantee. If something isn't right, we'll come back and fix it — no questions asked. Your satisfaction is the only acceptable outcome.",
+      "Full Detail is Interior Reset + Exterior Detail. Premium adds extraction for deeper stains, interior ceramic protection (which repels spills and staining), and trim/plastic restoration for a fully finished look inside.",
   },
   {
-    question: "Do I need to be home during the service?",
+    question: "Do I need to be home the whole time?",
     answer:
-      "You don't need to be present the entire time — just available at the start and end to hand over keys and inspect the result. Many of our clients go to work while we detail their car in the driveway.",
+      "No. Most of our clients go about their day — work from home, run errands, whatever. Just be available at the start to hand over keys and at the end to walk through the results.",
+  },
+  {
+    question: "What if I'm not happy with the result?",
+    answer:
+      "We'll come back and fix it. 100% satisfaction guarantee — no arguments, no fees.",
   },
 ] as const;

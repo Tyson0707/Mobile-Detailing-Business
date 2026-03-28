@@ -1,14 +1,14 @@
 "use client";
 
-import type { Metadata } from "next";
 import { useState } from "react";
 import Link from "next/link";
-import { services, siteConfig } from "@/lib/config";
+import { services, addOns, siteConfig } from "@/lib/config";
 
-// Note: metadata export doesn't work in "use client" files.
-// Move metadata to a parent layout or use a separate server component wrapper if needed.
-
-const vehicleTypes = ["Sedan / Coupe", "SUV / Crossover", "Truck", "Full-size SUV / Van", "Other"];
+const vehicleTypes = [
+  "Small — sedan / coupe",
+  "Mid — SUV / truck",
+  "Large — 3-row SUV / minivan",
+];
 
 export default function BookingPage() {
   const [formData, setFormData] = useState({
@@ -16,6 +16,7 @@ export default function BookingPage() {
     email: "",
     phone: "",
     service: "",
+    addOns: "",
     vehicleType: "",
     vehicleYear: "",
     vehicleMake: "",
@@ -35,18 +36,31 @@ export default function BookingPage() {
     e.preventDefault();
     setStatus("submitting");
 
-    // Compose mailto link as fallback — replace with API route / Square when ready
-    const subject = encodeURIComponent(`Booking Request — ${formData.service || "Detailing"}`);
+    const subject = encodeURIComponent(`Booking Request — ${formData.service || "Detail"}`);
     const body = encodeURIComponent(
-      `Name: ${formData.name}\nEmail: ${formData.email}\nPhone: ${formData.phone}\n\nService: ${formData.service}\nVehicle: ${formData.vehicleYear} ${formData.vehicleMake} (${formData.vehicleType})\nPreferred Date: ${formData.preferredDate}\nAddress: ${formData.address}\n\nNotes:\n${formData.message}`
+      [
+        `Name: ${formData.name}`,
+        `Phone: ${formData.phone}`,
+        `Email: ${formData.email}`,
+        ``,
+        `Service: ${formData.service}`,
+        `Add-ons: ${formData.addOns || "None"}`,
+        `Vehicle: ${formData.vehicleYear} ${formData.vehicleMake} (${formData.vehicleType})`,
+        ``,
+        `Preferred Date: ${formData.preferredDate}`,
+        `Service Address: ${formData.address}`,
+        ``,
+        `Notes: ${formData.message || "None"}`,
+      ].join("\n")
     );
+
     window.location.href = `mailto:${siteConfig.email}?subject=${subject}&body=${body}`;
     setStatus("success");
   };
 
   const inputClass =
-    "w-full bg-[#0f1829] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/30 transition-colors";
-  const labelClass = "block text-slate-300 text-xs font-medium mb-1.5";
+    "w-full bg-[#0a1120] border border-white/[0.08] rounded-xl px-4 py-3 text-white text-sm placeholder-slate-700 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 transition-colors";
+  const labelClass = "block text-slate-400 text-xs font-medium mb-1.5";
 
   return (
     <div className="min-h-screen pt-20">
@@ -55,13 +69,13 @@ export default function BookingPage() {
         <div aria-hidden="true" className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-blue-600/[0.06] rounded-full blur-3xl" />
         <div className="max-w-3xl mx-auto text-center relative">
           <p className="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">
-            Step 1 of 1
+            Book Online
           </p>
           <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
             Book Your Detail
           </h1>
           <p className="text-slate-400 text-lg">
-            Fill out the form below and we&apos;ll confirm your booking within a few hours. Takes less than 2 minutes.
+            Fill this out and we&apos;ll confirm your booking within a few hours. We come to you.
           </p>
         </div>
       </div>
@@ -72,152 +86,96 @@ export default function BookingPage() {
           {/* Form */}
           <div className="lg:col-span-2">
             {status === "success" ? (
-              <div className="rounded-2xl bg-[#0f1829] border border-green-500/30 p-10 text-center">
+              <div className="rounded-2xl bg-[#0f1829] border border-green-500/30 p-12 text-center">
                 <div className="w-16 h-16 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center mx-auto mb-5">
                   <svg className="w-8 h-8 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <h2 className="text-white text-2xl font-bold mb-3">Booking Request Sent!</h2>
+                <h2 className="text-white text-2xl font-bold mb-3">Request Sent!</h2>
                 <p className="text-slate-400 mb-6">
-                  We&apos;ll confirm your appointment within a few hours. Check your email for a confirmation.
+                  We&apos;ll confirm your booking within a few hours. Check your email or phone.
                 </p>
-                <Link
-                  href="/"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-semibold transition-colors"
-                >
+                <Link href="/" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-sm font-semibold transition-colors">
                   Back to Home
                 </Link>
               </div>
             ) : (
-              <form
-                onSubmit={handleSubmit}
-                className="rounded-2xl bg-[#0f1829] border border-white/[0.07] p-7 sm:p-9 space-y-6"
-              >
-                {/* Contact info */}
+              <form onSubmit={handleSubmit} className="rounded-2xl bg-[#0f1829] border border-white/[0.07] p-7 sm:p-9 space-y-7">
+
+                {/* Step 1 — Contact */}
                 <div>
-                  <h2 className="text-white font-semibold mb-5 flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold">1</span>
+                  <h2 className="text-white font-semibold mb-5 flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">1</span>
                     Your Contact Info
                   </h2>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
                       <label className={labelClass} htmlFor="name">Full Name *</label>
-                      <input
-                        id="name"
-                        name="name"
-                        type="text"
-                        required
-                        className={inputClass}
-                        placeholder="John Smith"
-                        value={formData.name}
-                        onChange={handleChange}
-                      />
+                      <input id="name" name="name" type="text" required className={inputClass} placeholder="Jane Smith" value={formData.name} onChange={handleChange} />
                     </div>
                     <div>
-                      <label className={labelClass} htmlFor="phone">Phone *</label>
-                      <input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        required
-                        className={inputClass}
-                        placeholder="(587) 000-0000"
-                        value={formData.phone}
-                        onChange={handleChange}
-                      />
+                      <label className={labelClass} htmlFor="phone">Phone Number *</label>
+                      <input id="phone" name="phone" type="tel" required className={inputClass} placeholder="(587) 000-0000" value={formData.phone} onChange={handleChange} />
                     </div>
                     <div className="sm:col-span-2">
-                      <label className={labelClass} htmlFor="email">Email *</label>
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        className={inputClass}
-                        placeholder="you@email.com"
-                        value={formData.email}
-                        onChange={handleChange}
-                      />
+                      <label className={labelClass} htmlFor="email">Email Address *</label>
+                      <input id="email" name="email" type="email" required className={inputClass} placeholder="you@email.com" value={formData.email} onChange={handleChange} />
                     </div>
                   </div>
                 </div>
 
-                {/* Vehicle */}
-                <div className="border-t border-white/[0.06] pt-6">
-                  <h2 className="text-white font-semibold mb-5 flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold">2</span>
+                {/* Step 2 — Vehicle */}
+                <div className="border-t border-white/[0.06] pt-7">
+                  <h2 className="text-white font-semibold mb-5 flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">2</span>
                     Your Vehicle
                   </h2>
                   <div className="grid sm:grid-cols-3 gap-4">
                     <div>
                       <label className={labelClass} htmlFor="vehicleYear">Year</label>
-                      <input
-                        id="vehicleYear"
-                        name="vehicleYear"
-                        type="text"
-                        className={inputClass}
-                        placeholder="2022"
-                        value={formData.vehicleYear}
-                        onChange={handleChange}
-                      />
+                      <input id="vehicleYear" name="vehicleYear" type="text" className={inputClass} placeholder="2022" value={formData.vehicleYear} onChange={handleChange} />
                     </div>
                     <div>
                       <label className={labelClass} htmlFor="vehicleMake">Make & Model</label>
-                      <input
-                        id="vehicleMake"
-                        name="vehicleMake"
-                        type="text"
-                        className={inputClass}
-                        placeholder="Toyota RAV4"
-                        value={formData.vehicleMake}
-                        onChange={handleChange}
-                      />
+                      <input id="vehicleMake" name="vehicleMake" type="text" className={inputClass} placeholder="Toyota RAV4" value={formData.vehicleMake} onChange={handleChange} />
                     </div>
                     <div>
-                      <label className={labelClass} htmlFor="vehicleType">Vehicle Type</label>
-                      <select
-                        id="vehicleType"
-                        name="vehicleType"
-                        className={inputClass}
-                        value={formData.vehicleType}
-                        onChange={handleChange}
-                      >
-                        <option value="">Select type</option>
-                        {vehicleTypes.map((t) => (
-                          <option key={t} value={t}>{t}</option>
-                        ))}
+                      <label className={labelClass} htmlFor="vehicleType">Vehicle Size *</label>
+                      <select id="vehicleType" name="vehicleType" required className={inputClass} value={formData.vehicleType} onChange={handleChange}>
+                        <option value="">Select size</option>
+                        {vehicleTypes.map((t) => <option key={t} value={t}>{t}</option>)}
                       </select>
                     </div>
                   </div>
                 </div>
 
-                {/* Service */}
-                <div className="border-t border-white/[0.06] pt-6">
-                  <h2 className="text-white font-semibold mb-5 flex items-center gap-2">
-                    <span className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold">3</span>
+                {/* Step 3 — Service */}
+                <div className="border-t border-white/[0.06] pt-7">
+                  <h2 className="text-white font-semibold mb-5 flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-xs font-bold shrink-0">3</span>
                     Service & Scheduling
                   </h2>
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <label className={labelClass} htmlFor="service">Service *</label>
-                      <select
-                        id="service"
-                        name="service"
-                        required
-                        className={inputClass}
-                        value={formData.service}
-                        onChange={handleChange}
-                      >
+                      <label className={labelClass} htmlFor="service">Service Package *</label>
+                      <select id="service" name="service" required className={inputClass} value={formData.service} onChange={handleChange}>
                         <option value="">Select a service</option>
                         {services.map((s) => (
                           <option key={s.id} value={s.name}>
-                            {s.name} — {s.price}
+                            {s.name} — from ${s.pricing.Small}
                           </option>
                         ))}
-                        <option value="Not sure — need recommendation">
-                          Not sure — need a recommendation
-                        </option>
+                        <option value="Not sure — need recommendation">Not sure — recommend one for me</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className={labelClass} htmlFor="addOns">Add-Ons (optional)</label>
+                      <select id="addOns" name="addOns" className={inputClass} value={formData.addOns} onChange={handleChange}>
+                        <option value="">None</option>
+                        {addOns.map((a) => (
+                          <option key={a.name} value={a.name}>{a.name} — {a.price}</option>
+                        ))}
                       </select>
                     </div>
                     <div>
@@ -232,31 +190,22 @@ export default function BookingPage() {
                         min={new Date().toISOString().split("T")[0]}
                       />
                     </div>
-                    <div className="sm:col-span-2">
-                      <label className={labelClass} htmlFor="address">Service Location (Address) *</label>
-                      <input
-                        id="address"
-                        name="address"
-                        type="text"
-                        required
-                        className={inputClass}
-                        placeholder="123 Main St NW, Calgary, AB"
-                        value={formData.address}
-                        onChange={handleChange}
-                      />
+                    <div>
+                      <label className={labelClass} htmlFor="address">Service Address *</label>
+                      <input id="address" name="address" type="text" required className={inputClass} placeholder="123 Tuscany Way NW, Calgary" value={formData.address} onChange={handleChange} />
                     </div>
                   </div>
                 </div>
 
                 {/* Notes */}
-                <div className="border-t border-white/[0.06] pt-6">
+                <div className="border-t border-white/[0.06] pt-7">
                   <label className={labelClass} htmlFor="message">Additional Notes (optional)</label>
                   <textarea
                     id="message"
                     name="message"
-                    rows={4}
+                    rows={3}
                     className={`${inputClass} resize-none`}
-                    placeholder="Any specific concerns, pet hair, heavy staining, or questions..."
+                    placeholder="Heavy pet hair, tough stains, specific concerns, preferred time of day..."
                     value={formData.message}
                     onChange={handleChange}
                   />
@@ -265,7 +214,7 @@ export default function BookingPage() {
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="w-full py-4 bg-blue-600 hover:bg-blue-500 disabled:opacity-70 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2"
+                  className="w-full py-4 bg-blue-600 hover:bg-blue-500 disabled:opacity-60 text-white font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 text-base"
                 >
                   {status === "submitting" ? (
                     <>
@@ -284,9 +233,8 @@ export default function BookingPage() {
                     </>
                   )}
                 </button>
-
-                <p className="text-slate-500 text-xs text-center">
-                  We&apos;ll confirm your booking within a few hours. Secure payment collected after service via Square.
+                <p className="text-slate-600 text-xs text-center">
+                  We&apos;ll confirm within a few hours · Payment via Square after service
                 </p>
               </form>
             )}
@@ -294,50 +242,39 @@ export default function BookingPage() {
 
           {/* Sidebar */}
           <div className="space-y-5">
-            {/* Contact card */}
             <div className="rounded-2xl bg-[#0f1829] border border-white/[0.07] p-6">
-              <h3 className="text-white font-semibold mb-4">Prefer to call?</h3>
-              <a
-                href={`tel:${siteConfig.phoneRaw}`}
-                className="flex items-center gap-3 text-blue-400 font-medium hover:text-blue-300 transition-colors mb-4"
-              >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <h3 className="text-white font-semibold mb-3">Prefer to call?</h3>
+              <a href={`tel:${siteConfig.phoneRaw}`} className="flex items-center gap-2.5 text-blue-400 font-medium hover:text-blue-300 transition-colors mb-3">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                 </svg>
                 {siteConfig.phone}
               </a>
-              <p className="text-slate-500 text-sm">Mon–Fri: 8am–6pm<br />Sat–Sun: 9am–4pm</p>
+              <p className="text-slate-500 text-xs">Mon–Fri 8am–6pm · Sat–Sun 9am–4pm</p>
             </div>
 
-            {/* Pricing quick ref */}
             <div className="rounded-2xl bg-[#0f1829] border border-white/[0.07] p-6">
-              <h3 className="text-white font-semibold mb-4">Quick Pricing</h3>
-              <ul className="space-y-3">
+              <h3 className="text-white font-semibold mb-4">Starting Prices</h3>
+              <ul className="space-y-2.5">
                 {services.map((s) => (
-                  <li key={s.id} className="flex items-center justify-between gap-2">
+                  <li key={s.id} className="flex items-center justify-between">
                     <span className="text-slate-400 text-sm">{s.name}</span>
-                    <span className="text-white font-semibold text-sm">{s.price}</span>
+                    <span className="text-white font-semibold text-sm">from ${s.pricing.Small}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/services" className="block text-center mt-4 text-blue-400 text-sm hover:text-blue-300 transition-colors">
-                View full pricing →
+              <Link href="/services" className="block mt-4 text-blue-400 text-xs hover:text-blue-300 transition-colors">
+                Full pricing by vehicle size →
               </Link>
             </div>
 
-            {/* Trust */}
             <div className="rounded-2xl bg-blue-600/[0.07] border border-blue-500/[0.15] p-6">
-              <h3 className="text-white font-semibold mb-4">Our Promise</h3>
-              <ul className="space-y-3">
-                {[
-                  "100% satisfaction guarantee",
-                  "We bring all equipment",
-                  "Secure Square payment",
-                  "Fully insured",
-                ].map((item) => (
+              <h3 className="text-white font-semibold mb-3">Our Promise</h3>
+              <ul className="space-y-2.5">
+                {["100% satisfaction guarantee", "We bring all equipment & water", "Secure payment via Square", "Fully insured"].map((item) => (
                   <li key={item} className="flex items-center gap-2.5">
                     <svg className="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                     </svg>
                     <span className="text-slate-300 text-sm">{item}</span>
                   </li>

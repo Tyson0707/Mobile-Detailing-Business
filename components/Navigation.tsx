@@ -2,17 +2,20 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { siteConfig } from "@/lib/config";
 
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services & Pricing" },
-  { href: "/booking", label: "Book Now" },
+  { href: "/about", label: "About" },
+  { href: "/booking", label: "Book Now", cta: true },
 ];
 
 export function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -20,58 +23,43 @@ export function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileOpen(false);
+  }, [pathname]);
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
+        scrolled || mobileOpen
           ? "glass border-b border-white/[0.06]"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 sm:h-18">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center group-hover:bg-blue-500 transition-colors">
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 18 18"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M9 2L14 6V14H4V6L9 2Z"
-                  stroke="white"
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M6 14V10H12V14"
-                  stroke="white"
-                  strokeWidth="1.5"
-                  strokeLinejoin="round"
-                />
+          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center group-hover:bg-blue-500 transition-colors shrink-0">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M8 1.5L13 5.5V13H3V5.5L8 1.5Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
+                <path d="M5.5 13V9.5H10.5V13" stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
               </svg>
             </div>
-            <div>
-              <span className="text-white font-semibold text-sm leading-none block">
-                Clear Line
-              </span>
-              <span className="text-blue-400 text-xs leading-none">
-                Auto Detail
-              </span>
+            <div className="leading-none">
+              <span className="text-white font-semibold text-sm block">Clearline</span>
+              <span className="text-blue-400 text-[11px]">Auto Detail</span>
             </div>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) =>
-              link.href === "/booking" ? (
+              link.cta ? (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="ml-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+                  className="ml-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -79,7 +67,11 @@ export function Navigation() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="px-4 py-2 text-slate-300 hover:text-white text-sm transition-colors rounded-lg hover:bg-white/[0.05]"
+                  className={`px-4 py-2 text-sm transition-colors rounded-lg ${
+                    pathname === link.href
+                      ? "text-white bg-white/[0.07]"
+                      : "text-slate-400 hover:text-white hover:bg-white/[0.05]"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -91,7 +83,7 @@ export function Navigation() {
           <div className="flex md:hidden items-center gap-3">
             <a
               href={`tel:${siteConfig.phoneRaw}`}
-              className="text-blue-400 text-sm font-medium"
+              className="text-blue-400 text-sm font-medium hidden xs:block"
             >
               {siteConfig.phone}
             </a>
@@ -99,22 +91,15 @@ export function Navigation() {
               onClick={() => setMobileOpen(!mobileOpen)}
               className="p-2 text-slate-300 hover:text-white"
               aria-label="Toggle menu"
+              aria-expanded={mobileOpen}
             >
               {mobileOpen ? (
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               ) : (
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
-                  <path
-                    fillRule="evenodd"
-                    d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                    clipRule="evenodd"
-                  />
+                  <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                 </svg>
               )}
             </button>
@@ -124,22 +109,29 @@ export function Navigation() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden glass border-t border-white/[0.06]">
-          <nav className="px-4 py-4 flex flex-col gap-1">
+        <div className="md:hidden border-t border-white/[0.06]">
+          <nav className="px-4 py-4 flex flex-col gap-1.5">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className={`px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                  link.href === "/booking"
+                className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
+                  link.cta
                     ? "bg-blue-600 text-white text-center"
+                    : pathname === link.href
+                    ? "bg-white/[0.08] text-white"
                     : "text-slate-300 hover:text-white hover:bg-white/[0.05]"
                 }`}
               >
                 {link.label}
               </Link>
             ))}
+            <a
+              href={`tel:${siteConfig.phoneRaw}`}
+              className="mt-1 px-4 py-3 rounded-xl text-sm text-center text-blue-400 border border-blue-500/20 bg-blue-600/[0.06]"
+            >
+              Call {siteConfig.phone}
+            </a>
           </nav>
         </div>
       )}

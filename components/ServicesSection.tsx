@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { services } from "@/lib/config";
+import { services, vehicleSizes } from "@/lib/config";
 
 export function ServicesSection() {
   return (
@@ -8,14 +8,23 @@ export function ServicesSection() {
         {/* Header */}
         <div className="text-center mb-14">
           <p className="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">
-            What We Offer
+            Services & Pricing
           </p>
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 text-balance">
-            Services & Packages
+            What we offer
           </h2>
           <p className="text-slate-400 text-lg max-w-xl mx-auto">
-            Every service is performed at your location with professional-grade products and equipment.
+            Every service is performed at your location. All pricing in CAD — select your vehicle size below.
           </p>
+
+          {/* Size legend */}
+          <div className="inline-flex items-center gap-1 mt-5 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.07] text-xs text-slate-500 gap-4">
+            <span><span className="text-slate-300 font-medium">Small</span> — sedan/coupe</span>
+            <span className="text-white/20">·</span>
+            <span><span className="text-slate-300 font-medium">Mid</span> — SUV/truck</span>
+            <span className="text-white/20">·</span>
+            <span><span className="text-slate-300 font-medium">Large</span> — 3-row SUV/van</span>
+          </div>
         </div>
 
         {/* Service cards */}
@@ -23,18 +32,18 @@ export function ServicesSection() {
           {services.map((service) => (
             <div
               key={service.id}
-              className={`relative rounded-2xl border bg-card-gradient overflow-hidden flex flex-col transition-all hover:-translate-y-1 hover:shadow-xl ${
+              className={`relative rounded-2xl border flex flex-col overflow-hidden transition-all hover:-translate-y-1 hover:shadow-xl ${
                 service.badge === "Most Popular"
-                  ? "border-blue-500/40 bg-[#131d30] shadow-lg shadow-blue-600/10"
+                  ? "border-blue-500/40 bg-[#0f1b2d] shadow-lg shadow-blue-600/10"
                   : service.badge === "Premium"
-                  ? "border-amber-500/30 bg-[#131d30]"
+                  ? "border-amber-500/30 bg-[#0f1b2d]"
                   : "border-white/[0.07] bg-[#0f1829]"
               }`}
             >
               {/* Badge */}
               {service.badge && (
                 <div
-                  className={`absolute top-0 right-0 px-3 py-1 text-xs font-semibold rounded-bl-lg ${
+                  className={`absolute top-0 right-0 px-3 py-1 text-xs font-semibold rounded-bl-xl ${
                     service.badge === "Most Popular"
                       ? "bg-blue-600 text-white"
                       : "bg-amber-500 text-black"
@@ -44,34 +53,62 @@ export function ServicesSection() {
                 </div>
               )}
 
-              <div className="p-6 flex flex-col flex-1">
-                {/* Price & name */}
-                <div className="mb-4">
-                  <p className="text-slate-400 text-sm mb-1">{service.name}</p>
-                  <p
-                    className={`text-3xl font-bold ${
+              <div className="p-5 flex flex-col flex-1">
+                {/* Name + description */}
+                <div className="mb-4 pr-16">
+                  <h3
+                    className={`text-base font-bold mb-1.5 ${
                       service.badge === "Most Popular"
-                        ? "text-blue-400"
+                        ? "text-blue-300"
                         : service.badge === "Premium"
-                        ? "text-amber-400"
+                        ? "text-amber-300"
                         : "text-white"
                     }`}
                   >
-                    {service.price}
-                  </p>
-                  <p className="text-slate-500 text-xs mt-0.5">{service.duration}</p>
+                    {service.name}
+                  </h3>
+                  <p className="text-slate-400 text-xs leading-relaxed">{service.description}</p>
                 </div>
 
-                <p className="text-slate-400 text-sm mb-5 leading-relaxed">
-                  {service.description}
-                </p>
+                {/* Pricing table */}
+                <div className="mb-5 rounded-lg overflow-hidden border border-white/[0.07]">
+                  {vehicleSizes.map((size, i) => (
+                    <div
+                      key={size}
+                      className={`flex items-center justify-between px-3 py-2 ${
+                        i < vehicleSizes.length - 1 ? "border-b border-white/[0.05]" : ""
+                      } ${i === 0 ? "bg-white/[0.03]" : ""}`}
+                    >
+                      <span className="text-slate-400 text-xs">{size}</span>
+                      <span
+                        className={`font-bold text-sm ${
+                          service.badge === "Most Popular"
+                            ? "text-blue-400"
+                            : service.badge === "Premium"
+                            ? "text-amber-400"
+                            : "text-white"
+                        }`}
+                      >
+                        ${service.pricing[size]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Duration */}
+                <div className="flex items-center gap-1.5 mb-4">
+                  <svg className="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-slate-500 text-xs">{service.duration}</span>
+                </div>
 
                 {/* Features */}
-                <ul className="space-y-2 mb-6 flex-1">
+                <ul className="space-y-1.5 mb-5 flex-1">
                   {service.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2.5">
+                    <li key={feature} className="flex items-start gap-2">
                       <svg
-                        className={`w-4 h-4 mt-0.5 shrink-0 ${
+                        className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${
                           service.badge === "Most Popular"
                             ? "text-blue-400"
                             : service.badge === "Premium"
@@ -82,21 +119,16 @@ export function ServicesSection() {
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                       </svg>
-                      <span className="text-slate-300 text-sm">{feature}</span>
+                      <span className="text-slate-300 text-xs">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 <Link
                   href="/booking"
-                  className={`w-full py-3 rounded-xl text-sm font-semibold text-center transition-colors ${
+                  className={`w-full py-2.5 rounded-xl text-xs font-semibold text-center transition-colors ${
                     service.badge === "Most Popular"
                       ? "bg-blue-600 hover:bg-blue-500 text-white"
                       : service.badge === "Premium"
@@ -111,11 +143,10 @@ export function ServicesSection() {
           ))}
         </div>
 
-        {/* Note */}
-        <p className="text-center text-slate-500 text-sm mt-8">
-          Prices vary by vehicle size (car, SUV, truck). All prices in CAD.{" "}
-          <Link href="/booking" className="text-blue-400 hover:text-blue-300 underline">
-            Get a custom quote
+        <p className="text-center text-slate-600 text-xs mt-7">
+          Prices vary by vehicle size as shown.{" "}
+          <Link href="/services" className="text-blue-500 hover:text-blue-400 underline">
+            View add-ons and full details
           </Link>
         </p>
       </div>
