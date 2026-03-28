@@ -2,7 +2,7 @@ const reasons = [
   {
     title: "We Come To Your Driveway",
     description:
-      "No dropping off. No waiting at a shop. We arrive with a fully equipped van — water, pressure washer, vacuums, extractors, and every product we need.",
+      "No dropping off. No waiting at a shop. We arrive with our pressure washer, compressed air, vacuums, extractors, and all professional products. All we need from you is access to a tap and an outlet.",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

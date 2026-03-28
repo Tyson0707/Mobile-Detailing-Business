@@ -55,7 +55,7 @@ export default function ServicesPage() {
             Services & Pricing
           </h1>
           <p className="text-slate-400 text-lg max-w-2xl mx-auto">
-            All services performed at your location. We bring everything. Prices shown are for each vehicle size — pick the one that fits.
+            All services performed at your location. We bring our equipment and products — all we need is a tap and an outlet. Prices shown are for each vehicle size.
           </p>
 
           {/* Size legend */}

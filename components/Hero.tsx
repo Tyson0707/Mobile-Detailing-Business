@@ -64,7 +64,7 @@ export function Hero() {
           {/* Trust signals */}
           <div className="flex flex-wrap gap-x-7 gap-y-3">
             {[
-              "We bring all water & equipment",
+              "All you need is a tap & outlet",
               "100% satisfaction guarantee",
               "Fully insured",
             ].map((item) => (
