@@ -192,9 +192,9 @@ export const testimonials = [
 
 export const faqItems = [
   {
-    question: "Do you bring your own water and equipment?",
+    question: "What do you need access to at my property?",
     answer:
-      "Yes — completely self-contained. We bring our own water, pressure washer, vacuums, extractors, and all professional detailing products. You don't need to provide anything.",
+      "Just a standard outdoor tap and a power outlet — that's it. We bring our own pressure washer, compressed air, vacuums, extractors, and all professional detailing products. Most driveways have everything we need.",
   },
   {
     question: "Where do you service in Calgary?",

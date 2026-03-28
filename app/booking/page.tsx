@@ -271,7 +271,7 @@ export default function BookingPage() {
             <div className="rounded-2xl bg-blue-600/[0.07] border border-blue-500/[0.15] p-6">
               <h3 className="text-white font-semibold mb-3">Our Promise</h3>
               <ul className="space-y-2.5">
-                {["100% satisfaction guarantee", "We bring all equipment & water", "Secure payment via Square", "Fully insured"].map((item) => (
+                {["100% satisfaction guarantee", "We bring all equipment & products", "Secure payment via Square", "Fully insured"].map((item) => (
                   <li key={item} className="flex items-center gap-2.5">
                     <svg className="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
