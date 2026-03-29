@@ -38,7 +38,7 @@ export function Hero() {
           </h1>
 
           <p className="text-slate-300 text-lg sm:text-xl leading-relaxed mb-8 max-w-xl">
-            We come to your driveway with everything we need — professional products, expert technique, and a full reset in 3–4 hours. No drop-off. No hassle. Just results.
+            We come to your driveway with everything we need — professional products, expert technique, and a full reset at your door. No drop-off. No hassle. Just results.
           </p>
 
           {/* CTAs */}
