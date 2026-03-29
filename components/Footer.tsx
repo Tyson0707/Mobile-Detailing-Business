@@ -119,8 +119,9 @@ export function Footer() {
             <div className="mt-4 p-3 rounded-lg bg-white/[0.03] border border-white/[0.05]">
               <p className="text-slate-500 text-xs leading-snug">
                 <span className="text-slate-400 font-medium">Hours:</span><br />
-                Mon–Fri 8am–6pm<br />
-                Sat–Sun 9am–4pm
+                Mon–Fri 8am–9pm<br />
+                Sat 8:30am–3:30pm<br />
+                Sun Closed
               </p>
             </div>
           </div>
