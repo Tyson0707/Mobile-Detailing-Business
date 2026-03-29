@@ -203,7 +203,7 @@ export const faqItems = [
   {
     question: "How do I pay?",
     answer:
-      "We accept all major credit and debit cards via Square, plus e-transfer. Payment is collected after the service is complete and you've inspected the results.",
+      "We accept cash, e-transfer, and all major credit and debit cards via Square. Payment is collected after the service is complete and you've inspected the results.",
   },
   {
     question: "How long does a detail take?",
