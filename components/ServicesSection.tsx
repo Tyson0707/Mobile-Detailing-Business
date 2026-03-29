@@ -146,9 +146,9 @@ export function ServicesSection() {
 
         <p className="text-center text-slate-600 text-xs mt-7">
           Prices vary by vehicle size as shown.{" "}
-          <Link href="/services" className="text-blue-500 hover:text-blue-400 underline">
+          <a href="/services" className="text-blue-500 hover:text-blue-400 underline">
             View add-ons and full details
-          </Link>
+          </a>
         </p>
       </div>
     </section>
