@@ -29,6 +29,10 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Clearline Auto Detail" }],
   creator: "Clearline Auto Detail",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+  },
   openGraph: {
     type: "website",
     locale: "en_CA",

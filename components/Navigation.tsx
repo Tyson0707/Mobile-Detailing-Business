@@ -39,17 +39,8 @@ export function Navigation() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center group-hover:bg-blue-500 transition-colors shrink-0">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                <path d="M8 1.5L13 5.5V13H3V5.5L8 1.5Z" stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
-                <path d="M5.5 13V9.5H10.5V13" stroke="white" strokeWidth="1.5" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <div className="leading-none">
-              <span className="text-white font-semibold text-sm block">Clearline</span>
-              <span className="text-blue-400 text-[11px]">Auto Detail</span>
-            </div>
+          <Link href="/" className="flex items-center shrink-0">
+            <img src="/logo.svg" alt="Clearline Auto Detail" width="140" height="40" className="h-10 w-auto" />
           </Link>
 
           {/* Desktop Nav */}
