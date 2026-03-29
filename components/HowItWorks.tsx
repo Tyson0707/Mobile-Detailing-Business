@@ -37,7 +37,7 @@ const steps = [
     number: "04",
     title: "Inspect & Pay",
     description:
-      "We walk you through the results. Pay securely via card or e-transfer. 100% satisfaction guaranteed.",
+      "We walk you through the results. Pay by cash, e-transfer, or card. 100% satisfaction guaranteed.",
     icon: (
       <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
