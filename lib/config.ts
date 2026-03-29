@@ -12,8 +12,7 @@ export const siteConfig = {
   email: "clearlinedetailyyc@gmail.com",
   // ──────────────────────────────────────────────────────────────────
 
-  // Square booking link — add when you set it up
-  squareBookingUrl: "#booking",
+  squareBookingUrl: "https://app.squareup.com/appointments/book/oghl244gl4kvv8/L9CVXJSYRJZST/start",
 
   city: "Calgary",
   province: "AB",

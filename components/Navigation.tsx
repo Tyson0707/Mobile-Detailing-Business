@@ -9,7 +9,7 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services & Pricing" },
   { href: "/about", label: "About" },
-  { href: "/booking", label: "Book Now", cta: true },
+  { href: siteConfig.squareBookingUrl, label: "Book Now", cta: true, external: true },
 ];
 
 export function Navigation() {
@@ -56,13 +56,15 @@ export function Navigation() {
           <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) =>
               link.cta ? (
-                <Link
+                <a
                   key={link.href}
                   href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="ml-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors"
                 >
                   {link.label}
-                </Link>
+                </a>
               ) : (
                 <Link
                   key={link.href}
@@ -111,21 +113,31 @@ export function Navigation() {
       {mobileOpen && (
         <div className="md:hidden border-t border-white/[0.06]">
           <nav className="px-4 py-4 flex flex-col gap-1.5">
-            {navLinks.map((link) => (
+            {navLinks.map((link) =>
+              link.cta ? (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-3 rounded-xl text-sm font-medium transition-colors bg-blue-600 text-white text-center"
+                >
+                  {link.label}
+                </a>
+              ) : (
               <Link
                 key={link.href}
                 href={link.href}
                 className={`px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
-                  link.cta
-                    ? "bg-blue-600 text-white text-center"
-                    : pathname === link.href
+                  pathname === link.href
                     ? "bg-white/[0.08] text-white"
                     : "text-slate-300 hover:text-white hover:bg-white/[0.05]"
                 }`}
               >
                 {link.label}
               </Link>
-            ))}
+              )
+            )}
             <a
               href={`tel:${siteConfig.phoneRaw}`}
               className="mt-1 px-4 py-3 rounded-xl text-sm text-center text-blue-400 border border-blue-500/20 bg-blue-600/[0.06]"
