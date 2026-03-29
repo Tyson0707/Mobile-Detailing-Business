@@ -38,9 +38,9 @@ export const siteConfig = {
   },
 
   stats: [
-    { value: "500+", label: "Details Completed" },
+    { value: "100%", label: "Satisfaction Guaranteed" },
     { value: "5★", label: "Google Rating" },
-    { value: "100%", label: "Mobile — No Drop-Off" },
+    { value: "Mobile", label: "No Drop-Off. Ever." },
     { value: "Insured", label: "Fully Insured" },
   ],
 } as const;
