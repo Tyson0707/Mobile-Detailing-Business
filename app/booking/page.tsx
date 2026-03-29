@@ -45,7 +45,7 @@ export default function BookingPage() {
           </a>
 
           <p className="text-slate-600 text-sm mt-4">
-            Powered by Square · Secure · Card saved on file
+            Powered by Square · Cash, card, or e-transfer accepted
           </p>
         </div>
       </div>
