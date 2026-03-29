@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { services, vehicleSizes } from "@/lib/config";
+import { services, vehicleSizes, siteConfig } from "@/lib/config";
 
 export function ServicesSection() {
   return (
@@ -126,8 +125,10 @@ export function ServicesSection() {
                   ))}
                 </ul>
 
-                <Link
-                  href="/booking"
+                <a
+                  href={siteConfig.squareBookingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={`w-full py-2.5 rounded-xl text-xs font-semibold text-center transition-colors ${
                     service.badge === "Most Popular"
                       ? "bg-blue-600 hover:bg-blue-500 text-white"
@@ -137,7 +138,7 @@ export function ServicesSection() {
                   }`}
                 >
                   Book This Service
-                </Link>
+                </a>
               </div>
             </div>
           ))}

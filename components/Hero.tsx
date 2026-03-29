@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { siteConfig } from "@/lib/config";
 
 export function Hero() {
@@ -44,21 +43,23 @@ export function Hero() {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-3 mb-12">
-            <Link
-              href="/booking"
+            <a
+              href={siteConfig.squareBookingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-blue-600/25 text-base"
             >
               Book Now
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
-            </Link>
-            <Link
+            </a>
+            <a
               href="/services"
               className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.1] text-white font-semibold rounded-xl transition-colors text-base"
             >
               View Pricing
-            </Link>
+            </a>
           </div>
 
           {/* Trust signals */}
