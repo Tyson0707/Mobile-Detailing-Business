@@ -13,7 +13,7 @@ const reasons = [
   {
     title: "Built for Busy People",
     description:
-      "Work from home while we detail your car in the driveway. Run errands. Do anything. We're done in 3–4 hours and your car is ready.",
+      "Work from home while we detail your car in the driveway. Run errands. Do anything. We come to you and your car is ready when we're done.",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />

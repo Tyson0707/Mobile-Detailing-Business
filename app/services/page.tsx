@@ -104,12 +104,6 @@ export default function ServicesPage() {
                       )}
                     </div>
                     <p className="text-slate-400 text-sm leading-relaxed">{service.description}</p>
-                    <p className="text-slate-500 text-xs mt-1.5 flex items-center gap-1">
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {service.duration}
-                    </p>
                   </div>
                 </div>
 
