@@ -41,7 +41,7 @@ export const siteConfig = {
     { value: "100%", label: "Satisfaction Guaranteed" },
     { value: "5★", label: "Google Rating" },
     { value: "Mobile", label: "No Drop-Off. Ever." },
-    { value: "Insured", label: "Fully Insured" },
+    { value: "Registered", label: "Licensed & Registered" },
   ],
 } as const;
 

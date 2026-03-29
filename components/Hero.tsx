@@ -67,7 +67,7 @@ export function Hero() {
             {[
               "All you need is a tap & outlet",
               "100% satisfaction guarantee",
-              "Fully insured",
+              "Licensed & registered",
             ].map((item) => (
               <div key={item} className="flex items-center gap-2">
                 <svg className="w-4 h-4 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
