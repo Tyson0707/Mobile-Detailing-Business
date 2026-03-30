@@ -40,7 +40,7 @@ export function Navigation() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center shrink-0 overflow-hidden" style={{height: '80px', width: '320px'}}>
-            <img src="/logo.png" alt="Clear Line Auto Detail" style={{height: '320px', width: 'auto', marginTop: '-60px', marginLeft: '-40px'}} />
+            <img src="/logo.png" alt="Clear Line Auto Detail" style={{height: '320px', width: 'auto', marginTop: '-30px', marginLeft: '-40px'}} />
           </Link>
 
           {/* Desktop Nav */}
