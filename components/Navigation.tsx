@@ -37,10 +37,10 @@ export function Navigation() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-24">
           {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0">
-            <img src="/logo.png" alt="Clear Line Auto Detail" width="280" height="80" className="h-20 w-auto" />
+          <Link href="/" className="flex items-center shrink-0 -ml-4">
+            <img src="/logo.png" alt="Clear Line Auto Detail" width="400" height="120" className="h-24 w-auto" />
           </Link>
 
           {/* Desktop Nav */}
