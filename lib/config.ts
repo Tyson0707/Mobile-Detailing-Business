@@ -1,5 +1,5 @@
 export const siteConfig = {
-  name: "Clearline Auto Detail",
+  name: "Clear Line Auto Detail",
   tagline: "Premium Mobile Detailing. We Come to You.",
   description:
     "Mobile car detailing in NW Calgary and surrounding areas. We come to your driveway — professional interior resets, exterior details, and full details for busy homeowners who want it done right.",
@@ -184,7 +184,7 @@ export const testimonials = [
     name: "Lisa M.",
     location: "Watermark",
     rating: 5,
-    text: "I travel for work constantly and my car was a disaster. Booked Clearline and they came while I worked from home. Done by lunch. Looked incredible. Zero effort on my part.",
+    text: "I travel for work constantly and my car was a disaster. Booked Clear Line and they came while I worked from home. Done by lunch. Looked incredible. Zero effort on my part.",
     vehicle: "2019 Honda Civic",
   },
 ] as const;

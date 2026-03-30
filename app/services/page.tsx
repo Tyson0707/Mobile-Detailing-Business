@@ -5,7 +5,7 @@ import { services, addOns, vehicleSizes, vehicleSizeLabels, siteConfig } from "@
 export const metadata: Metadata = {
   title: "Services & Pricing | Mobile Car Detailing NW Calgary",
   description:
-    "Full pricing for Clearline Auto Detail's mobile car detailing services in NW Calgary. Interior Reset from $170, Exterior Detail from $110, Full Detail from $240, Premium Detail from $300. We come to you.",
+    "Full pricing for Clear Line Auto Detail's mobile car detailing services in NW Calgary. Interior Reset from $170, Exterior Detail from $110, Full Detail from $240, Premium Detail from $300. We come to you.",
   alternates: {
     canonical: `${siteConfig.url}/services`,
   },

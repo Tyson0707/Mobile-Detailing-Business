@@ -3,9 +3,9 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "About | Clearline Auto Detail — NW Calgary Mobile Detailing",
+  title: "About | Clear Line Auto Detail — NW Calgary Mobile Detailing",
   description:
-    "Clearline Auto Detail is a mobile car detailing service based in NW Calgary. We come to your driveway with everything we need — no shop, no drop-off, just professional results.",
+    "Clear Line Auto Detail is a mobile car detailing service based in NW Calgary. We come to your driveway with everything we need — no shop, no drop-off, just professional results.",
   alternates: {
     canonical: `${siteConfig.url}/about`,
   },
@@ -48,7 +48,7 @@ export default function AboutPage() {
             We detail cars the way they should be detailed.
           </h1>
           <p className="text-slate-400 text-lg leading-relaxed">
-            Clearline Auto Detail is a mobile car detailing service serving NW Calgary and surrounding areas. We come to you — fully equipped, fully prepared, and focused on one thing: making your car look its best.
+            Clear Line Auto Detail is a mobile car detailing service serving NW Calgary and surrounding areas. We come to you — fully equipped, fully prepared, and focused on one thing: making your car look its best.
           </p>
         </div>
       </div>
@@ -64,7 +64,7 @@ export default function AboutPage() {
                   We got tired of paying for details that weren&apos;t actually detailed. Cars coming back from shops with missed spots, swirl marks in the paint, and interiors that looked wiped down rather than cleaned.
                 </p>
                 <p>
-                  We built Clearline to do it differently — mobile, focused, and done right. No rushed shop rotations. We come to your driveway, take the time the vehicle needs, and don&apos;t leave until the result is genuinely good.
+                  We built Clear Line to do it differently — mobile, focused, and done right. No rushed shop rotations. We come to your driveway, take the time the vehicle needs, and don&apos;t leave until the result is genuinely good.
                 </p>
                 <p>
                   Our clients are homeowners in NW Calgary and surrounding communities who value their vehicles and their time. They want a clean car and they don&apos;t want to deal with the hassle of getting it there.
@@ -96,7 +96,7 @@ export default function AboutPage() {
                 <p className="text-slate-300 text-sm leading-relaxed italic mb-3">
                   &ldquo;We come prepared, we work carefully, and we don&apos;t leave until you&apos;re satisfied with what you see. That&apos;s the standard we hold ourselves to on every booking.&rdquo;
                 </p>
-                <p className="text-blue-400 text-sm font-medium">— Clearline Auto Detail</p>
+                <p className="text-blue-400 text-sm font-medium">— Clear Line Auto Detail</p>
               </div>
             </div>
           </div>
