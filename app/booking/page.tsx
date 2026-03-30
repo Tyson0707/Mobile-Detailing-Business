@@ -3,9 +3,9 @@ import Link from "next/link";
 import { services, siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "Book a Detail | Clearline Auto Detail Calgary",
+  title: "Book a Detail | Clear Line Auto Detail Calgary",
   description:
-    "Book your mobile car detailing appointment online with Clearline Auto Detail. Serving NW Calgary, Bearspaw, Tuscany, Rocky Ridge, and Watermark.",
+    "Book your mobile car detailing appointment online with Clear Line Auto Detail. Serving NW Calgary, Bearspaw, Tuscany, Rocky Ridge, and Watermark.",
   alternates: {
     canonical: `${siteConfig.url}/booking`,
   },

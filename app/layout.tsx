@@ -7,8 +7,8 @@ import { siteConfig } from "@/lib/config";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Clearline Auto Detail | Mobile Car Detailing Calgary",
-    template: "%s | Clearline Auto Detail",
+    default: "Clear Line Auto Detail | Mobile Car Detailing Calgary",
+    template: "%s | Clear Line Auto Detail",
   },
   description: siteConfig.description,
   keywords: [
@@ -24,11 +24,11 @@ export const metadata: Metadata = {
     "interior detail Calgary",
     "full detail Calgary",
     "ceramic coating Calgary",
-    "Clearline Auto Detail",
+    "Clear Line Auto Detail",
     "clearlineautodetail.ca",
   ],
-  authors: [{ name: "Clearline Auto Detail" }],
-  creator: "Clearline Auto Detail",
+  authors: [{ name: "Clear Line Auto Detail" }],
+  creator: "Clear Line Auto Detail",
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
@@ -38,20 +38,20 @@ export const metadata: Metadata = {
     locale: "en_CA",
     url: siteConfig.url,
     siteName: siteConfig.name,
-    title: "Clearline Auto Detail | Mobile Car Detailing Calgary",
+    title: "Clear Line Auto Detail | Mobile Car Detailing Calgary",
     description: siteConfig.description,
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Clearline Auto Detail — Mobile Car Detailing NW Calgary",
+        alt: "Clear Line Auto Detail — Mobile Car Detailing NW Calgary",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Clearline Auto Detail | Mobile Car Detailing Calgary",
+    title: "Clear Line Auto Detail | Mobile Car Detailing Calgary",
     description: siteConfig.description,
   },
   robots: {
@@ -74,7 +74,7 @@ const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "AutoDealer",
   "@id": `${siteConfig.url}/#business`,
-  name: "Clearline Auto Detail",
+  name: "Clear Line Auto Detail",
   description: siteConfig.description,
   url: siteConfig.url,
   telephone: siteConfig.phone,

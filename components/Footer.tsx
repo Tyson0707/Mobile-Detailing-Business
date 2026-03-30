@@ -19,7 +19,7 @@ export function Footer() {
                 </svg>
               </div>
               <div className="leading-none">
-                <span className="text-white font-semibold text-sm block">Clearline</span>
+                <span className="text-white font-semibold text-sm block">Clear Line</span>
                 <span className="text-blue-400 text-[11px]">Auto Detail</span>
               </div>
             </Link>
@@ -137,7 +137,7 @@ export function Footer() {
 
         {/* Bottom */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-slate-600 text-xs">
-          <p>&copy; {year} Clearline Auto Detail. All rights reserved.</p>
+          <p>&copy; {year} Clear Line Auto Detail. All rights reserved.</p>
           <p>Mobile Car Detailing Calgary, AB · {siteConfig.domain}</p>
         </div>
       </div>

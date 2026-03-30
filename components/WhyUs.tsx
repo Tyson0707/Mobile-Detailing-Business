@@ -70,7 +70,7 @@ export function WhyUs() {
           {/* Left */}
           <div>
             <p className="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">
-              Why Clearline
+              Why Clear Line
             </p>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-5 text-balance">
               Not a car wash. A proper detail.
@@ -80,9 +80,9 @@ export function WhyUs() {
             </p>
             <div className="p-5 rounded-xl bg-blue-600/[0.08] border border-blue-500/[0.15]">
               <p className="text-slate-300 text-sm leading-relaxed italic mb-3">
-                &ldquo;We built Clearline because every time we took a car to a shop, it came back with rushed work and swirl marks on the paint. There&apos;s a better way — and it starts in your driveway.&rdquo;
+                &ldquo;We built Clear Line because every time we took a car to a shop, it came back with rushed work and swirl marks on the paint. There&apos;s a better way — and it starts in your driveway.&rdquo;
               </p>
-              <p className="text-blue-400 text-sm font-medium">— Clearline Auto Detail</p>
+              <p className="text-blue-400 text-sm font-medium">— Clear Line Auto Detail</p>
             </div>
           </div>
 
