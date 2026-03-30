@@ -1,50 +1,82 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 85" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 92" fill="none">
   <defs>
-    <linearGradient id="swooshGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="white" stop-opacity="0"/>
-      <stop offset="12%" stop-color="white" stop-opacity="0.8"/>
-      <stop offset="50%" stop-color="white" stop-opacity="1"/>
-      <stop offset="88%" stop-color="white" stop-opacity="0.8"/>
-      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="white" stop-opacity="0.5"/>
+      <stop offset="25%" stop-color="white" stop-opacity="1"/>
+      <stop offset="75%" stop-color="white" stop-opacity="1"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0.5"/>
     </linearGradient>
   </defs>
 
-  <!-- Car roofline swoosh: horizontal lines with arch in center -->
-  <path d="M 38,28 L 60,28 C 66,28 72,22 80,16 L 94,11 L 150,11 L 168,11 C 176,17 182,22 190,28 L 200,28 L 262,28"
-    stroke="url(#swooshGrad)" stroke-width="2" stroke-linecap="round" fill="none"/>
+  <!-- Porsche 911 style silhouette -->
+  <!-- Main body outline -->
+  <path d="
+    M 44,37
+    C 38,39 32,41 28,46
+    C 25,50 26,54 30,56
+    L 56,56
+    C 58,50 64,44 74,44
+    C 84,44 90,50 92,56
+    L 200,56
+    C 202,50 210,44 222,44
+    C 232,44 238,50 240,56
+    L 256,56
+    C 262,54 267,50 268,44
+    C 270,37 267,28 260,23
+    C 254,18 242,17 228,17
+    L 195,16
+    L 168,17
+    C 152,9 136,3 118,3
+    L 94,3
+    C 79,3 65,9 56,20
+    C 50,26 46,32 44,37
+    Z"
+    stroke="url(#bodyGrad)" stroke-width="1.6" fill="white" fill-opacity="0.05"/>
 
-  <!-- Sparkle left (4-point star) -->
-  <g transform="translate(38,28)">
-    <path d="M0,-6 L0.9,-0.9 L6,0 L0.9,0.9 L0,6 L-0.9,0.9 L-6,0 L-0.9,-0.9 Z" fill="white" opacity="0.95"/>
+  <!-- Lower accent line (character line along sill) -->
+  <path d="M 92,50 L 200,50"
+    stroke="white" stroke-width="0.8" opacity="0.35" stroke-linecap="round"/>
+
+  <!-- Rear wheel -->
+  <circle cx="74" cy="56" r="9" stroke="white" stroke-width="1.4" fill="#080d1a"/>
+  <!-- Rear wheel center dot -->
+  <circle cx="74" cy="56" r="2" fill="white" opacity="0.5"/>
+
+  <!-- Front wheel -->
+  <circle cx="222" cy="56" r="9" stroke="white" stroke-width="1.4" fill="#080d1a"/>
+  <!-- Front wheel center dot -->
+  <circle cx="222" cy="56" r="2" fill="white" opacity="0.5"/>
+
+  <!-- Sparkle rear -->
+  <g transform="translate(22,50)">
+    <path d="M0,-7 L1,-1 L7,0 L1,1 L0,7 L-1,1 L-7,0 L-1,-1 Z" fill="white" opacity="0.95"/>
   </g>
-  <!-- Smaller secondary sparkle left -->
-  <g transform="translate(38,28) rotate(45)">
-    <path d="M0,-3.5 L0.5,-0.5 L3.5,0 L0.5,0.5 L0,3.5 L-0.5,0.5 L-3.5,0 L-0.5,-0.5 Z" fill="white" opacity="0.5"/>
+  <g transform="translate(22,50) rotate(45)">
+    <path d="M0,-4 L0.6,-0.6 L4,0 L0.6,0.6 L0,4 L-0.6,0.6 L-4,0 L-0.6,-0.6 Z" fill="white" opacity="0.45"/>
   </g>
 
-  <!-- Sparkle right (4-point star) -->
-  <g transform="translate(262,28)">
-    <path d="M0,-6 L0.9,-0.9 L6,0 L0.9,0.9 L0,6 L-0.9,0.9 L-6,0 L-0.9,-0.9 Z" fill="white" opacity="0.95"/>
+  <!-- Sparkle front -->
+  <g transform="translate(272,38)">
+    <path d="M0,-7 L1,-1 L7,0 L1,1 L0,7 L-1,1 L-7,0 L-1,-1 Z" fill="white" opacity="0.95"/>
   </g>
-  <!-- Smaller secondary sparkle right -->
-  <g transform="translate(262,28) rotate(45)">
-    <path d="M0,-3.5 L0.5,-0.5 L3.5,0 L0.5,0.5 L0,3.5 L-0.5,0.5 L-3.5,0 L-0.5,-0.5 Z" fill="white" opacity="0.5"/>
+  <g transform="translate(272,38) rotate(45)">
+    <path d="M0,-4 L0.6,-0.6 L4,0 L0.6,0.6 L0,4 L-0.6,0.6 L-4,0 L-0.6,-0.6 Z" fill="white" opacity="0.45"/>
   </g>
 
   <!-- CLEAR LINE wordmark -->
-  <text x="150" y="57"
+  <text x="150" y="74"
     text-anchor="middle"
     font-family="Arial, Helvetica, sans-serif"
-    font-size="23"
+    font-size="22"
     font-weight="700"
     letter-spacing="7"
     fill="white">CLEAR LINE</text>
 
   <!-- AUTO DETAIL -->
-  <text x="150" y="73"
+  <text x="150" y="87"
     text-anchor="middle"
     font-family="Arial, Helvetica, sans-serif"
-    font-size="9"
+    font-size="8.5"
     font-weight="400"
     letter-spacing="4"
     fill="#64748b">AUTO DETAIL</text>
