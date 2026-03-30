@@ -37,10 +37,10 @@ export function Navigation() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-24">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center shrink-0 -ml-4">
-            <img src="/logo.png" alt="Clear Line Auto Detail" width="400" height="120" className="h-24 w-auto" />
+          <Link href="/" className="flex items-center shrink-0 overflow-hidden" style={{height: '80px', width: '320px'}}>
+            <img src="/logo.png" alt="Clear Line Auto Detail" style={{height: '320px', width: 'auto', marginTop: '-115px', marginLeft: '-40px'}} />
           </Link>
 
           {/* Desktop Nav */}
