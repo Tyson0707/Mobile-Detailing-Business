@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Clear Line Auto Detail",
   tagline: "Premium Mobile Detailing. We Come to You.",
   description:
-    "Mobile car detailing in NW Calgary and surrounding areas. We come to your driveway — professional interior resets, exterior details, and full details for busy homeowners who want it done right.",
+    "Mobile car detailing in Calgary and surrounding areas. We come to your driveway — professional interior resets, exterior details, and full details for busy homeowners who want it done right.",
   domain: "clearlineautodetail.ca",
   url: "https://clearlineautodetail.ca",
 
@@ -17,9 +17,12 @@ export const siteConfig = {
   city: "Calgary",
   province: "AB",
 
-  primaryArea: "NW Calgary",
+  primaryArea: "Calgary",
   serviceAreas: [
     "NW Calgary",
+    "NE Calgary",
+    "SW Calgary",
+    "SE Calgary",
     "Bearspaw",
     "Watermark",
     "Rocky Ridge",
@@ -29,6 +32,10 @@ export const siteConfig = {
     "Sage Hill",
     "Royal Oak",
     "Sherwood",
+    "Airdrie",
+    "Cochrane",
+    "Chestermere",
+    "Okotoks",
   ],
 
   social: {
