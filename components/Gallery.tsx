@@ -31,7 +31,7 @@ function BeforeAfterSlider({ before, after }: { before: string; after: string })
   return (
     <div
       ref={containerRef}
-      className="relative aspect-[4/3] overflow-hidden rounded-2xl cursor-col-resize select-none"
+      className="relative aspect-[3/4] overflow-hidden rounded-2xl cursor-col-resize select-none"
       onMouseDown={onMouseDown}
       onTouchMove={onTouchMove}
     >
