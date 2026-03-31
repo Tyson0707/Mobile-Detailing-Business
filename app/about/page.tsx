@@ -3,9 +3,9 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "About | Clear Line Auto Detail — NW Calgary Mobile Detailing",
+  title: "About | Clear Line Auto Detail — Calgary Mobile Detailing",
   description:
-    "Clear Line Auto Detail is a mobile car detailing service based in NW Calgary. We come to your driveway with everything we need — no shop, no drop-off, just professional results.",
+    "Clear Line Auto Detail is a mobile car detailing service based in Calgary. We come to your driveway with everything we need — no shop, no drop-off, just professional results.",
   alternates: {
     canonical: `${siteConfig.url}/about`,
   },
@@ -48,7 +48,7 @@ export default function AboutPage() {
             We detail cars the way they should be detailed.
           </h1>
           <p className="text-slate-400 text-lg leading-relaxed">
-            Clear Line Auto Detail is a mobile car detailing service serving NW Calgary and surrounding areas. We come to you — fully equipped, fully prepared, and focused on one thing: making your car look its best.
+            Clear Line Auto Detail is a mobile car detailing service serving Calgary and surrounding areas including Airdrie, Cochrane, Chestermere, and Okotoks. We come to you — fully equipped, fully prepared, and focused on one thing: making your car look its best.
           </p>
         </div>
       </div>
@@ -67,7 +67,7 @@ export default function AboutPage() {
                   We built Clear Line to do it differently — mobile, focused, and done right. No rushed shop rotations. We come to your driveway, take the time the vehicle needs, and don&apos;t leave until the result is genuinely good.
                 </p>
                 <p>
-                  Our clients are homeowners in NW Calgary and surrounding communities who value their vehicles and their time. They want a clean car and they don&apos;t want to deal with the hassle of getting it there.
+                  Our clients are homeowners across Calgary and surrounding communities — Airdrie, Cochrane, Chestermere, Okotoks — who value their vehicles and their time. They want a clean car and they don&apos;t want to deal with the hassle of getting it there.
                 </p>
               </div>
             </div>
@@ -77,7 +77,7 @@ export default function AboutPage() {
                 <h3 className="text-white font-semibold mb-3">Who we serve</h3>
                 <ul className="space-y-2">
                   {[
-                    "Homeowners in NW Calgary, Bearspaw, Watermark, Rocky Ridge, Tuscany",
+                    "Homeowners across Calgary, Airdrie, Cochrane, Chestermere, and Okotoks",
                     "Busy professionals and families who value convenience",
                     "People who want their car properly cleaned — not just wiped down",
                     "Anyone who&apos;s been disappointed by a shop or automated car wash",
@@ -127,7 +127,7 @@ export default function AboutPage() {
           <div className="rounded-2xl bg-[#0f1829] border border-white/[0.07] p-7">
             <h2 className="text-xl font-bold text-white mb-2">Where we work</h2>
             <p className="text-slate-400 text-sm mb-5">
-              We&apos;re based in NW Calgary and cover the following areas. Not sure if you&apos;re in range? Just ask.
+              We serve Calgary and surrounding areas. Outside the city? Travel fees may apply — just ask before booking.
             </p>
             <div className="flex flex-wrap gap-2">
               {siteConfig.serviceAreas.map((area) => (
