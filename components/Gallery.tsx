@@ -35,15 +35,21 @@ function BeforeAfterSlider({ before, after }: { before: string; after: string })
       onMouseDown={onMouseDown}
       onTouchMove={onTouchMove}
     >
-      {/* After image (base) */}
-      <img src={after} alt="After" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
-
-      {/* Before image (clipped, full size) */}
+      {/* Before image — left side */}
       <img
         src={before}
         alt="Before"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+        draggable={false}
+      />
+
+      {/* After image — right side */}
+      <img
+        src={after}
+        alt="After"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ clipPath: `inset(0 0 0 ${position}%)` }}
         draggable={false}
       />
 
