@@ -1,3 +1,4 @@
+import { Gallery } from "@/components/Gallery";
 import type { Metadata } from "next";
 import { Hero } from "@/components/Hero";
 import { ServicesSection } from "@/components/ServicesSection";
@@ -22,6 +23,7 @@ export default function HomePage() {
     <>
       <Hero />
       <ServicesSection />
+      <Gallery />
       <HowItWorks />
       <WhyUs />
       <Testimonials />
