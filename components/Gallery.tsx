@@ -3,7 +3,9 @@
 import { useState, useRef, useCallback } from "react";
 
 const galleryItems = [
-  { id: 1, before: "/before2.jpg", after: "/after2.jpg" },
+  { id: 1, before: "/before1.jpg", after: "/after1.png" },
+  { id: 2, before: "/before2.jpg", after: "/after2.jpg" },
+  { id: 3, before: "/before3.jpg", after: "/after3.jpg" },
 ];
 
 function BeforeAfterSlider({ before, after }: { before: string; after: string }) {
