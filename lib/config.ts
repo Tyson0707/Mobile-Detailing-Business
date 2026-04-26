@@ -167,32 +167,32 @@ export const addOns = [
 
 export const testimonials = [
   {
-    name: "Mike T.",
-    location: "Rocky Ridge, NW Calgary",
+    name: "Gareth Ackroyd",
+    location: "Calgary",
     rating: 5,
-    text: "Had the Full Detail done on my truck. I've been to shops before and nothing comes close — they came to my driveway, were done in under 4 hours, and the truck looked better than when I bought it.",
-    vehicle: "2021 Ford F-150",
+    text: "I recently had the interior of my car detailed by Clear Line and couldn't be more impressed. Tyson really took his time and paid attention to every detail — my car's interior genuinely looks like new again. He came to my house, which was incredibly convenient and hassle-free. Extremely polite, friendly, and helpful throughout. I'll be using them again soon.",
+    vehicle: "",
   },
   {
-    name: "Sarah K.",
-    location: "Tuscany, NW Calgary",
+    name: "Kevin",
+    location: "Calgary",
     rating: 5,
-    text: "I have two kids and a dog. My SUV was destroyed. After the Premium Detail it smelled brand new — they got every single dog hair out. Won't use anyone else.",
-    vehicle: "2020 Toyota RAV4",
+    text: "Tyson has detailed numerous vehicles at our auto repair facility. The level of service he provides and the attention to detail are unmatched. Highly recommend anyone or any business needing vehicle detailing to give Clear Line a call.",
+    vehicle: "",
   },
   {
-    name: "Jason W.",
-    location: "Bearspaw",
+    name: "Tim Scarrott",
+    location: "Calgary",
     rating: 5,
-    text: "Booked the Premium Detail on my Model 3. Super professional, no mess left behind, paint looks insane. The ceramic interior protection is worth every penny.",
-    vehicle: "2022 Tesla Model 3",
+    text: "I was a little embarrassed about how dirty my truck had gotten. Tyson actually said he enjoyed the challenge! I can't believe how well he was able to clean it — I don't know if it has ever been this clean.",
+    vehicle: "",
   },
   {
-    name: "Lisa M.",
-    location: "Watermark",
+    name: "April Von Platen",
+    location: "Calgary",
     rating: 5,
-    text: "I travel for work constantly and my car was a disaster. Booked Clear Line and they came while I worked from home. Done by lunch. Looked incredible. Zero effort on my part.",
-    vehicle: "2019 Honda Civic",
+    text: "Tyson did a great job cleaning my SUV. There was lots of pet hair and it's super clean now. He was on time and very personable. Highly recommend!",
+    vehicle: "",
   },
 ] as const;
 
