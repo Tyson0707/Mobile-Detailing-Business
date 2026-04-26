@@ -46,7 +46,7 @@ export const siteConfig = {
 
   stats: [
     { value: "100%", label: "Satisfaction Guaranteed" },
-    { value: "5★", label: "Google Rating" },
+    { value: "7", label: "5★ Google Reviews" },
     { value: "Mobile", label: "No Drop-Off. Ever." },
     { value: "Flat-Rate", label: "No Hidden Fees" },
   ],
@@ -203,9 +203,9 @@ export const faqItems = [
       "Just a standard outdoor tap and a power outlet — that's it. We bring our own pressure washer, compressed air, vacuums, extractors, and all professional detailing products. Most driveways have everything we need.",
   },
   {
-    question: "Where do you service in Calgary?",
+    question: "Where do you service?",
     answer:
-      "Our primary service area is NW Calgary including Bearspaw, Watermark, Rocky Ridge, Tuscany, Nolan Hill, Evanston, Sage Hill, Royal Oak, and Sherwood. Not sure if we cover your area? Message us — we're flexible.",
+      "We cover all of Calgary and surrounding areas including Airdrie, Cochrane, Chestermere, and Okotoks. Not sure if we cover your area? Message us — we're flexible.",
   },
   {
     question: "How do I pay?",
@@ -213,9 +213,9 @@ export const faqItems = [
       "We accept cash, e-transfer, and all major credit and debit cards via Square. Payment is collected after the service is complete and you've inspected the results.",
   },
   {
-    question: "How long does a detail take?",
+    question: "Do I need to be available the whole time?",
     answer:
-      "Interior Reset: 2–3 hours. Exterior Detail: 1–2 hours. Full Detail: 3–4 hours. Premium Detail: 4–5 hours. We'll confirm the timeframe when we book based on your vehicle.",
+      "No. Most clients go about their day — work from home, run errands, whatever. Just be available at the start to hand over keys and at the end to walk through the results.",
   },
   {
     question: "What's the difference between Full Detail and Premium?",
@@ -223,9 +223,9 @@ export const faqItems = [
       "Full Detail is Interior Reset + Exterior Detail. Premium adds extraction for deeper stains, interior ceramic protection (which repels spills and staining), and trim/plastic restoration for a fully finished look inside.",
   },
   {
-    question: "Do I need to be home the whole time?",
+    question: "Can I book same-week?",
     answer:
-      "No. Most of our clients go about their day — work from home, run errands, whatever. Just be available at the start to hand over keys and at the end to walk through the results.",
+      "Yes — we often have openings within a few days. Book online and we'll confirm quickly. If you need something urgent, call or text us directly.",
   },
   {
     question: "What if I'm not happy with the result?",
