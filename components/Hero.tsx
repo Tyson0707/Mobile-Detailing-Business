@@ -81,12 +81,25 @@ export function Hero() {
 
         {/* Stats — right side on desktop */}
         <div className="mt-16 lg:mt-0 lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 grid grid-cols-2 gap-3 max-w-xs">
-          {siteConfig.stats.map((stat) => (
-            <div key={stat.label} className="glass rounded-2xl p-5 text-center">
-              <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
-              <div className="text-slate-400 text-xs leading-snug">{stat.label}</div>
-            </div>
-          ))}
+          {siteConfig.stats.map((stat) =>
+            stat.link && stat.link !== "GOOGLE_REVIEWS_URL" ? (
+              <a
+                key={stat.label}
+                href={stat.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="glass rounded-2xl p-5 text-center hover:bg-white/[0.08] transition-colors"
+              >
+                <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-slate-400 text-xs leading-snug">{stat.label}</div>
+              </a>
+            ) : (
+              <div key={stat.label} className="glass rounded-2xl p-5 text-center">
+                <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                <div className="text-slate-400 text-xs leading-snug">{stat.label}</div>
+              </div>
+            )
+          )}
         </div>
 
         {/* Scroll hint */}
