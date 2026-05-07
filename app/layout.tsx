@@ -146,6 +146,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
         <meta name="theme-color" content="#080d1a" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-N7S8SLHR7T" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-N7S8SLHR7T');`,
+          }}
+        />
       </head>
       <body>
         <Navigation />

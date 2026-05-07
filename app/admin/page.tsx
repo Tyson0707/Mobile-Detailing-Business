@@ -188,14 +188,14 @@ export default function AdminPage() {
                 desc: "Tracking pageviews, unique visitors, and top pages. Enable it in your Vercel project settings → Analytics tab.",
               },
               {
-                done: false,
-                title: "Google Analytics 4",
-                desc: "Go to analytics.google.com → create a property → copy your Measurement ID (G-XXXXXXXXXX) and send it here. I'll add it to the site in 2 minutes.",
+                done: true,
+                title: "Google Analytics 4 (G-N7S8SLHR7T)",
+                desc: "Tracking all traffic, sources, and behaviour. View your reports at analytics.google.com.",
               },
               {
-                done: false,
+                done: true,
                 title: "GA4 Book Now conversion events",
-                desc: "Once GA4 is added, every 'Book Now' click gets tracked as a conversion event. You'll see exactly how many visitors book.",
+                desc: "Every 'Book Now' click is tracked as a conversion event in GA4. Check Conversions in your GA4 dashboard.",
               },
             ].map((item) => (
               <div key={item.title} className="flex gap-3 p-4 rounded-xl bg-[#0f1829] border border-white/[0.07]">
