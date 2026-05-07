@@ -134,6 +134,60 @@ export const services = [
   },
 ] as const;
 
+export const paintCorrectionServices = [
+  {
+    id: "enhancement-detail",
+    name: "Enhancement Detail",
+    badge: null as string | null,
+    description:
+      "Single-stage machine polish that removes light swirls and restores gloss. Includes full decontamination wash and Bead Maker sealant protection.",
+    pricing: { Small: 220, Mid: 280, Large: 350 },
+    features: [
+      "Foam pre-wash & hand wash",
+      "Iron decontamination",
+      "Clay bar decontamination",
+      "Machine polish (1-step)",
+      "Bead Maker spray sealant",
+      "Exterior glass cleaning",
+    ],
+    note: null as string | null,
+  },
+  {
+    id: "paint-correction",
+    name: "Paint Correction",
+    badge: null as string | null,
+    description:
+      "Full two-stage machine correction that removes swirls, scratches, and oxidation. Finished with spray sealant protection.",
+    pricing: { Small: 450, Mid: 575, Large: 700 },
+    features: [
+      "Full wash & decontamination",
+      "Clay bar treatment",
+      "2-stage machine correction",
+      "Paint inspection under LED light",
+      "Bead Maker sealant",
+      "Exterior glass cleaning",
+    ],
+    note: "Price may vary based on paint condition" as string | null,
+  },
+  {
+    id: "ceramic-coating",
+    name: "Ceramic Coating",
+    badge: "Premium" as string | null,
+    description:
+      "CarPro Cquartz Lite ceramic coating with 1–2 years of protection. Includes enhancement detail prep and full decontamination.",
+    pricing: { Small: 550, Mid: 700, Large: 875 },
+    features: [
+      "Full wash & decontamination",
+      "Enhancement detail prep",
+      "IPA panel wipe",
+      "CarPro Cquartz Lite coating",
+      "1–2 year protection",
+      "Hydrophobic self-cleaning effect",
+    ],
+    note: null as string | null,
+  },
+] as const;
+
 export const addOns = [
   {
     name: "Interior Ceramic Protection",
@@ -162,6 +216,20 @@ export const addOns = [
     note: "Price depends on severity",
     description:
       "Hot water extraction for stains, odours, or heavily soiled carpets and seats.",
+  },
+  {
+    name: "Headlight Restoration",
+    price: "$80/pair",
+    note: null,
+    description:
+      "Removes yellowing and oxidation. Restores clarity and improves night visibility.",
+  },
+  {
+    name: "Engine Bay Detail",
+    price: "$75",
+    note: null,
+    description:
+      "Safe degreasing and detailing of the engine bay. Presented clean on delivery.",
   },
 ] as const;
 
