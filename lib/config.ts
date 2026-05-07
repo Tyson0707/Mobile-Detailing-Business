@@ -174,13 +174,13 @@ export const paintCorrectionServices = [
     name: "Ceramic Coating",
     badge: "Premium" as string | null,
     description:
-      "CarPro Cquartz Lite ceramic coating with 1–2 years of protection. Includes enhancement detail prep and full decontamination.",
+      "Professional ceramic coating with 1–2 years of protection. Includes enhancement detail prep and full decontamination.",
     pricing: { Small: 550, Mid: 700, Large: 875 },
     features: [
       "Full wash & decontamination",
       "Enhancement detail prep",
       "IPA panel wipe",
-      "CarPro Cquartz Lite coating",
+      "Professional ceramic coating",
       "1–2 year protection",
       "Hydrophobic self-cleaning effect",
     ],
@@ -226,7 +226,7 @@ export const addOns = [
   },
   {
     name: "Engine Bay Detail",
-    price: "$75",
+    price: "$50",
     note: null,
     description:
       "Safe degreasing and detailing of the engine bay. Presented clean on delivery.",
