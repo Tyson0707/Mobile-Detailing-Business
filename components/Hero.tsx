@@ -82,7 +82,7 @@ export function Hero() {
         {/* Stats — right side on desktop */}
         <div className="mt-16 lg:mt-0 lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 grid grid-cols-2 gap-3 max-w-xs">
           {siteConfig.stats.map((stat) =>
-            stat.link && stat.link !== "GOOGLE_REVIEWS_URL" ? (
+            stat.link ? (
               <a
                 key={stat.label}
                 href={stat.link}
