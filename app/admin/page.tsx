@@ -118,6 +118,9 @@ export default function AdminPage() {
           <p className="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-1">Clear Line Auto Detail</p>
           <h1 className="text-3xl font-bold text-white">Business Dashboard</h1>
           <p className="text-slate-500 text-sm mt-1">Track your traffic, leads, and bookings</p>
+          <a href="/admin/leads" className="inline-flex items-center gap-2 mt-4 px-4 py-2 bg-green-600/20 hover:bg-green-600/30 border border-green-500/30 text-green-400 text-sm font-semibold rounded-xl transition-colors">
+            🎯 Find New Leads →
+          </a>
         </div>
 
         {/* External dashboards */}
