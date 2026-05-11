@@ -46,6 +46,7 @@ export async function GET() {
 
   const seen = new Set<string>();
   const leads: Lead[] = [];
+  let indeedBlocked = false;
 
   for (const { q, label } of queries) {
     try {
@@ -53,13 +54,23 @@ export async function GET() {
       const res = await fetch(url, {
         headers: {
           "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
           Accept: "application/rss+xml, application/xml, text/xml, */*",
+          "Accept-Language": "en-CA,en;q=0.9",
+          "Cache-Control": "no-cache",
         },
-        next: { revalidate: 1800 },
+        cache: "no-store",
       });
-      if (!res.ok) continue;
+      if (!res.ok) {
+        indeedBlocked = true;
+        continue;
+      }
       const xml = await res.text();
+      // If response isn't XML (e.g. CAPTCHA/HTML page), mark as blocked
+      if (!xml.includes("<rss") && !xml.includes("<item>")) {
+        indeedBlocked = true;
+        continue;
+      }
       for (const lead of parseRSS(xml, label)) {
         if (lead.url && !seen.has(lead.url)) {
           seen.add(lead.url);
@@ -67,11 +78,15 @@ export async function GET() {
         }
       }
     } catch {
-      // silently skip failed fetches
+      indeedBlocked = true;
     }
   }
 
   leads.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  return NextResponse.json({ leads, fetchedAt: new Date().toISOString() });
+  return NextResponse.json({
+    leads,
+    fetchedAt: new Date().toISOString(),
+    indeedBlocked: indeedBlocked && leads.length === 0,
+  });
 }

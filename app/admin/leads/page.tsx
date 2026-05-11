@@ -90,6 +90,7 @@ export default function LeadsPage() {
   const [loading, setLoading] = useState(false);
   const [lastFetched, setLastFetched] = useState<string | null>(null);
   const [fetchError, setFetchError] = useState(false);
+  const [indeedBlocked, setIndeedBlocked] = useState(false);
   const [filter, setFilter] = useState<string>("All");
   const [contacted, setContacted] = useState<Set<string>>(() => {
     if (typeof window !== "undefined") {
@@ -119,11 +120,13 @@ export default function LeadsPage() {
   const fetchJobLeads = async () => {
     setLoading(true);
     setFetchError(false);
+    setIndeedBlocked(false);
     try {
       const res = await fetch("/api/leads");
       const data = await res.json();
       setJobLeads(data.leads ?? []);
       setLastFetched(data.fetchedAt ?? new Date().toISOString());
+      setIndeedBlocked(data.indeedBlocked ?? false);
     } catch {
       setFetchError(true);
     } finally {
@@ -199,11 +202,18 @@ export default function LeadsPage() {
 
           {fetchError && (
             <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm mb-4">
-              Couldn&apos;t reach Indeed — try the manual search links below instead.
+              Network error — couldn&apos;t reach Indeed. Try the manual links below.
             </div>
           )}
 
-          {jobLeads.length === 0 && !loading && !fetchError && (
+          {indeedBlocked && (
+            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-300 text-sm mb-4">
+              <p className="font-semibold mb-1">Indeed is blocking automated requests from this server.</p>
+              <p className="text-amber-400/80 text-xs">This is common — Indeed blocks cloud server IPs. Use the manual search links below to check for listings directly in your browser.</p>
+            </div>
+          )}
+
+          {jobLeads.length === 0 && !loading && !fetchError && !indeedBlocked && (
             <div className="p-6 rounded-xl bg-[#0f1829] border border-white/[0.07] text-center">
               <p className="text-slate-400 text-sm">Hit &ldquo;Refresh Leads&rdquo; to pull live job postings from Indeed.</p>
             </div>
