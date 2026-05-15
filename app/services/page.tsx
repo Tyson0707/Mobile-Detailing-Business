@@ -5,14 +5,47 @@ import Link from "next/link";
 import { services, paintCorrectionServices, addOns, vehicleSizes, vehicleSizeLabels, siteConfig } from "@/lib/config";
 import type { VehicleSize } from "@/lib/config";
 
+function badgeStyles(badge: string | null) {
+  if (badge === "Most Popular") return {
+    card: "border-blue-500/40 bg-[#0f1b2d]",
+    pill: "bg-blue-600/20 text-blue-400 border border-blue-500/30",
+    price: "text-blue-400",
+    check: "text-blue-400",
+    btn: "bg-blue-600 hover:bg-blue-500 text-white",
+  };
+  if (badge === "Premium") return {
+    card: "border-amber-500/30 bg-[#0f1b2d]",
+    pill: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
+    price: "text-amber-400",
+    check: "text-amber-400",
+    btn: "bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400",
+  };
+  if (badge === "Best Value") return {
+    card: "border-emerald-500/30 bg-[#0f1b2d]",
+    pill: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+    price: "text-emerald-400",
+    check: "text-emerald-400",
+    btn: "bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-400",
+  };
+  return {
+    card: "border-white/[0.07] bg-[#0f1829]",
+    pill: "",
+    price: "text-white",
+    check: "text-blue-500",
+    btn: "bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-white",
+  };
+}
+
 function PricingDisplay({
   pricing,
   selectedSize,
+  startingAt,
   note,
   accentClass = "text-white",
 }: {
   pricing: Record<VehicleSize, number>;
   selectedSize: VehicleSize;
+  startingAt?: boolean;
   note?: string | null;
   accentClass?: string;
 }) {
@@ -22,14 +55,19 @@ function PricingDisplay({
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-slate-500 text-xs mb-0.5">{vehicleSizeLabels[selectedSize]}</p>
-          <p className={`text-3xl font-bold ${accentClass}`}>${pricing[selectedSize]}</p>
-          {note && <p className="text-slate-600 text-[10px] mt-1 italic">{note}</p>}
+          <p className={`text-3xl font-bold ${accentClass}`}>
+            {startingAt && <span className="text-xl font-medium mr-1">From</span>}
+            ${pricing[selectedSize]}{startingAt && <span className="text-xl">+</span>}
+          </p>
+          {note && <p className="text-slate-500 text-xs mt-1.5 italic">{note}</p>}
         </div>
         <div className="flex gap-4">
           {others.map((s) => (
             <div key={s} className="text-center">
               <p className="text-slate-600 text-[10px]">{s}</p>
-              <p className="text-slate-500 text-sm font-medium">${pricing[s]}</p>
+              <p className="text-slate-500 text-sm font-medium">
+                {startingAt && "From "}${pricing[s]}{startingAt && "+"}
+              </p>
             </div>
           ))}
         </div>
@@ -50,11 +88,14 @@ export default function ServicesPage() {
           <p className="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">
             Calgary Mobile Detailing
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-5 text-balance">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 text-balance">
             Services & Pricing
           </h1>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto mb-8">
+          <p className="text-slate-400 text-base max-w-xl mx-auto mb-2">
             All services performed at your location. We bring everything — all we need is a tap and an outlet.
+          </p>
+          <p className="text-slate-600 text-sm mb-8">
+            Fully mobile professional detailing serving Calgary and surrounding area.
           </p>
 
           {/* Vehicle size toggle */}
@@ -82,130 +123,112 @@ export default function ServicesPage() {
       {/* Detail Packages */}
       <section className="pb-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-8">Detail Packages</h2>
+          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-6">Detail Packages</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {services.map((service) => (
-              <div
-                key={service.id}
-                className={`rounded-2xl border p-7 flex flex-col gap-5 ${
-                  service.badge === "Most Popular"
-                    ? "border-blue-500/40 bg-[#0f1b2d]"
-                    : service.badge === "Premium"
-                    ? "border-amber-500/30 bg-[#0f1b2d]"
-                    : "border-white/[0.07] bg-[#0f1829]"
-                }`}
-              >
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap mb-2">
-                    <h3 className="text-white font-bold text-xl">{service.name}</h3>
-                    {service.badge && (
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
-                        service.badge === "Most Popular"
-                          ? "bg-blue-600/20 text-blue-400 border border-blue-500/30"
-                          : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                      }`}>
-                        {service.badge}
-                      </span>
-                    )}
+            {services.map((service) => {
+              const styles = badgeStyles(service.badge);
+              const cta = (service as { cta?: string }).cta ?? "Book Your Detail";
+              return (
+                <div key={service.id} className={`rounded-2xl border p-7 flex flex-col gap-5 ${styles.card}`}>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap mb-2">
+                      <h3 className="text-white font-bold text-xl">{service.name}</h3>
+                      {service.badge && (
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${styles.pill}`}>
+                          {service.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-slate-400 text-sm leading-relaxed">{service.description}</p>
                   </div>
-                  <p className="text-slate-400 text-sm leading-relaxed">{service.description}</p>
+
+                  <PricingDisplay
+                    pricing={service.pricing}
+                    selectedSize={selectedSize}
+                    accentClass={styles.price}
+                  />
+
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    {service.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <svg className={`w-4 h-4 mt-0.5 shrink-0 ${styles.check}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-slate-300 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <a
+                    href={siteConfig.squareBookingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`mt-auto py-3 rounded-xl text-sm font-semibold text-center transition-colors ${styles.btn}`}
+                  >
+                    {cta}
+                  </a>
                 </div>
-
-                <PricingDisplay
-                  pricing={service.pricing}
-                  selectedSize={selectedSize}
-                  accentClass={service.badge === "Most Popular" ? "text-blue-400" : service.badge === "Premium" ? "text-amber-400" : "text-white"}
-                />
-
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                  {service.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <svg className={`w-4 h-4 mt-0.5 shrink-0 ${
-                        service.badge === "Most Popular" ? "text-blue-400" : service.badge === "Premium" ? "text-amber-400" : "text-blue-500"
-                      }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-slate-300 text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href="/booking"
-                  className={`mt-auto py-3 rounded-xl text-sm font-semibold text-center transition-colors ${
-                    service.badge === "Most Popular"
-                      ? "bg-blue-600 hover:bg-blue-500 text-white"
-                      : service.badge === "Premium"
-                      ? "bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400"
-                      : "bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-white"
-                  }`}
-                >
-                  Book {service.name}
-                </Link>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Paint Correction & Ceramic Coating */}
+      {/* Paint Enhancement & Protection */}
       <section className="pb-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-2">Paint Correction & Ceramic Coating</h2>
-          <p className="text-slate-400 text-sm mb-8">Machine polishing, paint decontamination, and long-term ceramic protection.</p>
+          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Paint Enhancement & Protection</h2>
+          <p className="text-slate-400 text-sm mb-6">Machine polishing, decontamination, and long-term ceramic protection.</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {paintCorrectionServices.map((service) => (
-              <div
-                key={service.id}
-                className={`rounded-2xl border p-7 flex flex-col gap-5 ${
-                  service.badge === "Premium"
-                    ? "border-amber-500/30 bg-[#0f1b2d]"
-                    : "border-white/[0.07] bg-[#0f1829]"
-                }`}
-              >
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap mb-2">
-                    <h3 className="text-white font-bold text-xl">{service.name}</h3>
-                    {service.badge && (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                        {service.badge}
-                      </span>
+            {paintCorrectionServices.map((service) => {
+              const styles = badgeStyles(service.badge);
+              return (
+                <div key={service.id} className={`rounded-2xl border p-7 flex flex-col gap-5 ${styles.card}`}>
+                  <div>
+                    <div className="flex items-center gap-2 flex-wrap mb-2">
+                      <h3 className="text-white font-bold text-xl">{service.name}</h3>
+                      {service.badge && (
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${styles.pill}`}>
+                          {service.badge}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-slate-400 text-sm leading-relaxed">{service.description}</p>
+                    {service.idealFor && (
+                      <p className="text-slate-600 text-xs mt-2 italic">{service.idealFor}</p>
                     )}
                   </div>
-                  <p className="text-slate-400 text-sm leading-relaxed">{service.description}</p>
+
+                  <PricingDisplay
+                    pricing={service.pricing}
+                    selectedSize={selectedSize}
+                    startingAt={service.startingAt}
+                    note={service.note}
+                    accentClass={styles.price}
+                  />
+
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                    {service.features.map((feature) => (
+                      <li key={feature} className="flex items-start gap-2">
+                        <svg className={`w-4 h-4 mt-0.5 shrink-0 ${styles.check}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span className="text-slate-300 text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <a
+                    href={siteConfig.squareBookingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`mt-auto py-3 rounded-xl text-sm font-semibold text-center transition-colors ${styles.btn}`}
+                  >
+                    {service.cta}
+                  </a>
                 </div>
-
-                <PricingDisplay
-                  pricing={service.pricing}
-                  selectedSize={selectedSize}
-                  note={service.note}
-                  accentClass={service.badge === "Premium" ? "text-amber-400" : "text-white"}
-                />
-
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                  {service.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-2">
-                      <svg className={`w-4 h-4 mt-0.5 shrink-0 ${service.badge === "Premium" ? "text-amber-400" : "text-blue-500"}`}
-                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span className="text-slate-300 text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Link
-                  href="/booking"
-                  className={`mt-auto py-3 rounded-xl text-sm font-semibold text-center transition-colors ${
-                    service.badge === "Premium"
-                      ? "bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400"
-                      : "bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-white"
-                  }`}
-                >
-                  Book {service.name}
-                </Link>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -213,8 +236,8 @@ export default function ServicesPage() {
       {/* Add-ons */}
       <section className="pb-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-white mb-2">Add-Ons</h2>
-          <p className="text-slate-400 text-sm mb-8">Add any of these to your booking.</p>
+          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Add-Ons</h2>
+          <p className="text-slate-400 text-sm mb-6">Add any of these to your booking.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {addOns.map((addon) => (
               <div
@@ -242,7 +265,7 @@ export default function ServicesPage() {
       {/* CTA */}
       <section className="pb-24 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-4">Not sure what you need?</h2>
+          <h2 className="text-2xl font-bold text-white mb-3">Not sure which service is right?</h2>
           <p className="text-slate-400 mb-6 text-sm">
             Message us and we&apos;ll recommend the right package for your vehicle and budget.
           </p>
@@ -251,7 +274,7 @@ export default function ServicesPage() {
               href="/booking"
               className="px-7 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-colors text-sm"
             >
-              Book or Get a Quote
+              Get Your Quote
             </Link>
             <a
               href={`tel:${siteConfig.phoneRaw}`}
