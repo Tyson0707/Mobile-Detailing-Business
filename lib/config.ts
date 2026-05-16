@@ -46,7 +46,7 @@ export const siteConfig = {
 
   stats: [
     { value: "100%", label: "Satisfaction Guaranteed", link: null },
-    { value: "8", label: "5★ Google Reviews", link: "https://share.google/fAlXdJXqXrLGsUCiZ" },
+    { value: "10", label: "5★ Google Reviews", link: "https://share.google/fAlXdJXqXrLGsUCiZ" },
     { value: "Mobile", label: "No Drop-Off. Ever.", link: null },
     { value: "Flat-Rate", label: "No Hidden Fees", link: null },
   ],
@@ -143,7 +143,7 @@ export const paintCorrectionServices = [
     name: "Enhancement Detail",
     badge: "Best Value" as string | null,
     description:
-      "Removes light swirl marks while restoring gloss, clarity, and depth. The best value transformation for your paint’s appearance.",
+      "Removes light swirl marks while restoring gloss, clarity, and depth. The best value transformation for your paint's appearance.",
     pricing: { Small: 229, Mid: 299, Large: 369 },
     startingAt: false as boolean,
     cta: "Restore Your Paint",
