@@ -130,7 +130,7 @@ export default function AdminPage() {
             <StatCard value="↗" label="Vercel Analytics" sublabel="Visitors & pages" href="https://vercel.com/dashboard" />
             <StatCard value="↗" label="Google Analytics" sublabel="Traffic & sources" href="https://analytics.google.com" />
             <StatCard value="↗" label="Square Bookings" sublabel="Appointments" href="https://squareup.com/dashboard/appointments/overview" />
-            <StatCard value="↗" label="Google Reviews" sublabel="8 reviews · 5★" href="https://share.google/fAlXdJXqXrLGsUCiZ" />
+            <StatCard value="↗" label="Google Reviews" sublabel="10 reviews · 5★" href="https://share.google/fAlXdJXqXrLGsUCiZ" />
           </div>
         </section>
 
@@ -259,7 +259,7 @@ export default function AdminPage() {
               <span className="text-2xl">⭐</span>
               <div>
                 <p className="text-sm font-medium text-white">Google Reviews</p>
-                <p className="text-xs text-slate-500">8 reviews · Send this link to clients</p>
+                <p className="text-xs text-slate-500">10 reviews · Send this link to clients</p>
               </div>
             </a>
           </div>
