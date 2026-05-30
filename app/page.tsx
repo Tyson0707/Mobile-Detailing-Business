@@ -2,6 +2,7 @@ import { Gallery } from "@/components/Gallery";
 import type { Metadata } from "next";
 import { Hero } from "@/components/Hero";
 import { ServicesSection } from "@/components/ServicesSection";
+import { ShowcaseBanner } from "@/components/ShowcaseBanner";
 import { HowItWorks } from "@/components/HowItWorks";
 import { WhyUs } from "@/components/WhyUs";
 import { Testimonials } from "@/components/Testimonials";
@@ -24,6 +25,7 @@ export default function HomePage() {
       <Hero />
       <ServicesSection />
       <Gallery />
+      <ShowcaseBanner />
       <HowItWorks />
       <WhyUs />
       <Testimonials />
