@@ -56,18 +56,9 @@ export function Navigation() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) =>
-              link.cta ? (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="ml-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors"
-                >
-                  {link.label}
-                </a>
-              ) : (
+            {navLinks
+              .filter((l) => !l.cta)
+              .map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -79,8 +70,26 @@ export function Navigation() {
                 >
                   {link.label}
                 </Link>
-              )
-            )}
+              ))}
+            <a
+              href={`tel:${siteConfig.phoneRaw}`}
+              className="ml-1 px-4 py-2 text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              {siteConfig.phone}
+            </a>
+            {navLinks
+              .filter((l) => l.cta)
+              .map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors"
+                >
+                  {link.label}
+                </a>
+              ))}
           </nav>
 
           {/* Mobile: phone + hamburger */}

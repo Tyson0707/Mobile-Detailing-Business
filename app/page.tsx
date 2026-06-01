@@ -7,6 +7,7 @@ import { WhyUs } from "@/components/WhyUs";
 import { Testimonials } from "@/components/Testimonials";
 import { FAQ } from "@/components/FAQ";
 import { BookingCTA } from "@/components/BookingCTA";
+import { ShowcaseBanner } from "@/components/ShowcaseBanner";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function HomePage() {
       <Hero />
       <ServicesSection />
       <Gallery />
+      <ShowcaseBanner />
       <HowItWorks />
       <WhyUs />
       <Testimonials />

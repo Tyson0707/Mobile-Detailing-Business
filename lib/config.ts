@@ -70,7 +70,7 @@ export const services = [
     badge: null as string | null,
     description:
       "A thorough reset for your interior — every surface, crevice, and carpet cleaned properly. The kind of clean that actually lasts.",
-    pricing: { Small: 170, Mid: 220, Large: 270 },
+    pricing: { Small: 180, Mid: 230, Large: 270 },
     duration: "2–3 hrs",
     cta: "Book Your Detail",
     features: [
@@ -88,7 +88,7 @@ export const services = [
     badge: "Most Popular" as string | null,
     description:
       "The complete refresh. Interior Reset + Exterior Detail combined — showroom condition delivered to your driveway.",
-    pricing: { Small: 240, Mid: 300, Large: 360 },
+    pricing: { Small: 250, Mid: 310, Large: 360 },
     duration: "3–4 hrs",
     cta: "Book Your Detail",
     features: [

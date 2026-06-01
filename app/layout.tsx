@@ -122,9 +122,9 @@ const localBusinessSchema = {
     "@type": "OfferCatalog",
     name: "Mobile Car Detailing Services",
     itemListElement: [
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Interior Reset" }, price: "170", priceCurrency: "CAD" },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Interior Reset" }, price: "180", priceCurrency: "CAD" },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Exterior Detail" }, price: "110", priceCurrency: "CAD" },
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Full Detail" }, price: "240", priceCurrency: "CAD" },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Full Detail" }, price: "250", priceCurrency: "CAD" },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Premium Detail" }, price: "349", priceCurrency: "CAD" },
     ],
   },
