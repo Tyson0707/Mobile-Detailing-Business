@@ -70,7 +70,7 @@ export const services = [
     badge: null as string | null,
     description:
       "A full reset for your interior. We go through every surface, crevice, and carpet — the kind of clean you can't get at a drive-through wash.",
-    pricing: { Small: 170, Mid: 220, Large: 270 },
+    pricing: { Small: 180, Mid: 230, Large: 270 },
     duration: "2–3 hrs",
     features: [
       "Full vacuum — seats, carpets, trunk",
@@ -105,7 +105,7 @@ export const services = [
     badge: "Most Popular" as string | null,
     description:
       "The full package. Interior Reset + Exterior Detail combined — showroom results at your driveway.",
-    pricing: { Small: 240, Mid: 300, Large: 360 },
+    pricing: { Small: 250, Mid: 310, Large: 360 },
     duration: "3–4 hrs",
     features: [
       "Full Interior Reset (all items)",
