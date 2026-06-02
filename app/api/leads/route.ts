@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+const ADZUNA_APP_ID = "33c5bdc4";
+const ADZUNA_APP_KEY = "13bf6fb31c65ef13f6043aa66d248841";
+
 interface Lead {
   source: string;
   title: string;
@@ -9,76 +12,38 @@ interface Lead {
   reason: string;
 }
 
-function parseRSS(xml: string, source: string): Lead[] {
-  const items = xml.match(/<item>([\s\S]*?)<\/item>/g) ?? [];
-  return items.map((item) => {
-    const title =
-      item.match(/<title><!\[CDATA\[(.*?)\]\]><\/title>/)?.[1] ??
-      item.match(/<title>(.*?)<\/title>/)?.[1] ??
-      "";
-    const link =
-      item.match(/<link>(.*?)<\/link>/)?.[1] ??
-      item.match(/<guid[^>]*>(.*?)<\/guid>/)?.[1] ??
-      "";
-    const pubDate = item.match(/<pubDate>(.*?)<\/pubDate>/)?.[1] ?? "";
-
-    const dashIdx = title.lastIndexOf(" - ");
-    const jobTitle = dashIdx > 0 ? title.substring(0, dashIdx) : title;
-    const company = dashIdx > 0 ? title.substring(dashIdx + 3) : "";
-
-    return {
-      source,
-      title: jobTitle.trim(),
-      company: company.trim(),
-      date: pubDate,
-      url: link.trim(),
-      reason: "Actively hiring a detailer",
-    };
-  });
-}
-
 export async function GET() {
-  const queries = [
-    { q: "detailer", label: "Indeed" },
-    { q: "auto+detailer", label: "Indeed" },
-    { q: "detail+technician", label: "Indeed" },
-  ];
+  const queries = ["detailer", "auto detailer", "detail technician"];
 
   const seen = new Set<string>();
   const leads: Lead[] = [];
-  let indeedBlocked = false;
 
-  for (const { q, label } of queries) {
+  for (const q of queries) {
     try {
-      const url = `https://ca.indeed.com/rss?q=${q}&l=Calgary%2C+AB&sort=date&limit=20`;
-      const res = await fetch(url, {
-        headers: {
-          "User-Agent":
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-          Accept: "application/rss+xml, application/xml, text/xml, */*",
-          "Accept-Language": "en-CA,en;q=0.9",
-          "Cache-Control": "no-cache",
-        },
-        cache: "no-store",
-      });
-      if (!res.ok) {
-        indeedBlocked = true;
-        continue;
-      }
-      const xml = await res.text();
-      // If response isn't XML (e.g. CAPTCHA/HTML page), mark as blocked
-      if (!xml.includes("<rss") && !xml.includes("<item>")) {
-        indeedBlocked = true;
-        continue;
-      }
-      for (const lead of parseRSS(xml, label)) {
-        if (lead.url && !seen.has(lead.url)) {
-          seen.add(lead.url);
-          leads.push(lead);
-        }
+      const url =
+        `https://api.adzuna.com/v1/api/jobs/ca/search/1` +
+        `?app_id=${ADZUNA_APP_ID}&app_key=${ADZUNA_APP_KEY}` +
+        `&results_per_page=20&what=${encodeURIComponent(q)}&where=Calgary%2C+AB&sort_by=date`;
+
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) continue;
+
+      const data = await res.json();
+      for (const job of data.results ?? []) {
+        const jobUrl: string = job.redirect_url ?? "";
+        if (!jobUrl || seen.has(jobUrl)) continue;
+        seen.add(jobUrl);
+        leads.push({
+          source: "Adzuna",
+          title: job.title ?? "",
+          company: job.company?.display_name ?? "",
+          date: job.created ?? "",
+          url: jobUrl,
+          reason: "Actively hiring a detailer",
+        });
       }
     } catch {
-      indeedBlocked = true;
+      // skip failed query
     }
   }
 
@@ -87,6 +52,6 @@ export async function GET() {
   return NextResponse.json({
     leads,
     fetchedAt: new Date().toISOString(),
-    indeedBlocked: indeedBlocked && leads.length === 0,
+    indeedBlocked: false,
   });
 }
