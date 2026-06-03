@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { testimonials } from "@/lib/config";
 
 function StarRating({ rating }: { rating: number }) {
@@ -18,17 +21,21 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 export function Testimonials() {
+  const [index, setIndex] = useState(0);
+  const total = testimonials.length;
+
+  const prev = () => setIndex((i) => (i - 1 + total) % total);
+  const next = () => setIndex((i) => (i + 1) % total);
+
+  const review = testimonials[index];
+
   return (
     <section className="py-20 sm:py-28 px-4 sm:px-6 relative">
-      {/* Background */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 pointer-events-none"
-      >
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
         <div className="absolute inset-0 bg-[#0a0f1e]/50" />
       </div>
 
-      <div className="max-w-6xl mx-auto relative">
+      <div className="max-w-3xl mx-auto relative">
         {/* Header */}
         <div className="text-center mb-14">
           <p className="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">
@@ -51,34 +58,52 @@ export function Testimonials() {
           </div>
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {testimonials.map((review) => (
-            <div
-              key={review.name}
-              className="glass rounded-2xl p-5 flex flex-col gap-4 hover:border-blue-500/20 transition-colors"
-            >
-              {/* Stars */}
-              <StarRating rating={review.rating} />
-
-              {/* Quote */}
-              <p className="text-slate-300 text-sm leading-relaxed flex-1">
-                &ldquo;{review.text}&rdquo;
-              </p>
-
-              {/* Reviewer */}
-              <div className="border-t border-white/[0.06] pt-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-white text-sm font-semibold">{review.name}</p>
-                    <p className="text-slate-500 text-xs">{review.location}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-slate-500 text-xs">{review.vehicle}</p>
-                  </div>
-                </div>
-              </div>
+        {/* Carousel */}
+        <div className="relative">
+          {/* Card */}
+          <div className="glass rounded-2xl p-8 sm:p-10 flex flex-col gap-6 min-h-[260px]">
+            <StarRating rating={review.rating} />
+            <p className="text-slate-300 text-base sm:text-lg leading-relaxed flex-1">
+              &ldquo;{review.text}&rdquo;
+            </p>
+            <div className="border-t border-white/[0.06] pt-5">
+              <p className="text-white text-sm font-semibold">{review.name}</p>
+              <p className="text-slate-500 text-xs mt-0.5">{review.location}</p>
             </div>
+          </div>
+
+          {/* Arrows */}
+          <button
+            onClick={prev}
+            aria-label="Previous review"
+            className="absolute -left-4 sm:-left-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/[0.06] border border-white/[0.10] flex items-center justify-center text-white hover:bg-white/[0.12] transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={next}
+            aria-label="Next review"
+            className="absolute -right-4 sm:-right-6 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/[0.06] border border-white/[0.10] flex items-center justify-center text-white hover:bg-white/[0.12] transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Dot indicators */}
+        <div className="flex justify-center gap-2 mt-6">
+          {testimonials.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIndex(i)}
+              aria-label={`Go to review ${i + 1}`}
+              className={`w-2 h-2 rounded-full transition-colors ${
+                i === index ? "bg-blue-400" : "bg-white/20"
+              }`}
+            />
           ))}
         </div>
 
@@ -86,7 +111,7 @@ export function Testimonials() {
         <div className="text-center mt-10">
           <p className="text-slate-400 text-sm mb-4">See all our reviews on Google</p>
           <a
-            href={`https://www.google.com/search?q=Clear+Line+Auto+Detail+Calgary`}
+            href="https://www.google.com/search?q=Clear+Line+Auto+Detail+Calgary"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-white/[0.06] border border-white/[0.08] text-white text-sm font-medium hover:bg-white/[0.1] transition-colors"

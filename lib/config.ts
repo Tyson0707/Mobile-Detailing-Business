@@ -46,7 +46,7 @@ export const siteConfig = {
 
   stats: [
     { value: "100%", label: "Satisfaction Guaranteed", link: null },
-    { value: "10", label: "5★ Google Reviews", link: "https://share.google/fAlXdJXqXrLGsUCiZ" },
+    { value: "11", label: "5★ Google Reviews", link: "https://share.google/fAlXdJXqXrLGsUCiZ" },
     { value: "Mobile", label: "No Drop-Off. Ever.", link: null },
     { value: "Flat-Rate", label: "No Hidden Fees", link: null },
   ],
@@ -272,6 +272,20 @@ export const testimonials = [
     location: "Calgary",
     rating: 5,
     text: "Tyson did a great job cleaning my SUV. There was lots of pet hair and it's super clean now. He was on time and very personable. Highly recommend!",
+    vehicle: "",
+  },
+  {
+    name: "Kai Mrazik",
+    location: "Calgary",
+    rating: 5,
+    text: "Tyson was incredibly professional, he arrived on time and had an entire mobile set. I was quite impressed. He was super polite and even returned some money he found while cleaning my car I had lost. That made him very trustworthy and the only person I would trust to come to my house to detail my vehicles. Highly recommend Clear Line Detailing.",
+    vehicle: "",
+  },
+  {
+    name: "Brian King",
+    location: "Calgary",
+    rating: 5,
+    text: "Best detail job I have ever seen! Our family puts some hard mileage on our vehicle and I can't believe Tyson was able to clean it this well. Literally looks like new. Tyson's professionalism and attention to detail is outstanding. Also super convenient that he comes to you. Highly recommend!",
     vehicle: "",
   },
 ] as const;
