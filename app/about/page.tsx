@@ -53,6 +53,39 @@ export default function AboutPage() {
         </div>
       </div>
 
+      {/* Meet Tyson */}
+      <section className="pb-20 px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            <div className="relative">
+              <img
+                src="/tyson.jpg"
+                alt="Tyson — Owner of Clear Line Auto Detail"
+                className="rounded-2xl w-full object-cover object-top shadow-xl"
+                style={{ maxHeight: "480px" }}
+              />
+            </div>
+            <div>
+              <p className="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">
+                Meet the Owner
+              </p>
+              <h2 className="text-2xl font-bold text-white mb-5">Tyson Scarrott</h2>
+              <div className="space-y-4 text-slate-400 text-base leading-relaxed">
+                <p>
+                  I started Clear Line because I believed mobile detailing could be done better — more carefully, more conveniently, and with real attention to the result.
+                </p>
+                <p>
+                  Every booking I take personally. I show up on time, fully equipped, and I don&apos;t leave until the vehicle looks exactly the way it should. No shortcuts, no rushing, no excuses.
+                </p>
+                <p>
+                  When I&apos;m not detailing, I&apos;m investing in the right products, techniques, and training to make sure every client gets a result they&apos;re proud to show off.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Our Story */}
       <section className="pb-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
