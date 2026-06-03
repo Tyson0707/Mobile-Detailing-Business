@@ -84,6 +84,29 @@ export function WhyUs() {
               </p>
               <p className="text-blue-400 text-sm font-medium">— Clear Line Auto Detail</p>
             </div>
+
+            <div className="grid grid-cols-2 gap-3 mt-6">
+              <div className="relative overflow-hidden rounded-xl aspect-[4/3]">
+                <img
+                  src="/action-79.jpg"
+                  alt="Foam cannon pre-wash on a dark SUV"
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-gradient-to-t from-black/70 to-transparent">
+                  <p className="text-white text-xs font-medium">Foam pre-wash</p>
+                </div>
+              </div>
+              <div className="relative overflow-hidden rounded-xl aspect-[4/3]">
+                <img
+                  src="/action-98.jpg"
+                  alt="Microfiber hand dry after exterior detail"
+                  className="w-full h-full object-cover object-center"
+                />
+                <div className="absolute bottom-0 left-0 right-0 px-3 py-2 bg-gradient-to-t from-black/70 to-transparent">
+                  <p className="text-white text-xs font-medium">Hand dry finish</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Right: grid */}

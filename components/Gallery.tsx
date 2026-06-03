@@ -86,30 +86,6 @@ export function Gallery() {
             <BeforeAfterSlider key={item.id} before={item.before} after={item.after} />
           ))}
         </div>
-
-        {/* Action photos */}
-        <div className="mt-10 grid md:grid-cols-2 gap-6">
-          <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
-            <img
-              src="/action-79.jpg"
-              alt="Foam cannon pre-wash on a dark SUV"
-              className="w-full h-full object-cover object-center"
-            />
-            <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/70 to-transparent">
-              <p className="text-white text-sm font-medium">Foam pre-wash — safe for your paint</p>
-            </div>
-          </div>
-          <div className="relative overflow-hidden rounded-2xl aspect-[4/3]">
-            <img
-              src="/action-98.jpg"
-              alt="Microfiber drying a Mazda after exterior detail"
-              className="w-full h-full object-cover object-center"
-            />
-            <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/70 to-transparent">
-              <p className="text-white text-sm font-medium">Hand dry finish — no water spots</p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
