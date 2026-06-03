@@ -47,7 +47,7 @@ export function Testimonials() {
               ))}
             </div>
             <span className="text-amber-300 text-sm font-semibold">5.0</span>
-            <span className="text-slate-400 text-sm">· 47 Google reviews</span>
+            <span className="text-slate-400 text-sm">· 11 Google reviews</span>
           </div>
         </div>
 
