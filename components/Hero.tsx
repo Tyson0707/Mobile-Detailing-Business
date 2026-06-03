@@ -4,36 +4,16 @@ import { siteConfig } from "@/lib/config";
 export function Hero() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* ─── HERO BACKGROUND ──────────────────────────────────────────────
-          When your photo or video is ready, replace the gradient placeholder
-          below with one of these and delete the placeholder div.
-
-          Landscape photo:
-            <img
-              src="/hero.jpg"
-              alt="Clear Line Auto Detail"
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
-
-          Looping video / GIF-style clip:
-            <video autoPlay muted loop playsInline
-              className="absolute inset-0 w-full h-full object-cover object-center">
-              <source src="/hero.mp4" type="video/mp4" />
-            </video>
-      ──────────────────────────────────────────────────────────────────── */}
-
-      {/* Gradient placeholder — remove once real media is added above */}
-      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-[#060b18] via-[#080d1a] to-[#080d1a]">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[700px] bg-blue-600/[0.07] rounded-full blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-      </div>
+      {/* Video background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      >
+        <source src="/hero.mp4" type="video/mp4" />
+      </video>
 
       {/* Dark overlay — keeps text legible over any photo or video background */}
       <div aria-hidden="true" className="absolute inset-0 bg-black/45" />
