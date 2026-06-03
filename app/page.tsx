@@ -8,6 +8,7 @@ import { Testimonials } from "@/components/Testimonials";
 import { FAQ } from "@/components/FAQ";
 import { BookingCTA } from "@/components/BookingCTA";
 import { ShowcaseBanner } from "@/components/ShowcaseBanner";
+import { BeforeAfterStrip } from "@/components/BeforeAfterStrip";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function HomePage() {
       <Hero />
       <ServicesSection />
       <Gallery />
+      <BeforeAfterStrip />
       <ShowcaseBanner />
       <HowItWorks />
       <WhyUs />
