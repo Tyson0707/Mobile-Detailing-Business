@@ -113,7 +113,7 @@ export default function AboutPage() {
                     "Homeowners across Calgary, Airdrie, Cochrane, Chestermere, and Okotoks",
                     "Busy professionals and families who value convenience",
                     "People who want their car properly cleaned — not just wiped down",
-                    "Anyone who&apos;s been disappointed by a shop or automated car wash",
+                    "Anyone who's been disappointed by a shop or automated car wash",
                   ].map((item) => (
                     <li key={item} className="flex items-start gap-2.5">
                       <svg className="w-4 h-4 mt-0.5 text-blue-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
