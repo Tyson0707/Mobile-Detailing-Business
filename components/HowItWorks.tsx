@@ -100,6 +100,29 @@ export function HowItWorks() {
             </div>
           ))}
         </div>
+        {/* In action photos */}
+        <div className="mt-16 grid md:grid-cols-2 gap-6">
+          <div className="relative overflow-hidden rounded-2xl aspect-video">
+            <img
+              src="/action-39.jpg"
+              alt="Tyson vacuuming leather seats during an interior detail"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/70 to-transparent">
+              <p className="text-white text-sm font-medium">Every surface, every crevice</p>
+            </div>
+          </div>
+          <div className="relative overflow-hidden rounded-2xl aspect-video">
+            <img
+              src="/action-57.jpg"
+              alt="Business card placed in the centre console after a detail"
+              className="w-full h-full object-cover object-center"
+            />
+            <div className="absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/70 to-transparent">
+              <p className="text-white text-sm font-medium">The finishing touch</p>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );
