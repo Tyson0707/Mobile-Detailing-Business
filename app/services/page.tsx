@@ -160,9 +160,7 @@ export default function ServicesPage() {
                   </ul>
 
                   <a
-                    href={siteConfig.squareBookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/booking/go"
                     className={`mt-auto py-3 rounded-xl text-sm font-semibold text-center transition-colors ${styles.btn}`}
                   >
                     {cta}
@@ -219,9 +217,7 @@ export default function ServicesPage() {
                   </ul>
 
                   <a
-                    href={siteConfig.squareBookingUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href="/booking/go"
                     className={`mt-auto py-3 rounded-xl text-sm font-semibold text-center transition-colors ${styles.btn}`}
                   >
                     {service.cta}

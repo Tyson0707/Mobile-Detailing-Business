@@ -33,9 +33,7 @@ export default function BookingPage() {
 
           {/* Primary CTA */}
           <a
-            href={siteConfig.squareBookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/booking/go"
             className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all hover:shadow-xl hover:shadow-blue-600/25 text-lg w-full sm:w-auto"
           >
             Open Booking Calendar

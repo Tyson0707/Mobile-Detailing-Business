@@ -66,10 +66,7 @@ export function Hero() {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
           <a
-            href={siteConfig.squareBookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => (window as any).gtag?.("event", "book_now_click", { location: "hero" })}
+            href="/booking/go"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-blue-600/30 text-base"
           >
             Book Now

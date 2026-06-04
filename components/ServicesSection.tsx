@@ -178,9 +178,7 @@ function ServiceCard({ service, selectedSize }: { service: ServiceCardData; sele
         )}
 
         <a
-          href={siteConfig.squareBookingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/booking/go"
           className={`w-full py-2.5 rounded-xl text-xs font-semibold text-center transition-colors ${styles.btn}`}
         >
           {cta}
