@@ -18,26 +18,19 @@ export function BeforeAfterStrip() {
         </h2>
       </div>
 
-      {/* Scrolling track */}
       <div className="relative">
-        {/* Left/right edge fades */}
+        {/* Edge fades */}
         <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#080d1a] to-transparent z-10" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#080d1a] to-transparent z-10" />
 
         <div
-          className="flex gap-5"
-          style={{
-            animation: "strip-scroll 40s linear infinite",
-            width: "max-content",
-          }}
+          className="strip-track flex gap-4 lg:gap-8"
+          style={{ width: "max-content" }}
         >
           {allItems.map((pair, i) => (
-            <div key={i} className="flex items-center gap-3 flex-shrink-0">
+            <div key={i} className="flex items-center gap-2 lg:gap-4 flex-shrink-0">
               {/* Before */}
-              <div
-                className="relative overflow-hidden rounded-xl flex-shrink-0"
-                style={{ width: "200px", height: "266px" }}
-              >
+              <div className="relative overflow-hidden rounded-xl flex-shrink-0 w-[180px] h-[240px] lg:w-[300px] lg:h-[400px]">
                 <img
                   src={pair.before}
                   alt={`${pair.label} before detail`}
@@ -55,8 +48,8 @@ export function BeforeAfterStrip() {
               {/* Arrow */}
               <svg
                 className="text-blue-500 flex-shrink-0"
-                width="22"
-                height="22"
+                width="20"
+                height="20"
                 viewBox="0 0 22 22"
                 fill="none"
               >
@@ -70,10 +63,7 @@ export function BeforeAfterStrip() {
               </svg>
 
               {/* After */}
-              <div
-                className="relative overflow-hidden rounded-xl flex-shrink-0"
-                style={{ width: "200px", height: "266px" }}
-              >
+              <div className="relative overflow-hidden rounded-xl flex-shrink-0 w-[180px] h-[240px] lg:w-[300px] lg:h-[400px]">
                 <img
                   src={pair.after}
                   alt={`${pair.label} after detail`}

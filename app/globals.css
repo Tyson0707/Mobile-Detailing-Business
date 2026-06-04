@@ -52,6 +52,16 @@ body {
   to { transform: translateX(-50%); }
 }
 
+.strip-track {
+  animation: strip-scroll 55s linear infinite;
+}
+
+@media (min-width: 1024px) {
+  .strip-track {
+    animation: strip-scroll 90s linear infinite;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
