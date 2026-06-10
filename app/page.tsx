@@ -2,13 +2,12 @@ import { Gallery } from "@/components/Gallery";
 import type { Metadata } from "next";
 import { Hero } from "@/components/Hero";
 import { ServicesSection } from "@/components/ServicesSection";
+import { ShowcaseBanner } from "@/components/ShowcaseBanner";
 import { HowItWorks } from "@/components/HowItWorks";
 import { WhyUs } from "@/components/WhyUs";
 import { Testimonials } from "@/components/Testimonials";
 import { FAQ } from "@/components/FAQ";
 import { BookingCTA } from "@/components/BookingCTA";
-import { ShowcaseBanner } from "@/components/ShowcaseBanner";
-import { BeforeAfterStrip } from "@/components/BeforeAfterStrip";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
@@ -26,7 +25,6 @@ export default function HomePage() {
       <Hero />
       <ServicesSection />
       <Gallery />
-      <BeforeAfterStrip />
       <ShowcaseBanner />
       <HowItWorks />
       <WhyUs />

@@ -3,7 +3,6 @@ import "./globals.css";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
 import { siteConfig } from "@/lib/config";
-import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -80,7 +79,7 @@ export const metadata: Metadata = {
 
 const localBusinessSchema = {
   "@context": "https://schema.org",
-  "@type": "AutoDealer",
+  "@type": ["LocalBusiness", "CleaningService"],
   "@id": `${siteConfig.url}/#business`,
   name: "Clear Line Auto Detail",
   description: siteConfig.description,
@@ -125,13 +124,13 @@ const localBusinessSchema = {
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Interior Reset" }, price: "180", priceCurrency: "CAD" },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Exterior Detail" }, price: "110", priceCurrency: "CAD" },
       { "@type": "Offer", itemOffered: { "@type": "Service", name: "Full Detail" }, price: "250", priceCurrency: "CAD" },
-      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Premium Detail" }, price: "349", priceCurrency: "CAD" },
+      { "@type": "Offer", itemOffered: { "@type": "Service", name: "Premium Detail" }, price: "300", priceCurrency: "CAD" },
     ],
   },
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "5",
-    reviewCount: "10",
+    reviewCount: "14",
     bestRating: "5",
     worstRating: "1",
   },
@@ -146,18 +145,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
         />
         <meta name="theme-color" content="#080d1a" />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-N7S8SLHR7T" />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-N7S8SLHR7T');`,
-          }}
-        />
       </head>
       <body>
         <Navigation />
         <main>{children}</main>
         <Footer />
-        <Analytics />
       </body>
     </html>
   );

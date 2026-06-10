@@ -33,7 +33,9 @@ export default function BookingPage() {
 
           {/* Primary CTA */}
           <a
-            href="/booking/go"
+            href={siteConfig.squareBookingUrl}
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-3 px-10 py-5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-2xl transition-all hover:shadow-xl hover:shadow-blue-600/25 text-lg w-full sm:w-auto"
           >
             Open Booking Calendar
@@ -44,6 +46,13 @@ export default function BookingPage() {
 
           <p className="text-slate-600 text-sm mt-4">
             Powered by Square · Cash, card, or e-transfer accepted
+          </p>
+          <p className="text-slate-500 text-sm mt-5">
+            Not ready to book online?{" "}
+            <a href="tel:+14038139276" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
+              Text or call (403) 813-9276
+            </a>{" "}
+            and we'll get you sorted.
           </p>
         </div>
       </div>

@@ -46,7 +46,7 @@ export const siteConfig = {
 
   stats: [
     { value: "100%", label: "Satisfaction Guaranteed", link: null },
-    { value: "11", label: "5★ Google Reviews", link: "https://share.google/fAlXdJXqXrLGsUCiZ" },
+    { value: "14", label: "5★ Google Reviews", link: "https://www.google.com/maps?cid=0x8c9be2722faee599:0xf8e16a59b7838f60" },
     { value: "Mobile", label: "No Drop-Off. Ever.", link: null },
     { value: "Flat-Rate", label: "No Hidden Fees", link: null },
   ],

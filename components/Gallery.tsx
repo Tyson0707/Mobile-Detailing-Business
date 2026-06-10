@@ -3,9 +3,9 @@
 import { useState, useRef, useCallback } from "react";
 
 const galleryItems = [
-  { id: 1, before: "/before1.jpg", after: "/after1.png" },
-  { id: 2, before: "/before2.jpg", after: "/after2.jpg" },
-  { id: 3, before: "/before3.jpg", after: "/after3.jpg" },
+  { id: 1, before: "/rav4-interior-detail-before-calgary.jpg", after: "/rav4-interior-detail-after-calgary.jpg" },
+  { id: 2, before: "/rav4-passenger-interior-before-calgary.jpg", after: "/rav4-passenger-interior-after-calgary.jpg" },
+  { id: 3, before: "/leather-armrest-detail-before-calgary.jpg", after: "/leather-armrest-detail-after-calgary.jpg" },
 ];
 
 function BeforeAfterSlider({ before, after }: { before: string; after: string }) {
@@ -43,6 +43,7 @@ function BeforeAfterSlider({ before, after }: { before: string; after: string })
         alt="Before"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+        loading="lazy"
         draggable={false}
       />
 
@@ -52,6 +53,7 @@ function BeforeAfterSlider({ before, after }: { before: string; after: string })
         alt="After"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ clipPath: `inset(0 0 0 ${position}%)` }}
+        loading="lazy"
         draggable={false}
       />
 

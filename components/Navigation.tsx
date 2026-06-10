@@ -9,7 +9,7 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services & Pricing" },
   { href: "/about", label: "About" },
-  { href: "/booking/go", label: "Book Now", cta: true, external: false },
+  { href: siteConfig.squareBookingUrl, label: "Book Now", cta: true, external: true },
 ];
 
 export function Navigation() {
@@ -83,6 +83,8 @@ export function Navigation() {
                 <a
                   key={link.href}
                   href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="ml-2 px-5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg transition-colors"
                 >
                   {link.label}

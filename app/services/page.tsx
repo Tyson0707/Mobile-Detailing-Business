@@ -1,230 +1,170 @@
-"use client";
-
-import { useState } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
-import { services, paintCorrectionServices, addOns, vehicleSizes, vehicleSizeLabels, siteConfig } from "@/lib/config";
-import type { VehicleSize } from "@/lib/config";
+import { services, addOns, vehicleSizes, vehicleSizeLabels, siteConfig } from "@/lib/config";
 
-function badgeStyles(badge: string | null) {
-  if (badge === "Most Popular") return {
-    card: "border-blue-500/40 bg-[#0f1b2d]",
-    pill: "bg-blue-600/20 text-blue-400 border border-blue-500/30",
-    price: "text-blue-400",
-    check: "text-blue-400",
-    btn: "bg-blue-600 hover:bg-blue-500 text-white",
-  };
-  if (badge === "Premium") return {
-    card: "border-amber-500/30 bg-[#0f1b2d]",
-    pill: "bg-amber-500/20 text-amber-400 border border-amber-500/30",
-    price: "text-amber-400",
-    check: "text-amber-400",
-    btn: "bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400",
-  };
-  if (badge === "Best Value") return {
-    card: "border-emerald-500/30 bg-[#0f1b2d]",
-    pill: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-    price: "text-emerald-400",
-    check: "text-emerald-400",
-    btn: "bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/30 text-emerald-400",
-  };
-  return {
-    card: "border-white/[0.07] bg-[#0f1829]",
-    pill: "",
-    price: "text-white",
-    check: "text-blue-500",
-    btn: "bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-white",
-  };
-}
-
-function PricingDisplay({
-  pricing,
-  selectedSize,
-  startingAt,
-  note,
-  accentClass = "text-white",
-}: {
-  pricing: Record<VehicleSize, number>;
-  selectedSize: VehicleSize;
-  startingAt?: boolean;
-  note?: string | null;
-  accentClass?: string;
-}) {
-  const others = vehicleSizes.filter((s) => s !== selectedSize);
-  return (
-    <div className="rounded-xl border border-white/[0.07] bg-white/[0.03] px-5 py-4">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <p className="text-slate-500 text-xs mb-0.5">{vehicleSizeLabels[selectedSize]}</p>
-          <p className={`text-3xl font-bold ${accentClass}`}>
-            {startingAt && <span className="text-xl font-medium mr-1">From</span>}
-            ${pricing[selectedSize]}{startingAt && <span className="text-xl">+</span>}
-          </p>
-          {note && <p className="text-slate-500 text-xs mt-1.5 italic">{note}</p>}
-        </div>
-        <div className="flex gap-4">
-          {others.map((s) => (
-            <div key={s} className="text-center">
-              <p className="text-slate-600 text-[10px]">{s}</p>
-              <p className="text-slate-500 text-sm font-medium">
-                {startingAt && "From "}${pricing[s]}{startingAt && "+"}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
+export const metadata: Metadata = {
+  title: "Services & Pricing | Mobile Car Detailing NW Calgary",
+  description:
+    "Full pricing for Clear Line Auto Detail's mobile car detailing services in NW Calgary. Interior Reset from $170, Exterior Detail from $110, Full Detail from $240, Premium Detail from $300. We come to you.",
+  alternates: {
+    canonical: `${siteConfig.url}/services`,
+  },
+};
 
 export default function ServicesPage() {
-  const [selectedSize, setSelectedSize] = useState<VehicleSize>("Mid");
+  const serviceSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Mobile Car Detailing Services Calgary",
+    itemListElement: services.map((service, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      item: {
+        "@type": "Service",
+        name: service.name,
+        description: service.description,
+        provider: {
+          "@type": "LocalBusiness",
+          name: siteConfig.name,
+          address: { "@type": "PostalAddress", addressLocality: "Calgary", addressRegion: "AB" },
+        },
+        offers: {
+          "@type": "Offer",
+          price: service.pricing.Small,
+          priceCurrency: "CAD",
+        },
+      },
+    })),
+  };
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+
       {/* Hero */}
       <div className="pt-28 pb-14 px-4 sm:px-6 relative overflow-hidden">
         <div aria-hidden="true" className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-blue-600/[0.06] rounded-full blur-3xl" />
         <div className="max-w-4xl mx-auto text-center relative">
           <p className="text-blue-400 text-sm font-semibold uppercase tracking-widest mb-3">
-            Calgary Mobile Detailing
+            NW Calgary Mobile Detailing
           </p>
-          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4 text-balance">
+          <h1 className="text-4xl sm:text-5xl font-bold text-white mb-5 text-balance">
             Services & Pricing
           </h1>
-          <p className="text-slate-400 text-base max-w-xl mx-auto mb-2">
-            All services performed at your location. We bring everything — all we need is a tap and an outlet.
-          </p>
-          <p className="text-slate-600 text-sm mb-8">
-            Fully mobile professional detailing serving Calgary and surrounding area.
+          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+            All services performed at your location. We bring our equipment and products — all we need is a tap and an outlet. Prices shown are for each vehicle size.
           </p>
 
-          {/* Vehicle size toggle */}
-          <div className="inline-flex gap-2 p-1.5 rounded-2xl bg-white/[0.04] border border-white/[0.07]">
+          {/* Size legend */}
+          <div className="flex flex-wrap justify-center gap-4 mt-7">
             {vehicleSizes.map((size) => (
-              <button
-                key={size}
-                onClick={() => setSelectedSize(size)}
-                className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-                  selectedSize === size
-                    ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                {size}
-                <span className="hidden sm:inline text-xs font-normal ml-1.5 opacity-70">
-                  {vehicleSizeLabels[size].split("(")[1]?.replace(")", "")}
-                </span>
-              </button>
+              <div key={size} className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.04] border border-white/[0.07]">
+                <span className="text-white text-sm font-semibold">{size}</span>
+                <span className="text-slate-500 text-xs">{vehicleSizeLabels[size].split("(")[1]?.replace(")", "") ?? ""}</span>
+              </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Detail Packages */}
+      {/* Main packages */}
       <section className="pb-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-6">Detail Packages</h2>
+          <h2 className="text-2xl font-bold text-white mb-8">Detail Packages</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {services.map((service) => {
-              const styles = badgeStyles(service.badge);
-              const cta = (service as { cta?: string }).cta ?? "Book Your Detail";
-              return (
-                <div key={service.id} className={`rounded-2xl border p-7 flex flex-col gap-5 ${styles.card}`}>
+            {services.map((service) => (
+              <div
+                key={service.id}
+                className={`rounded-2xl border p-7 flex flex-col gap-6 ${
+                  service.badge === "Most Popular"
+                    ? "border-blue-500/40 bg-[#0f1b2d]"
+                    : service.badge === "Premium"
+                    ? "border-amber-500/30 bg-[#0f1b2d]"
+                    : "border-white/[0.07] bg-[#0f1829]"
+                }`}
+              >
+                {/* Header row */}
+                <div className="flex items-start justify-between gap-4">
                   <div>
                     <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <h3 className="text-white font-bold text-xl">{service.name}</h3>
+                      <h2 className="text-white font-bold text-xl">{service.name}</h2>
                       {service.badge && (
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${styles.pill}`}>
+                        <span
+                          className={`px-2 py-0.5 rounded-full text-xs font-semibold ${
+                            service.badge === "Most Popular"
+                              ? "bg-blue-600/20 text-blue-400 border border-blue-500/30"
+                              : "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                          }`}
+                        >
                           {service.badge}
                         </span>
                       )}
                     </div>
                     <p className="text-slate-400 text-sm leading-relaxed">{service.description}</p>
                   </div>
-
-                  <PricingDisplay
-                    pricing={service.pricing}
-                    selectedSize={selectedSize}
-                    accentClass={styles.price}
-                  />
-
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                    {service.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2">
-                        <svg className={`w-4 h-4 mt-0.5 shrink-0 ${styles.check}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span className="text-slate-300 text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <a
-                    href="/booking/go"
-                    className={`mt-auto py-3 rounded-xl text-sm font-semibold text-center transition-colors ${styles.btn}`}
-                  >
-                    {cta}
-                  </a>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
-      {/* Paint Enhancement & Protection */}
-      <section className="pb-16 px-4 sm:px-6">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Paint Enhancement & Protection</h2>
-          <p className="text-slate-400 text-sm mb-6">Machine polishing, decontamination, and long-term ceramic protection.</p>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {paintCorrectionServices.map((service) => {
-              const styles = badgeStyles(service.badge);
-              return (
-                <div key={service.id} className={`rounded-2xl border p-7 flex flex-col gap-5 ${styles.card}`}>
-                  <div>
-                    <div className="flex items-center gap-2 flex-wrap mb-2">
-                      <h3 className="text-white font-bold text-xl">{service.name}</h3>
-                      {service.badge && (
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${styles.pill}`}>
-                          {service.badge}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-slate-400 text-sm leading-relaxed">{service.description}</p>
-                    {service.idealFor && (
-                      <p className="text-slate-600 text-xs mt-2 italic">{service.idealFor}</p>
-                    )}
+                {/* Pricing table */}
+                <div className="rounded-xl overflow-hidden border border-white/[0.07]">
+                  <div className="grid grid-cols-3 bg-white/[0.03]">
+                    {vehicleSizes.map((size) => (
+                      <div key={size} className="px-3 py-2 text-center border-r border-white/[0.05] last:border-0">
+                        <p className="text-slate-500 text-xs mb-0.5">{size}</p>
+                        <p
+                          className={`text-xl font-bold ${
+                            service.badge === "Most Popular"
+                              ? "text-blue-400"
+                              : service.badge === "Premium"
+                              ? "text-amber-400"
+                              : "text-white"
+                          }`}
+                        >
+                          ${service.pricing[size]}
+                        </p>
+                      </div>
+                    ))}
                   </div>
-
-                  <PricingDisplay
-                    pricing={service.pricing}
-                    selectedSize={selectedSize}
-                    startingAt={service.startingAt}
-                    note={service.note}
-                    accentClass={styles.price}
-                  />
-
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                    {service.features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2">
-                        <svg className={`w-4 h-4 mt-0.5 shrink-0 ${styles.check}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                        </svg>
-                        <span className="text-slate-300 text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <a
-                    href="/booking/go"
-                    className={`mt-auto py-3 rounded-xl text-sm font-semibold text-center transition-colors ${styles.btn}`}
-                  >
-                    {service.cta}
-                  </a>
+                  <div className="px-3 py-1.5 bg-white/[0.02] text-center">
+                    <span className="text-slate-600 text-[10px]">sedan/coupe · SUV/truck · 3-row SUV/van</span>
+                  </div>
                 </div>
-              );
-            })}
+
+                {/* Features */}
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                  {service.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-2">
+                      <svg
+                        className={`w-4 h-4 mt-0.5 shrink-0 ${
+                          service.badge === "Most Popular" ? "text-blue-400" : service.badge === "Premium" ? "text-amber-400" : "text-blue-500"
+                        }`}
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span className="text-slate-300 text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href="/booking"
+                  className={`mt-auto py-3 rounded-xl text-sm font-semibold text-center transition-colors ${
+                    service.badge === "Most Popular"
+                      ? "bg-blue-600 hover:bg-blue-500 text-white"
+                      : service.badge === "Premium"
+                      ? "bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-400"
+                      : "bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-white"
+                  }`}
+                >
+                  Book {service.name}
+                </Link>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -232,8 +172,8 @@ export default function ServicesPage() {
       {/* Add-ons */}
       <section className="pb-16 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Add-Ons</h2>
-          <p className="text-slate-400 text-sm mb-6">Add any of these to your booking.</p>
+          <h2 className="text-2xl font-bold text-white mb-2">Add-Ons</h2>
+          <p className="text-slate-400 text-sm mb-8">Add any of these to your booking.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {addOns.map((addon) => (
               <div
@@ -261,7 +201,7 @@ export default function ServicesPage() {
       {/* CTA */}
       <section className="pb-24 px-4 sm:px-6">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-3">Not sure which service is right?</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Not sure what you need?</h2>
           <p className="text-slate-400 mb-6 text-sm">
             Message us and we&apos;ll recommend the right package for your vehicle and budget.
           </p>
@@ -270,7 +210,7 @@ export default function ServicesPage() {
               href="/booking"
               className="px-7 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-colors text-sm"
             >
-              Get Your Quote
+              Book or Get a Quote
             </Link>
             <a
               href={`tel:${siteConfig.phoneRaw}`}

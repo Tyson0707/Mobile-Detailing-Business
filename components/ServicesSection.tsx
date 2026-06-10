@@ -15,6 +15,7 @@ type ServiceCardData = {
   startingAt?: boolean;
   idealFor?: string | null;
   note?: string | null;
+  duration?: string;
 };
 
 export function ServicesSection() {
@@ -137,7 +138,12 @@ function ServiceCard({ service, selectedSize }: { service: ServiceCardData; sele
 
       <div className="p-5 flex flex-col flex-1">
         <div className="mb-4 pr-16">
-          <h3 className={`text-base font-bold mb-1.5 ${styles.text}`}>{service.name}</h3>
+          <div className="flex items-center justify-between mb-1.5">
+            <h3 className={`text-base font-bold ${styles.text}`}>{service.name}</h3>
+            {service.duration && (
+              <span className="text-slate-500 text-[10px] font-medium shrink-0 ml-2">⏱ {service.duration}</span>
+            )}
+          </div>
           <p className="text-slate-400 text-xs leading-relaxed">{service.description}</p>
           {service.idealFor && (
             <p className="text-slate-600 text-[10px] mt-2 italic">{service.idealFor}</p>

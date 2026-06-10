@@ -3,7 +3,7 @@ import { siteConfig } from "@/lib/config";
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+    <section className="relative min-h-[88vh] flex items-center overflow-hidden">
       {/* Video background */}
       <video
         autoPlay
@@ -22,10 +22,10 @@ export function Hero() {
       <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#080d1a] to-transparent" />
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-32 sm:py-40 text-center">
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-20 sm:py-28 text-center">
         {/* Google rating badge */}
         <a
-          href={siteConfig.social.google}
+          href="https://www.google.com/maps?cid=0x8c9be2722faee599:0xf8e16a59b7838f60"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.08] border border-white/[0.12] backdrop-blur-sm mb-5 hover:bg-white/[0.13] transition-colors"
@@ -38,7 +38,7 @@ export function Hero() {
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
           <span className="text-yellow-400 text-sm font-bold tracking-wide">★★★★★</span>
-          <span className="text-white/80 text-xs font-medium">5.0 · 11 Google Reviews</span>
+          <span className="text-white/80 text-xs font-medium">5.0 · 14 Google Reviews</span>
         </a>
 
         {/* Location tag */}
