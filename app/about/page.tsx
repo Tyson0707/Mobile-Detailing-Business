@@ -3,7 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/lib/config";
 
 export const metadata: Metadata = {
-  title: "About | Clear Line Auto Detail — Calgary Mobile Detailing",
+  title: "About Us | Owner-Operated Calgary Mobile Detailing",
   description:
     "Clear Line Auto Detail is a mobile car detailing service based in Calgary. We come to your driveway with everything we need — no shop, no drop-off, just professional results.",
   alternates: {

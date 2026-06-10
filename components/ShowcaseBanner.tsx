@@ -5,30 +5,11 @@ export function ShowcaseBanner() {
       style={{ aspectRatio: "3/1" }}
       aria-label="Photo showcase"
     >
-      {/* ── INSERT YOUR MEDIA HERE ────────────────────────────────────────
-          Replace the gradient placeholder with your landscape photo or GIF:
-
-          Photo / GIF:
-            <img
-              src="/showcase.jpg"        ← or /showcase.gif
-              alt="Clear Line Auto Detail — professional mobile detailing Calgary"
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
-
-          Looping video clip:
-            <video autoPlay muted loop playsInline
-              className="absolute inset-0 w-full h-full object-cover object-center">
-              <source src="/showcase.mp4" type="video/mp4" />
-            </video>
-
-          Then delete the placeholder div below. Keep the edge-fade divs —
-          they make the section blend seamlessly with adjacent sections.
-      ─────────────────────────────────────────────────────────────────── */}
-
-      {/* Placeholder gradient — remove when media is added */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 bg-gradient-to-r from-[#060b18] via-[#0d1a35] to-[#060b18]"
+      <img
+        src="/showcase.jpg"
+        alt="Tyson scrubbing the exterior of a vehicle — Clear Line Auto Detail"
+        className="absolute inset-0 w-full h-full object-cover object-center"
+        loading="lazy"
       />
 
       {/* Edge fades — keep these for seamless blending */}

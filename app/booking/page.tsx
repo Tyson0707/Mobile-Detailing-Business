@@ -47,6 +47,13 @@ export default function BookingPage() {
           <p className="text-slate-600 text-sm mt-4">
             Powered by Square · Cash, card, or e-transfer accepted
           </p>
+          <p className="text-slate-500 text-sm mt-5">
+            Not ready to book online?{" "}
+            <a href="tel:+14038139276" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
+              Text or call (403) 813-9276
+            </a>{" "}
+            and we'll get you sorted.
+          </p>
         </div>
       </div>
 

@@ -79,7 +79,7 @@ export const metadata: Metadata = {
 
 const localBusinessSchema = {
   "@context": "https://schema.org",
-  "@type": "AutoDealer",
+  "@type": ["LocalBusiness", "CleaningService"],
   "@id": `${siteConfig.url}/#business`,
   name: "Clear Line Auto Detail",
   description: siteConfig.description,
@@ -130,7 +130,7 @@ const localBusinessSchema = {
   aggregateRating: {
     "@type": "AggregateRating",
     ratingValue: "5",
-    reviewCount: "10",
+    reviewCount: "14",
     bestRating: "5",
     worstRating: "1",
   },

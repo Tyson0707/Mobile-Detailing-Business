@@ -53,7 +53,7 @@ const reasons = [
   {
     title: "100% Satisfaction Guarantee",
     description:
-      "If something isn&apos;t right, we come back and fix it. No arguing, no fees. That&apos;s the deal.",
+      "If something isn't right, we come back and fix it. No arguing, no fees. That's the deal.",
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -84,6 +84,7 @@ export function WhyUs() {
               </p>
               <p className="text-blue-400 text-sm font-medium">— Clear Line Auto Detail</p>
             </div>
+
           </div>
 
           {/* Right: grid */}
@@ -100,6 +101,32 @@ export function WhyUs() {
                 <p className="text-slate-500 text-xs leading-relaxed">{reason.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Exterior action photos */}
+        <div className="grid md:grid-cols-2 gap-6 mt-14">
+          <div className="relative overflow-hidden rounded-2xl aspect-[16/10]">
+            <img
+              src="/action-79.jpg"
+              alt="Foam cannon pre-wash on a dark SUV"
+              className="w-full h-full object-cover object-center"
+              loading="lazy"
+            />
+            <div className="absolute bottom-0 left-0 right-0 px-5 py-4 bg-gradient-to-t from-black/70 to-transparent">
+              <p className="text-white text-sm font-medium">Foam pre-wash — safe for your paint</p>
+            </div>
+          </div>
+          <div className="relative overflow-hidden rounded-2xl aspect-[16/10]">
+            <img
+              src="/action-98.jpg"
+              alt="Microfiber hand dry after exterior detail"
+              className="w-full h-full object-cover object-center"
+              loading="lazy"
+            />
+            <div className="absolute bottom-0 left-0 right-0 px-5 py-4 bg-gradient-to-t from-black/70 to-transparent">
+              <p className="text-white text-sm font-medium">Hand dry finish — no water spots</p>
+            </div>
           </div>
         </div>
       </div>

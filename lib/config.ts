@@ -45,10 +45,10 @@ export const siteConfig = {
   },
 
   stats: [
-    { value: "100%", label: "Satisfaction Guaranteed" },
-    { value: "5★", label: "Google Rating" },
-    { value: "Mobile", label: "No Drop-Off. Ever." },
-    { value: "Flat-Rate", label: "No Hidden Fees" },
+    { value: "100%", label: "Satisfaction Guaranteed", link: null },
+    { value: "14", label: "5★ Google Reviews", link: "https://www.google.com/maps?cid=0x8c9be2722faee599:0xf8e16a59b7838f60" },
+    { value: "Mobile", label: "No Drop-Off. Ever.", link: null },
+    { value: "Flat-Rate", label: "No Hidden Fees", link: null },
   ],
 } as const;
 
@@ -69,33 +69,16 @@ export const services = [
     slug: "interior-reset",
     badge: null as string | null,
     description:
-      "A full reset for your interior. We go through every surface, crevice, and carpet — the kind of clean you can't get at a drive-through wash.",
+      "A thorough reset for your interior — every surface, crevice, and carpet cleaned properly. The kind of clean that actually lasts.",
     pricing: { Small: 180, Mid: 230, Large: 270 },
     duration: "2–3 hrs",
+    cta: "Book Your Detail",
     features: [
       "Full vacuum — seats, carpets, trunk",
-      "Deep clean: dash, doors, center console",
+      "Deep clean: dash, doors, centre console",
       "Crevice & vent cleaning",
       "Interior glass cleaning",
       "Light stain removal",
-    ],
-  },
-  {
-    id: "exterior-detail",
-    name: "Exterior Detail",
-    slug: "exterior-detail",
-    badge: null as string | null,
-    description:
-      "Foam wash, hand wash, wheels, tires, and a protective sealant. Paint-safe technique every time.",
-    pricing: { Small: 110, Mid: 130, Large: 150 },
-    duration: "1–2 hrs",
-    features: [
-      "Foam pre-wash & hand wash",
-      "Wheels and tires cleaned",
-      "Tire shine applied",
-      "Bug and tar removal",
-      "Spray sealant protection",
-      "Exterior glass cleaning",
     ],
   },
   {
@@ -104,16 +87,16 @@ export const services = [
     slug: "full-detail",
     badge: "Most Popular" as string | null,
     description:
-      "The full package. Interior Reset + Exterior Detail combined — showroom results at your driveway.",
+      "The complete refresh. Interior Reset + Exterior Detail combined — showroom condition delivered to your driveway.",
     pricing: { Small: 250, Mid: 310, Large: 360 },
     duration: "3–4 hrs",
+    cta: "Book Your Detail",
     features: [
       "Full Interior Reset (all items)",
       "Full Exterior Detail (all items)",
       "Door jamb cleaning",
-      "Post-service inspection",
+      "Post-service walkthrough",
     ],
-    note: "Includes everything in both packages above.",
   },
   {
     id: "premium-detail",
@@ -121,16 +104,99 @@ export const services = [
     slug: "premium-detail",
     badge: "Premium" as string | null,
     description:
-      "Our highest-level service. Adds extraction, ceramic interior protection, and professional trim restoration on top of the Full Detail.",
-    pricing: { Small: 300, Mid: 360, Large: 420 },
+      "Everything in the Full Detail, plus hot water extraction, interior ceramic protection, and trim restoration for a fully refined finish.",
+    pricing: { Small: 349, Mid: 429, Large: 499 },
     duration: "4–5 hrs",
+    cta: "Book Your Detail",
     features: [
       "Everything in Full Detail",
-      "Light stain extraction",
+      "Hot water extraction",
       "Interior ceramic protection",
       "Interior trim & plastic restoration",
-      "Restored, even finish on all surfaces",
+      "Fully restored interior finish",
     ],
+  },
+  {
+    id: "exterior-detail",
+    name: "Exterior Detail",
+    slug: "exterior-detail",
+    badge: null as string | null,
+    description:
+      "Foam pre-wash, safe hand wash, wheel and tire cleaning, and a hydrophobic ceramic sealant. More than a wash — a proper exterior refresh.",
+    pricing: { Small: 110, Mid: 130, Large: 150 },
+    duration: "1–2 hrs",
+    cta: "Book Your Detail",
+    features: [
+      "Foam pre-wash & safe hand wash",
+      "Wheel & tire cleaning",
+      "Tire dressing applied",
+      "Bug & tar removal",
+      "Ceramic spray sealant protection",
+      "Exterior glass cleaning",
+    ],
+  },
+] as const;
+
+export const paintCorrectionServices = [
+  {
+    id: "enhancement-detail",
+    name: "Enhancement Detail",
+    badge: "Best Value" as string | null,
+    description:
+      "Removes light swirl marks while restoring gloss, clarity, and depth. The best value transformation for your paint's appearance.",
+    pricing: { Small: 229, Mid: 299, Large: 369 },
+    startingAt: false as boolean,
+    cta: "Restore Your Paint",
+    idealFor: "Ideal for daily drivers with light swirling looking to restore gloss." as string | null,
+    features: [
+      "Foam pre-wash & hand wash",
+      "Iron decontamination",
+      "Clay bar treatment",
+      "1-step machine polish",
+      "Gloss enhancement",
+      "Ceramic spray sealant",
+    ],
+    note: null as string | null,
+  },
+  {
+    id: "paint-correction",
+    name: "Paint Correction",
+    badge: null as string | null,
+    description:
+      "Two-stage correction for moderate to heavy paint defects — swirls, oxidation, and imperfections refined back to clarity.",
+    pricing: { Small: 449, Mid: 599, Large: 749 },
+    startingAt: true as boolean,
+    cta: "Restore Your Paint",
+    idealFor: null as string | null,
+    features: [
+      "Full wash & decontamination",
+      "Clay bar treatment",
+      "2-stage machine correction",
+      "LED paint inspection",
+      "Hydrophobic sealant finish",
+      "Exterior glass cleaning",
+    ],
+    note: "Pricing varies based on paint condition and correction goals." as string | null,
+  },
+  {
+    id: "ceramic-coating",
+    name: "Ceramic Coating",
+    badge: "Premium" as string | null,
+    description:
+      "Durable ceramic protection that delivers incredible gloss, hydrophobic performance, and easier maintenance for up to 12 months with proper care.",
+    pricing: { Small: 699, Mid: 899, Large: 1099 },
+    startingAt: false as boolean,
+    cta: "Protect Your Vehicle",
+    idealFor: null as string | null,
+    features: [
+      "Exterior decontamination & clay treatment",
+      "1-step machine polish",
+      "IPA panel prep",
+      "CarPro CQUARTZ Lite 2.0 application",
+      "Hydrophobic self-cleaning effect",
+      "Up to 12 months protection with proper care",
+    ],
+    note: null as string | null,
   },
 ] as const;
 
@@ -151,7 +217,7 @@ export const addOns = [
   },
   {
     name: "Excessive Pet Hair Removal",
-    price: "$40",
+    price: "Starting at $40",
     note: null,
     description:
       "Heavy pet hair embedded in seats and carpet — we remove it properly, not just vacuum over it.",
@@ -163,36 +229,64 @@ export const addOns = [
     description:
       "Hot water extraction for stains, odours, or heavily soiled carpets and seats.",
   },
+  {
+    name: "Headlight Restoration",
+    price: "$99/pair",
+    note: null,
+    description:
+      "Removes yellowing and oxidation. Restores clarity and improves night visibility.",
+  },
+  {
+    name: "Engine Bay Detail",
+    price: "$50",
+    note: null,
+    description:
+      "Safe degreasing and detailing of the engine bay. Presented clean on delivery.",
+  },
 ] as const;
 
 export const testimonials = [
   {
-    name: "Mike T.",
-    location: "Rocky Ridge, NW Calgary",
+    name: "Gareth Ackroyd",
+    location: "Calgary",
     rating: 5,
-    text: "Had the Full Detail done on my truck. I've been to shops before and nothing comes close — they came to my driveway, were done in under 4 hours, and the truck looked better than when I bought it.",
-    vehicle: "2021 Ford F-150",
+    text: "I recently had the interior of my car detailed by Clear Line and couldn't be more impressed. Tyson really took his time and paid attention to every detail — my car's interior genuinely looks like new again. He came to my house, which was incredibly convenient and hassle-free. Extremely polite, friendly, and helpful throughout. I'll be using them again soon.",
+    vehicle: "",
   },
   {
-    name: "Sarah K.",
-    location: "Tuscany, NW Calgary",
+    name: "Kevin",
+    location: "Calgary",
     rating: 5,
-    text: "I have two kids and a dog. My SUV was destroyed. After the Premium Detail it smelled brand new — they got every single dog hair out. Won't use anyone else.",
-    vehicle: "2020 Toyota RAV4",
+    text: "Tyson has detailed numerous vehicles at our auto repair facility. The level of service he provides and the attention to detail are unmatched. Highly recommend anyone or any business needing vehicle detailing to give Clear Line a call.",
+    vehicle: "",
   },
   {
-    name: "Jason W.",
-    location: "Bearspaw",
+    name: "Tim Scarrott",
+    location: "Calgary",
     rating: 5,
-    text: "Booked the Premium Detail on my Model 3. Super professional, no mess left behind, paint looks insane. The ceramic interior protection is worth every penny.",
-    vehicle: "2022 Tesla Model 3",
+    text: "I was a little embarrassed about how dirty my truck had gotten. Tyson actually said he enjoyed the challenge! I can't believe how well he was able to clean it — I don't know if it has ever been this clean.",
+    vehicle: "",
   },
   {
-    name: "Lisa M.",
-    location: "Watermark",
+    name: "April Von Platen",
+    location: "Calgary",
     rating: 5,
-    text: "I travel for work constantly and my car was a disaster. Booked Clear Line and they came while I worked from home. Done by lunch. Looked incredible. Zero effort on my part.",
-    vehicle: "2019 Honda Civic",
+    text: "Tyson did a great job cleaning my SUV. There was lots of pet hair and it's super clean now. He was on time and very personable. Highly recommend!",
+    vehicle: "",
+  },
+  {
+    name: "Kai Mrazik",
+    location: "Calgary",
+    rating: 5,
+    text: "Tyson was incredibly professional, he arrived on time and had an entire mobile set. I was quite impressed. He was super polite and even returned some money he found while cleaning my car I had lost. That made him very trustworthy and the only person I would trust to come to my house to detail my vehicles. Highly recommend Clear Line Detailing.",
+    vehicle: "",
+  },
+  {
+    name: "Brian King",
+    location: "Calgary",
+    rating: 5,
+    text: "Best detail job I have ever seen! Our family puts some hard mileage on our vehicle and I can't believe Tyson was able to clean it this well. Literally looks like new. Tyson's professionalism and attention to detail is outstanding. Also super convenient that he comes to you. Highly recommend!",
+    vehicle: "",
   },
 ] as const;
 
@@ -203,9 +297,9 @@ export const faqItems = [
       "Just a standard outdoor tap and a power outlet — that's it. We bring our own pressure washer, compressed air, vacuums, extractors, and all professional detailing products. Most driveways have everything we need.",
   },
   {
-    question: "Where do you service in Calgary?",
+    question: "Where do you service?",
     answer:
-      "Our primary service area is NW Calgary including Bearspaw, Watermark, Rocky Ridge, Tuscany, Nolan Hill, Evanston, Sage Hill, Royal Oak, and Sherwood. Not sure if we cover your area? Message us — we're flexible.",
+      "We cover all of Calgary and surrounding areas including Airdrie, Cochrane, Chestermere, and Okotoks. Not sure if we cover your area? Message us — we're flexible.",
   },
   {
     question: "How do I pay?",
@@ -213,19 +307,19 @@ export const faqItems = [
       "We accept cash, e-transfer, and all major credit and debit cards via Square. Payment is collected after the service is complete and you've inspected the results.",
   },
   {
-    question: "How long does a detail take?",
+    question: "Do I need to be available the whole time?",
     answer:
-      "Interior Reset: 2–3 hours. Exterior Detail: 1–2 hours. Full Detail: 3–4 hours. Premium Detail: 4–5 hours. We'll confirm the timeframe when we book based on your vehicle.",
+      "No. Most clients go about their day — work from home, run errands, whatever. Just be available at the start to hand over keys and at the end to walk through the results.",
   },
   {
     question: "What's the difference between Full Detail and Premium?",
     answer:
-      "Full Detail is Interior Reset + Exterior Detail. Premium adds extraction for deeper stains, interior ceramic protection (which repels spills and staining), and trim/plastic restoration for a fully finished look inside.",
+      "Full Detail is Interior Reset + Exterior Detail. Premium adds hot water extraction for deeper stains, interior ceramic protection (which repels spills and staining), and trim/plastic restoration for a fully finished look inside.",
   },
   {
-    question: "Do I need to be home the whole time?",
+    question: "Can I book same-week?",
     answer:
-      "No. Most of our clients go about their day — work from home, run errands, whatever. Just be available at the start to hand over keys and at the end to walk through the results.",
+      "Yes — we often have openings within a few days. Book online and we'll confirm quickly. If you need something urgent, call or text us directly.",
   },
   {
     question: "What if I'm not happy with the result?",

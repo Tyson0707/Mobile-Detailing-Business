@@ -1,38 +1,19 @@
+"use client";
 import { siteConfig } from "@/lib/config";
 
 export function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* ─── HERO BACKGROUND ──────────────────────────────────────────────
-          When your photo or video is ready, replace the gradient placeholder
-          below with one of these and delete the placeholder div.
-
-          Landscape photo:
-            <img
-              src="/hero.jpg"
-              alt="Clear Line Auto Detail"
-              className="absolute inset-0 w-full h-full object-cover object-center"
-            />
-
-          Looping video / GIF-style clip:
-            <video autoPlay muted loop playsInline
-              className="absolute inset-0 w-full h-full object-cover object-center">
-              <source src="/hero.mp4" type="video/mp4" />
-            </video>
-      ──────────────────────────────────────────────────────────────────── */}
-
-      {/* Gradient placeholder — remove once real media is added above */}
-      <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-b from-[#060b18] via-[#080d1a] to-[#080d1a]">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[700px] bg-blue-600/[0.07] rounded-full blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.015]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-          }}
-        />
-      </div>
+    <section className="relative min-h-[88vh] flex items-center overflow-hidden">
+      {/* Video background */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      >
+        <source src="/hero.mp4" type="video/mp4" />
+      </video>
 
       {/* Dark overlay — keeps text legible over any photo or video background */}
       <div aria-hidden="true" className="absolute inset-0 bg-black/45" />
@@ -41,10 +22,10 @@ export function Hero() {
       <div aria-hidden="true" className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#080d1a] to-transparent" />
 
       {/* Content */}
-      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-32 sm:py-40 text-center">
+      <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 py-20 sm:py-28 text-center">
         {/* Google rating badge */}
         <a
-          href={siteConfig.social.google}
+          href="https://www.google.com/maps?cid=0x8c9be2722faee599:0xf8e16a59b7838f60"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/[0.08] border border-white/[0.12] backdrop-blur-sm mb-5 hover:bg-white/[0.13] transition-colors"
@@ -57,7 +38,7 @@ export function Hero() {
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
           </svg>
           <span className="text-yellow-400 text-sm font-bold tracking-wide">★★★★★</span>
-          <span className="text-white/80 text-xs font-medium">5.0 · 10 Google Reviews</span>
+          <span className="text-white/80 text-xs font-medium">5.0 · 14 Google Reviews</span>
         </a>
 
         {/* Location tag */}
@@ -85,9 +66,7 @@ export function Hero() {
         {/* CTAs */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
           <a
-            href={siteConfig.squareBookingUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/booking/go"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all hover:shadow-lg hover:shadow-blue-600/30 text-base"
           >
             Book Now

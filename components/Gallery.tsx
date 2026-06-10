@@ -3,7 +3,9 @@
 import { useState, useRef, useCallback } from "react";
 
 const galleryItems = [
-  { id: 1, before: "/before1.jpg", after: "/after1.png" },
+  { id: 1, before: "/rav4-interior-detail-before-calgary.jpg", after: "/rav4-interior-detail-after-calgary.jpg" },
+  { id: 2, before: "/rav4-passenger-interior-before-calgary.jpg", after: "/rav4-passenger-interior-after-calgary.jpg" },
+  { id: 3, before: "/leather-armrest-detail-before-calgary.jpg", after: "/leather-armrest-detail-after-calgary.jpg" },
 ];
 
 function BeforeAfterSlider({ before, after }: { before: string; after: string }) {
@@ -31,25 +33,27 @@ function BeforeAfterSlider({ before, after }: { before: string; after: string })
   return (
     <div
       ref={containerRef}
-      className="relative aspect-[4/3] overflow-hidden rounded-2xl cursor-col-resize select-none"
+      className="relative aspect-[3/4] overflow-hidden rounded-2xl cursor-col-resize select-none"
       onMouseDown={onMouseDown}
       onTouchMove={onTouchMove}
     >
-      {/* Before image — left side */}
+      {/* Before image — left side, clipped from the right */}
       <img
         src={before}
         alt="Before"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+        loading="lazy"
         draggable={false}
       />
 
-      {/* After image — right side */}
+      {/* After image — right side, clipped from the left */}
       <img
         src={after}
         alt="After"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ clipPath: `inset(0 0 0 ${position}%)` }}
+        loading="lazy"
         draggable={false}
       />
 
