@@ -124,7 +124,7 @@ export function Testimonials() {
             View Google Reviews
           </a>
           <a
-            href="https://search.google.com/local/writereview?placeid=0x8c9be2722faee599:0xf8e16a59b7838f60"
+            href="https://search.google.com/local/writereview?placeid=ChIJmeWuL3Lim4wRYI-Dt1lq4fg"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-blue-600/20 border border-blue-500/30 text-blue-300 text-sm font-medium hover:bg-blue-600/30 transition-colors"
