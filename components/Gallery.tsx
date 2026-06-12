@@ -43,7 +43,6 @@ function BeforeAfterSlider({ before, after }: { before: string; after: string })
         alt="Before"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
-        loading="lazy"
         draggable={false}
       />
 
@@ -53,7 +52,6 @@ function BeforeAfterSlider({ before, after }: { before: string; after: string })
         alt="After"
         className="absolute inset-0 w-full h-full object-cover"
         style={{ clipPath: `inset(0 0 0 ${position}%)` }}
-        loading="lazy"
         draggable={false}
       />
 

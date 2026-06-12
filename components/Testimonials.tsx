@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { testimonials } from "@/lib/config";
 
 function StarRating({ rating }: { rating: number }) {
@@ -26,6 +26,11 @@ export function Testimonials() {
 
   const prev = () => setIndex((i) => (i - 1 + total) % total);
   const next = () => setIndex((i) => (i + 1) % total);
+
+  useEffect(() => {
+    const timer = setInterval(() => setIndex((i) => (i + 1) % total), 5000);
+    return () => clearInterval(timer);
+  }, [total]);
 
   const review = testimonials[index];
 

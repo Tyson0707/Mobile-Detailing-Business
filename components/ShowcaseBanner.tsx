@@ -9,7 +9,6 @@ export function ShowcaseBanner() {
         src="/showcase.jpg"
         alt="Tyson scrubbing the exterior of a vehicle — Clear Line Auto Detail"
         className="absolute inset-0 w-full h-full object-cover object-center"
-        loading="lazy"
       />
 
       {/* Edge fades — keep these for seamless blending */}

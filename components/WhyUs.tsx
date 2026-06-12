@@ -111,7 +111,6 @@ export function WhyUs() {
               src="/action-79.jpg"
               alt="Foam cannon pre-wash on a dark SUV"
               className="w-full h-full object-cover object-center"
-              loading="lazy"
             />
             <div className="absolute bottom-0 left-0 right-0 px-5 py-4 bg-gradient-to-t from-black/70 to-transparent">
               <p className="text-white text-sm font-medium">Foam pre-wash — safe for your paint</p>
@@ -122,7 +121,6 @@ export function WhyUs() {
               src="/action-98.jpg"
               alt="Microfiber hand dry after exterior detail"
               className="w-full h-full object-cover object-center"
-              loading="lazy"
             />
             <div className="absolute bottom-0 left-0 right-0 px-5 py-4 bg-gradient-to-t from-black/70 to-transparent">
               <p className="text-white text-sm font-medium">Hand dry finish — no water spots</p>

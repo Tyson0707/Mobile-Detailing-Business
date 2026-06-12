@@ -35,7 +35,6 @@ export function BeforeAfterStrip() {
                   src={pair.before}
                   alt={`${pair.label} before detail`}
                   className="w-full h-full object-cover"
-                  loading="lazy"
                   draggable={false}
                 />
                 <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-black/60 text-white text-xs font-semibold backdrop-blur-sm">
@@ -69,7 +68,6 @@ export function BeforeAfterStrip() {
                   src={pair.after}
                   alt={`${pair.label} after detail`}
                   className="w-full h-full object-cover"
-                  loading="lazy"
                   draggable={false}
                 />
                 <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-full bg-blue-600/85 text-white text-xs font-semibold backdrop-blur-sm">
