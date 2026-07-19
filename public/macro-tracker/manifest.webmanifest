@@ -1,0 +1,14 @@
+{
+  "name": "MacroLens",
+  "short_name": "MacroLens",
+  "description": "AI-powered macro tracker — photo food analysis, personalized plan, daily tracking.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#2f6f4f",
+  "icons": [
+    { "src": "icon-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
