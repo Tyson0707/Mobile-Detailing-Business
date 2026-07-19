@@ -1,7 +1,15 @@
 /* MacroLens service worker — cache app shell for offline use.
-   API calls to api.anthropic.com always go to the network. */
-const CACHE = "macrolens-v2";
-const SHELL = ["./", "./index.html", "./style.css", "./app.js", "./manifest.webmanifest", "./icon-180.png", "./icon-512.png"];
+   API calls to AI providers always go to the network. */
+const CACHE = "macrolens-v3";
+const BASE = "/macro-tracker";
+const SHELL = [
+  `${BASE}/index.html`,
+  `${BASE}/style.css`,
+  `${BASE}/app.js`,
+  `${BASE}/manifest.webmanifest`,
+  `${BASE}/icon-180.png`,
+  `${BASE}/icon-512.png`,
+];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
@@ -17,7 +25,7 @@ self.addEventListener("activate", (e) => {
 
 self.addEventListener("fetch", (e) => {
   const url = new URL(e.request.url);
-  if (url.origin !== location.origin) return; // never intercept the Anthropic API
+  if (url.origin !== location.origin) return; // never intercept AI provider APIs
   // Network-first for the shell so updates land, cache fallback for offline
   e.respondWith(
     fetch(e.request)
@@ -26,6 +34,6 @@ self.addEventListener("fetch", (e) => {
         caches.open(CACHE).then((c) => c.put(e.request, copy));
         return res;
       })
-      .catch(() => caches.match(e.request, { ignoreSearch: true }).then((m) => m || caches.match("./index.html")))
+      .catch(() => caches.match(e.request, { ignoreSearch: true }).then((m) => m || caches.match(`${BASE}/index.html`)))
   );
 });

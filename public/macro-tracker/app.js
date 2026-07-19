@@ -1233,7 +1233,7 @@ const App = {
 /* ---------------- Boot ---------------- */
 window.addEventListener("DOMContentLoaded", () => {
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js").catch(() => {});
+    navigator.serviceWorker.register("/macro-tracker/sw.js").catch(() => {});
   }
   Accounts.load();
   const last = Accounts.reg.lastActive && Accounts.get(Accounts.reg.lastActive);
