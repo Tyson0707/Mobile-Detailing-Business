@@ -1124,8 +1124,7 @@ const App = {
         <div class="set-row tappable" onclick="Login.logout()"><span class="k">Switch account / log out</span><span class="v"></span></div>
       </div>
       <div class="set-group">
-        <div class="set-row"><span class="k">Daily target</span><span class="v">${plan.calories.toLocaleString()} kcal</span></div>
-        <div class="set-row"><span class="k">Macros</span><span class="v">${plan.protein}P / ${plan.carbs}C / ${plan.fat}F</span></div>
+        <div class="set-row tappable" onclick="App.editTargets()"><span class="k">Daily targets</span><span class="v">${plan.calories.toLocaleString()} kcal · ${plan.protein}P/${plan.carbs}C/${plan.fat}F${plan.custom ? " · custom" : ""}</span></div>
         <div class="set-row"><span class="k">Goal</span><span class="v">${goalTxt}</span></div>
         <div class="set-row"><span class="k">Current weight</span><span class="v">${displayWeight(p.weightKg)}</span></div>
         <div class="set-row tappable" onclick="App.editProfile()"><span class="k">Edit profile &amp; rebuild plan</span><span class="v"></span></div>
@@ -1150,6 +1149,55 @@ const App = {
     $$(".ob-step").forEach((s) => s.classList.toggle("hidden", +s.dataset.step !== 0));
     OB.start();
     OB.next(); // jump past welcome into step 1
+  },
+
+  editTargets() {
+    const p = S.plan;
+    Sheet.open(`
+      <div class="sheet-title">Daily targets</div>
+      <p class="hint">The recommended plan is a starting point — set your own numbers if you know what works for you.</p>
+      <label>Calories (kcal)<input id="t-cal" type="number" inputmode="numeric" value="${p.calories}"></label>
+      <label>Protein (g)<input id="t-p" type="number" inputmode="numeric" value="${p.protein}"></label>
+      <label>Carbs (g)<input id="t-c" type="number" inputmode="numeric" value="${p.carbs}"></label>
+      <label>Fat (g)<input id="t-f" type="number" inputmode="numeric" value="${p.fat}"></label>
+      <p class="hint" id="t-check"></p>
+      <button class="btn primary big" onclick="App.saveTargets()">Save targets</button>
+      <button class="btn ghost" onclick="App.resetTargets()">↺ Reset to recommended plan</button>
+    `);
+    const check = () => {
+      const pr = +$("#t-p").value || 0, cb = +$("#t-c").value || 0, ft = +$("#t-f").value || 0;
+      const cal = +$("#t-cal").value || 0;
+      const fromMacros = Math.round(pr * 4 + cb * 4 + ft * 9);
+      const diff = cal - fromMacros;
+      $("#t-check").textContent = `Your macros add up to ≈ ${fromMacros.toLocaleString()} kcal` +
+        (Math.abs(diff) > cal * 0.08 && cal > 0 ? ` — that's ${Math.abs(diff)} ${diff > 0 ? "under" : "over"} your calorie number. Not a problem, just so you know.` : " — lines up with your calorie target.");
+    };
+    ["t-cal", "t-p", "t-c", "t-f"].forEach((id) => $("#" + id).addEventListener("input", check));
+    check();
+  },
+
+  saveTargets() {
+    const cal = Math.round(+$("#t-cal").value);
+    const pr = Math.round(+$("#t-p").value);
+    const cb = Math.round(+$("#t-c").value);
+    const ft = Math.round(+$("#t-f").value);
+    if (!cal || cal < 800 || cal > 10000) { toast("Calories should be between 800 and 10,000"); return; }
+    if (!pr || pr < 20 || pr > 500) { toast("Protein should be between 20 and 500g"); return; }
+    if (cb < 0 || cb > 1200 || ft < 5 || ft > 400) { toast("Check your carb and fat numbers"); return; }
+    S.plan.calories = cal; S.plan.protein = pr; S.plan.carbs = cb; S.plan.fat = ft;
+    S.plan.custom = true;
+    Store.save();
+    Sheet.close();
+    this.renderSettings();
+    toast("Targets updated 🎯");
+  },
+
+  resetTargets() {
+    S.plan = computePlan(S.profile);
+    Store.save();
+    Sheet.close();
+    this.renderSettings();
+    toast(`Back to recommended — ${S.plan.calories.toLocaleString()} kcal`);
   },
 
   _aiSel: null,
