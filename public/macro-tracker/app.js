@@ -84,7 +84,35 @@ const Store = {
     try { d = JSON.parse(localStorage.getItem(this.key())); } catch { /* fresh */ }
     S = d || { onboarded: false, profile: {}, plan: {}, apiKey: "", log: {}, foods: {} };
     if (!S.foods) S.foods = {}; // accounts created before the food library existed
+    this.backfillFoods();
     return S;
+  },
+
+  // One-time: seed the food library from meals logged before the library existed
+  backfillFoods() {
+    if (S.foodsBackfilled) return;
+    for (const day of Object.values(S.log || {})) {
+      for (const m of (day.meals || [])) {
+        if (!m.name) continue;
+        const key = String(m.name).trim().toLowerCase();
+        const ex = S.foods[key];
+        if (ex) {
+          ex.count += 1;
+          ex.lastUsed = Math.max(ex.lastUsed || 0, m.id || 0);
+        } else {
+          S.foods[key] = {
+            name: m.name,
+            count: 1,
+            lastUsed: m.id || Date.now(),
+            items: (m.items || []).map(({ mult, ...it }) => ({ ...it })),
+            health: m.health ? { ...m.health } : null,
+            assumptions: [],
+          };
+        }
+      }
+    }
+    S.foodsBackfilled = true;
+    this.save();
   },
   save() { if (CURRENT) localStorage.setItem(this.key(), JSON.stringify(S)); },
 };
@@ -742,10 +770,11 @@ const Sheet = {
       <div class="meal-type-picker" id="mt-picker">${this.mealTypeBtns()}</div>
       <button class="btn primary big" onclick="Sheet.analyze(false)">🔍 Analyze &amp; log</button>
       <button class="btn ghost" onclick="Sheet.analyze(true)">Just check it — should I eat this?</button>
+      <div class="section-head" style="margin:22px 2px 8px"><h3>My foods</h3><span class="muted">${Object.keys(S.foods).length ? "tap to log instantly — no AI needed" : ""}</span></div>
       ${Object.keys(S.foods).length ? `
-      <div class="section-head" style="margin:22px 2px 8px"><h3>My foods</h3><span class="muted">tap to log instantly — no AI needed</span></div>
       <input id="food-search" type="search" placeholder="Search your saved foods…" autocomplete="off">
-      <div id="food-lib"></div>` : ""}
+      <div id="food-lib"></div>` : `
+      <p class="hint" style="margin-top:4px">Every food you log gets saved here automatically. Analyze something once, and next time it's a one-tap re-log — no photo, no AI call.</p>`}
     `);
     $("#mt-picker").addEventListener("click", (e) => {
       const b = e.target.closest("button"); if (!b) return;
