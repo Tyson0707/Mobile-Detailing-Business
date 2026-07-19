@@ -11,10 +11,10 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="MacroLens">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icon-180.png">
-  <link rel="icon" type="image/png" href="icon-180.png">
-  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/macro-tracker/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/macro-tracker/icon-180.png">
+  <link rel="icon" type="image/png" href="/macro-tracker/icon-180.png">
+  <link rel="stylesheet" href="/macro-tracker/style.css">
 </head>
 <body>
   <div id="app">
@@ -145,6 +145,12 @@
         <div class="ring-card">
           <div class="ring-wrap">
             <svg id="cal-ring" viewBox="0 0 120 120" width="150" height="150">
+              <defs>
+                <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#3fa471"></stop>
+                  <stop offset="100%" stop-color="#256a46"></stop>
+                </linearGradient>
+              </defs>
               <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
               <circle class="ring-fg" id="ring-fg" cx="60" cy="60" r="52"></circle>
             </svg>
@@ -207,6 +213,6 @@
     <div id="toast" class="hidden"></div>
   </div>
 
-  <script src="app.js"></script>
+  <script src="/macro-tracker/app.js"></script>
 </body>
 </html>
