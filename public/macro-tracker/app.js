@@ -82,7 +82,8 @@ const Store = {
     CURRENT = accountId;
     let d = null;
     try { d = JSON.parse(localStorage.getItem(this.key())); } catch { /* fresh */ }
-    S = d || { onboarded: false, profile: {}, plan: {}, apiKey: "", log: {} };
+    S = d || { onboarded: false, profile: {}, plan: {}, apiKey: "", log: {}, foods: {} };
+    if (!S.foods) S.foods = {}; // accounts created before the food library existed
     return S;
   },
   save() { if (CURRENT) localStorage.setItem(this.key(), JSON.stringify(S)); },
@@ -655,6 +656,51 @@ function fileToScaledBase64(file, maxEdge = 2048, quality = 0.87) {
 }
 
 /* ============================================================
+   FOOD LIBRARY — auto-remembers every logged food
+   ============================================================ */
+const Library = {
+  MAX: 200,
+
+  keyFor(name) { return String(name || "").trim().toLowerCase(); },
+
+  upsert(result) {
+    const key = this.keyFor(result.meal_name);
+    if (!key) return;
+    const existing = S.foods[key];
+    S.foods[key] = {
+      name: result.meal_name,
+      count: (existing?.count || 0) + 1,
+      lastUsed: Date.now(),
+      // Store base (unscaled) per-item values so portion steppers start fresh
+      items: result.items.map(({ mult, ...it }) => ({ ...it })),
+      health: result.health ? { ...result.health } : null,
+      assumptions: result.assumptions || [],
+    };
+    // Evict least-used entries past the cap
+    const keys = Object.keys(S.foods);
+    if (keys.length > this.MAX) {
+      keys.sort((a, b) => (S.foods[a].count - S.foods[b].count) || (S.foods[a].lastUsed - S.foods[b].lastUsed));
+      for (const k of keys.slice(0, keys.length - this.MAX)) delete S.foods[k];
+    }
+  },
+
+  list(query = "") {
+    const q = query.trim().toLowerCase();
+    return Object.entries(S.foods)
+      .filter(([, f]) => !q
+        || f.name.toLowerCase().includes(q)
+        || (f.items || []).some((it) => it.name.toLowerCase().includes(q)))
+      .sort(([, a], [, b]) => (b.count - a.count) || (b.lastUsed - a.lastUsed))
+      .slice(0, q ? 20 : 8);
+  },
+
+  remove(key) { delete S.foods[key]; Store.save(); },
+
+  calsOf(f) { return Math.round((f.items || []).reduce((a, it) => a + (+it.calories || 0), 0)); },
+  proteinOf(f) { return Math.round((f.items || []).reduce((a, it) => a + (+it.protein_g || 0), 0)); },
+};
+
+/* ============================================================
    ADD / ANALYZE SHEET
    ============================================================ */
 const Sheet = {
@@ -696,12 +742,66 @@ const Sheet = {
       <div class="meal-type-picker" id="mt-picker">${this.mealTypeBtns()}</div>
       <button class="btn primary big" onclick="Sheet.analyze(false)">🔍 Analyze &amp; log</button>
       <button class="btn ghost" onclick="Sheet.analyze(true)">Just check it — should I eat this?</button>
+      ${Object.keys(S.foods).length ? `
+      <div class="section-head" style="margin:22px 2px 8px"><h3>My foods</h3><span class="muted">tap to log instantly — no AI needed</span></div>
+      <input id="food-search" type="search" placeholder="Search your saved foods…" autocomplete="off">
+      <div id="food-lib"></div>` : ""}
     `);
     $("#mt-picker").addEventListener("click", (e) => {
       const b = e.target.closest("button"); if (!b) return;
       this.mealType = b.dataset.v;
       $$("#mt-picker button").forEach((x) => x.classList.toggle("on", x.dataset.v === this.mealType));
     });
+    if ($("#food-lib")) {
+      this.renderLib("");
+      $("#food-search").addEventListener("input", (e) => this.renderLib(e.target.value));
+      $("#food-lib").addEventListener("click", (e) => {
+        const del = e.target.closest("[data-del]");
+        if (del) {
+          Library.remove(del.dataset.del);
+          this.renderLib($("#food-search").value);
+          toast("Removed from your foods");
+          return;
+        }
+        const row = e.target.closest("[data-key]");
+        if (row) this.quickLog(row.dataset.key);
+      });
+    }
+  },
+
+  renderLib(query) {
+    const lib = $("#food-lib");
+    if (!lib) return;
+    const entries = Library.list(query);
+    lib.innerHTML = entries.length
+      ? entries.map(([key, f]) => `
+        <div class="lib-row" data-key="${esc(key)}">
+          <div class="lib-main">
+            <div class="lib-name">${esc(f.name)}</div>
+            <div class="lib-sub">${Library.calsOf(f)} kcal · ${Library.proteinOf(f)}g protein${f.count > 1 ? ` · logged ${f.count}×` : ""}${f.health ? ` · ${f.health.score}/10` : ""}</div>
+          </div>
+          <button class="lib-del" aria-label="Remove" data-del="${esc(key)}">✕</button>
+        </div>`).join("")
+      : `<p class="hint" style="text-align:center;margin:14px 0">No saved foods match that.</p>`;
+  },
+
+  quickLog(key) {
+    const f = S.foods[key];
+    if (!f) return;
+    const plan = S.plan, t = App.dayTotals(todayKey());
+    const cal = Library.calsOf(f), pr = Library.proteinOf(f);
+    const calLeft = Math.round(plan.calories - t.calories - cal);
+    const pLeft = Math.max(0, Math.round(plan.protein - t.protein - pr));
+    this.result = {
+      meal_name: f.name,
+      items: (f.items || []).map((it) => ({ ...it, mult: 1 })),
+      health: f.health
+        ? { ...f.health, fit_with_goals: `After this you'd have about ${calLeft.toLocaleString()} kcal ${calLeft >= 0 ? "left" : "over"} and ${pLeft}g protein still to hit today.` }
+        : null,
+      assumptions: f.assumptions || [],
+      _fromLibrary: true,
+    };
+    this.renderResult(false);
   },
 
   mealTypeBtns() {
@@ -801,7 +901,8 @@ const Sheet = {
   },
 
   renderResult(checkOnly) {
-    const r = this.result, h = r.health;
+    const r = this.result;
+    const h = r.health || { score: 5, verdict: "ok_in_moderation", summary: "", pros: [], cons: [], body_effects: "", fit_with_goals: "" };
     const verdictMap = {
       eat_it: { label: "Eat it ✅", cls: "g" },
       ok_in_moderation: { label: "Fine in moderation 👍", cls: "g" },
@@ -814,6 +915,7 @@ const Sheet = {
 
     this.open(`
       <div class="sheet-title">${esc(r.meal_name)}</div>
+      ${r._fromLibrary ? `<p class="hint" style="margin-top:2px">📌 From your food library — saved from a previous analysis. Adjust portions if needed.</p>` : ""}
 
       <div class="result-score">
         <div class="score-circle" style="background:${scoreColor}">${h.score}</div>
@@ -887,8 +989,9 @@ const Sheet = {
         carbs: round(t.carbs_g, 1), fat: round(t.fat_g, 1),
         fiber: round(t.fiber_g, 1), sugar: round(t.sugar_g, 1), sodium: round(t.sodium_mg),
       },
-      health: { score: r.health.score, verdict: r.health.verdict, summary: r.health.summary },
+      health: r.health ? { score: r.health.score, verdict: r.health.verdict, summary: r.health.summary } : null,
     });
+    Library.upsert(r); // grow the personal food library with every log
     Store.save();
     this.close();
     App.renderToday();
