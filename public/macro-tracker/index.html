@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>MacroLens</title>
+  <meta name="description" content="AI-powered macro tracker — photo food analysis, personalized plan, daily tracking.">
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f7f5f0" media="(prefers-color-scheme: light)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MacroLens">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-180.png">
+  <link rel="icon" type="image/png" href="icon-180.png">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ============ LOGIN / ACCOUNT PICKER ============ -->
+    <div id="login" class="screen hidden">
+      <div class="onboard-inner" id="login-body"></div>
+    </div>
+
+    <!-- ============ ONBOARDING ============ -->
+    <div id="onboarding" class="screen hidden">
+      <div class="onboard-inner">
+        <div id="ob-progress" class="ob-progress"></div>
+
+        <!-- Step 0: welcome -->
+        <section class="ob-step" data-step="0">
+          <div class="ob-hero">🔍</div>
+          <h1>MacroLens</h1>
+          <p class="lead">Snap a photo of your food. Get an accurate macro breakdown, a health verdict, and a plan built around <em>your</em> body and goals.</p>
+          <button class="btn primary big" onclick="OB.next()">Let's build your plan</button>
+        </section>
+
+        <!-- Step 1: about you -->
+        <section class="ob-step hidden" data-step="1">
+          <h2>About you</h2>
+          <label>Name<input id="ob-name" type="text" placeholder="Tyson" autocomplete="given-name"></label>
+          <label>Age<input id="ob-age" type="number" inputmode="numeric" placeholder="25" min="13" max="100"></label>
+          <label>Biological sex
+            <div class="seg" id="ob-sex">
+              <button data-v="male">Male</button>
+              <button data-v="female">Female</button>
+            </div>
+          </label>
+          <label>Units
+            <div class="seg" id="ob-units">
+              <button data-v="imperial">lb / ft</button>
+              <button data-v="metric">kg / cm</button>
+            </div>
+          </label>
+          <div id="ob-imperial">
+            <label>Height
+              <div class="row2">
+                <input id="ob-hft" type="number" inputmode="numeric" placeholder="5" min="3" max="8"><span class="unit">ft</span>
+                <input id="ob-hin" type="number" inputmode="numeric" placeholder="10" min="0" max="11"><span class="unit">in</span>
+              </div>
+            </label>
+            <label>Weight
+              <div class="row2"><input id="ob-wlb" type="number" inputmode="decimal" placeholder="175"><span class="unit">lb</span></div>
+            </label>
+          </div>
+          <div id="ob-metric" class="hidden">
+            <label>Height
+              <div class="row2"><input id="ob-hcm" type="number" inputmode="numeric" placeholder="178"><span class="unit">cm</span></div>
+            </label>
+            <label>Weight
+              <div class="row2"><input id="ob-wkg" type="number" inputmode="decimal" placeholder="80"><span class="unit">kg</span></div>
+            </label>
+          </div>
+          <button class="btn primary big" onclick="OB.next()">Next</button>
+        </section>
+
+        <!-- Step 2: activity -->
+        <section class="ob-step hidden" data-step="2">
+          <h2>How active are you?</h2>
+          <p class="hint">Count your typical week, including work and training.</p>
+          <div class="choice-list" id="ob-activity">
+            <button data-v="1.2"><b>Sedentary</b><span>Desk job, little exercise</span></button>
+            <button data-v="1.375"><b>Lightly active</b><span>Exercise 1–3 days/week</span></button>
+            <button data-v="1.55"><b>Moderately active</b><span>Exercise 3–5 days/week</span></button>
+            <button data-v="1.725"><b>Very active</b><span>Hard exercise 6–7 days/week</span></button>
+            <button data-v="1.9"><b>Extremely active</b><span>Physical job + daily training</span></button>
+          </div>
+        </section>
+
+        <!-- Step 3: goal -->
+        <section class="ob-step hidden" data-step="3">
+          <h2>What's the goal?</h2>
+          <div class="choice-list" id="ob-goal">
+            <button data-v="cut"><b>Lose fat</b><span>Calorie deficit, high protein</span></button>
+            <button data-v="maintain"><b>Maintain / recomp</b><span>Hold weight, improve composition</span></button>
+            <button data-v="bulk"><b>Build muscle</b><span>Lean surplus, steady gain</span></button>
+          </div>
+          <div id="ob-pace-wrap" class="hidden">
+            <p class="hint" id="ob-pace-label">Pace</p>
+            <div class="seg" id="ob-pace"></div>
+          </div>
+          <button class="btn primary big hidden" id="ob-goal-next" onclick="OB.next()">Build my plan</button>
+        </section>
+
+        <!-- Step 4: plan reveal -->
+        <section class="ob-step hidden" data-step="4">
+          <h2 id="plan-title">Your plan</h2>
+          <div id="plan-card"></div>
+          <p class="hint">You can tweak everything later in Settings. The plan adapts if your weight or goals change.</p>
+          <button class="btn primary big" onclick="OB.next()">Looks good</button>
+        </section>
+
+        <!-- Step 5: AI provider + key -->
+        <section class="ob-step hidden" data-step="5">
+          <h2>Power up the AI</h2>
+          <p class="lead small">Photo &amp; text food analysis needs an AI key — stored only on this device. Pick a provider:</p>
+          <div class="seg" id="ob-provider">
+            <button data-v="gemini">Gemini · Free</button>
+            <button data-v="claude">Claude · Best</button>
+          </div>
+          <p class="hint" id="ob-provider-hint"></p>
+          <label>API key<input id="ob-key" type="password" placeholder="" autocomplete="off"></label>
+          <label>Account PIN — optional<input id="ob-pin" type="password" inputmode="numeric" maxlength="8" placeholder="4–8 digits, locks your account" autocomplete="off"></label>
+          <button class="btn primary big" onclick="OB.finish(true)">Save &amp; start tracking</button>
+          <button class="btn ghost" onclick="OB.finish(false)">Skip for now (manual logging only)</button>
+        </section>
+      </div>
+    </div>
+
+    <!-- ============ MAIN APP ============ -->
+    <main id="main" class="hidden">
+
+      <!-- TODAY -->
+      <section id="view-today" class="view">
+        <header class="topbar">
+          <div>
+            <div class="greeting" id="greeting">Today</div>
+            <div class="date-sub" id="today-date"></div>
+          </div>
+          <div class="streak" id="streak-chip" title="Logging streak">🔥 0</div>
+        </header>
+
+        <div class="ring-card">
+          <div class="ring-wrap">
+            <svg id="cal-ring" viewBox="0 0 120 120" width="150" height="150">
+              <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+              <circle class="ring-fg" id="ring-fg" cx="60" cy="60" r="52"></circle>
+            </svg>
+            <div class="ring-center">
+              <div class="ring-num" id="cal-left">–</div>
+              <div class="ring-label" id="cal-left-label">kcal left</div>
+            </div>
+          </div>
+          <div class="macro-bars">
+            <div class="mb"><div class="mb-head"><span>Protein</span><span id="p-num">0 / 0g</span></div><div class="bar"><i id="p-bar" class="p"></i></div></div>
+            <div class="mb"><div class="mb-head"><span>Carbs</span><span id="c-num">0 / 0g</span></div><div class="bar"><i id="c-bar" class="c"></i></div></div>
+            <div class="mb"><div class="mb-head"><span>Fat</span><span id="f-num">0 / 0g</span></div><div class="bar"><i id="f-bar" class="f"></i></div></div>
+          </div>
+        </div>
+
+        <div class="section-head">
+          <h3>Meals</h3>
+          <span class="muted" id="meal-cal-sum"></span>
+        </div>
+        <div id="meal-list"></div>
+
+        <div class="weight-row">
+          <span>Morning weight</span>
+          <div>
+            <input id="weight-input" type="number" inputmode="decimal" placeholder="—">
+            <span class="unit" id="weight-unit">lb</span>
+            <button class="btn small" onclick="App.saveWeight()">Save</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRENDS -->
+      <section id="view-trends" class="view hidden">
+        <header class="topbar"><h2>Trends</h2></header>
+        <div id="trends-body"></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="view-settings" class="view hidden">
+        <header class="topbar"><h2>Settings</h2></header>
+        <div id="settings-body"></div>
+      </section>
+
+      <!-- BOTTOM NAV -->
+      <nav id="tabbar">
+        <button data-view="today" class="active"><span class="ico">☀️</span>Today</button>
+        <button id="add-btn" onclick="Sheet.openAdd()">＋</button>
+        <button data-view="trends"><span class="ico">📈</span>Trends</button>
+        <button data-view="settings"><span class="ico">⚙️</span>Settings</button>
+      </nav>
+    </main>
+
+    <!-- ============ ADD / ANALYZE SHEET ============ -->
+    <div id="sheet-backdrop" class="hidden" onclick="Sheet.close()"></div>
+    <div id="sheet" class="hidden">
+      <div class="sheet-grip"></div>
+      <div id="sheet-content"></div>
+    </div>
+
+    <div id="toast" class="hidden"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
