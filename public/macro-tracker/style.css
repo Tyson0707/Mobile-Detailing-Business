@@ -402,6 +402,24 @@ h3 { font-size: 19px; letter-spacing: -0.2px; }
 }
 .meal-type-picker button.on { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
 
+/* Food library */
+.lib-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--card); border: 1.5px solid var(--line); border-radius: 15px;
+  padding: 12px 14px; margin-top: 9px; cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease;
+}
+.lib-row:active { transform: scale(0.98); }
+.lib-main { flex: 1; min-width: 0; }
+.lib-name { font-weight: 700; font-size: 14.5px; letter-spacing: -0.2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lib-sub { color: var(--muted); font-size: 12px; margin-top: 2px; font-weight: 500; }
+.lib-del {
+  width: 28px; height: 28px; border-radius: 50%; border: none; flex-shrink: 0;
+  background: var(--card2); color: var(--muted); font-size: 12px; font-weight: 800; cursor: pointer;
+}
+#food-search { margin-top: 4px; }
+
 .err-box {
   background: rgba(198, 90, 73, 0.1); border: 1.5px solid color-mix(in srgb, var(--bad) 50%, transparent);
   color: var(--bad); border-radius: 14px; padding: 13px 15px; font-size: 14px; margin: 14px 0; line-height: 1.45; font-weight: 500;
