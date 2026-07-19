@@ -301,6 +301,26 @@ h3 { font-size: 19px; letter-spacing: -0.2px; }
 .add-mode:active { transform: scale(0.96); }
 .add-mode .big-ico { display: block; font-size: 32px; margin-bottom: 7px; }
 .photo-preview { width: 100%; border-radius: 16px; margin: 10px 0; max-height: 260px; object-fit: cover; box-shadow: var(--shadow-md); }
+.photo-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; margin: 10px 0 2px; }
+.photo-thumb { position: relative; aspect-ratio: 1; }
+.photo-thumb img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 14px; display: block;
+  box-shadow: var(--shadow-sm); border: 1.5px solid var(--line);
+}
+.photo-thumb button {
+  position: absolute; top: -7px; right: -7px;
+  width: 24px; height: 24px; border-radius: 50%; border: none;
+  background: var(--text); color: var(--bg);
+  font-size: 11px; font-weight: 800; line-height: 1; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: flex; align-items: center; justify-content: center;
+}
+.photo-add {
+  aspect-ratio: 1; border-radius: 14px; border: 1.5px dashed color-mix(in srgb, var(--muted) 45%, transparent);
+  background: var(--card); color: var(--muted); font-size: 24px; font-weight: 700; cursor: pointer;
+  transition: transform 0.12s;
+}
+.photo-add:active { transform: scale(0.92); }
 
 .analyzing { text-align: center; padding: 44px 20px; }
 .spinner {

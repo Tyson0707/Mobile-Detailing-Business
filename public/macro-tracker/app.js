@@ -514,24 +514,27 @@ User context (use it for the verdict and fit_with_goals):
 - Remaining today: ${Math.max(0, Math.round(plan.calories - t.calories))} kcal, ${Math.max(0, Math.round(plan.protein - t.protein))}g protein.`;
   },
 
-  async analyze({ imageBase64, mediaType, text }) {
+  async analyze({ images = [], text }) {
     if (!this.hasKey()) throw new Error("NO_KEY");
+    const multi = images.length > 1
+      ? `These ${images.length} photos belong to ONE log entry — they may show the same food from different angles, or separate plates/items of the same meal. Identify every distinct food across all photos, but never double-count a food that appears in more than one photo. `
+      : "";
     const userText = (text && text.trim())
-      ? `Analyze this food. Additional context from me: ${text.trim()}`
-      : "Analyze this food photo. Break down every item with portions and full macros, then give the health analysis.";
+      ? `${multi}Analyze this food. Additional context from me: ${text.trim()}`
+      : `${multi}Analyze this food${images.length ? " photo" + (images.length > 1 ? "s" : "") : ""}. Break down every item with portions and full macros, then give the health analysis.`;
     const parsed = this.provider() === "gemini"
-      ? await this.callGemini({ imageBase64, mediaType, userText })
-      : await this.callClaude({ imageBase64, mediaType, userText });
+      ? await this.callGemini({ images, userText })
+      : await this.callClaude({ images, userText });
     // Normalize + attach per-item multiplier for portion adjustment
     parsed.items = (parsed.items || []).map((it) => ({ ...it, mult: 1 }));
     return parsed;
   },
 
-  async callClaude({ imageBase64, mediaType, userText }) {
-    const content = [];
-    if (imageBase64) {
-      content.push({ type: "image", source: { type: "base64", media_type: mediaType, data: imageBase64 } });
-    }
+  async callClaude({ images, userText }) {
+    const content = images.map((p) => ({
+      type: "image",
+      source: { type: "base64", media_type: p.mediaType, data: p.base64 },
+    }));
     content.push({ type: "text", text: userText });
 
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -586,9 +589,8 @@ User context (use it for the verdict and fit_with_goals):
     return strip(this.schema);
   },
 
-  async callGemini({ imageBase64, mediaType, userText }) {
-    const parts = [];
-    if (imageBase64) parts.push({ inlineData: { mimeType: mediaType, data: imageBase64 } });
+  async callGemini({ images, userText }) {
+    const parts = images.map((p) => ({ inlineData: { mimeType: p.mediaType, data: p.base64 } }));
     parts.push({ text: userText });
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.GEMINI_MODEL}:generateContent?key=${encodeURIComponent(S.geminiKey)}`;
@@ -656,7 +658,8 @@ function fileToScaledBase64(file, maxEdge = 2048, quality = 0.87) {
    ADD / ANALYZE SHEET
    ============================================================ */
 const Sheet = {
-  photo: null, // {base64, dataUrl, mediaType}
+  photos: [], // [{base64, dataUrl, mediaType}]
+  MAX_PHOTOS: 4,
   result: null,
   mealType: null,
 
@@ -669,11 +672,11 @@ const Sheet = {
   close() {
     $("#sheet").classList.add("hidden");
     $("#sheet-backdrop").classList.add("hidden");
-    this.photo = null; this.result = null;
+    this.photos = []; this.result = null;
   },
 
   openAdd() {
-    this.photo = null; this.result = null;
+    this.photos = []; this.result = null;
     const hour = new Date().getHours();
     this.mealType = hour < 10 ? "Breakfast" : hour < 14 ? "Lunch" : hour < 17 ? "Snack" : "Dinner";
     this.open(`
@@ -684,8 +687,9 @@ const Sheet = {
         <div class="add-mode" onclick="$('#lib-input').click()"><span class="big-ico">🖼️</span>Library</div>
       </div>
       <input id="cam-input" type="file" accept="image/*" capture="environment" class="hidden" onchange="Sheet.onFile(this)">
-      <input id="lib-input" type="file" accept="image/*" class="hidden" onchange="Sheet.onFile(this)">
+      <input id="lib-input" type="file" accept="image/*" multiple class="hidden" onchange="Sheet.onFile(this)">
       <div id="photo-slot"></div>
+      <p class="hint" style="margin-top:2px">Up to ${this.MAX_PHOTOS} photos per entry — different angles or separate plates. Tap Camera again to add another shot.</p>
       <label>Describe it (optional with photo)
         <textarea id="food-text" rows="2" placeholder="e.g. Chipotle chicken bowl, double rice, no beans…"></textarea>
       </label>
@@ -706,19 +710,43 @@ const Sheet = {
   },
 
   async onFile(input) {
-    const file = input.files && input.files[0];
-    if (!file) return;
-    try {
-      this.photo = await fileToScaledBase64(file);
-      $("#photo-slot").innerHTML = `<img class="photo-preview" src="${this.photo.dataUrl}" alt="Food photo">`;
-    } catch (e) { toast(e.message); }
+    const files = [...(input.files || [])];
     input.value = "";
+    let capped = false;
+    for (const file of files) {
+      if (this.photos.length >= this.MAX_PHOTOS) { capped = true; break; }
+      try { this.photos.push(await fileToScaledBase64(file)); }
+      catch (e) { toast(e.message); }
+    }
+    if (capped) toast(`Max ${this.MAX_PHOTOS} photos per entry`);
+    this.renderPhotos();
+  },
+
+  renderPhotos() {
+    const slot = $("#photo-slot");
+    if (!slot) return;
+    slot.innerHTML = this.photos.length
+      ? `<div class="photo-grid">
+          ${this.photos.map((p, i) => `
+            <div class="photo-thumb">
+              <img src="${p.dataUrl}" alt="Food photo ${i + 1}">
+              <button aria-label="Remove photo" onclick="Sheet.removePhoto(${i})">✕</button>
+            </div>`).join("")}
+          ${this.photos.length < this.MAX_PHOTOS ? `<button class="photo-add" onclick="$('#lib-input').click()">＋</button>` : ""}
+        </div>`
+      : "";
+  },
+
+  removePhoto(i) {
+    this.photos.splice(i, 1);
+    this.renderPhotos();
   },
 
   async analyze(checkOnly) {
     const text = $("#food-text") ? $("#food-text").value : "";
-    if (!this.photo && !text.trim()) { toast("Add a photo or a description first"); return; }
+    if (!this.photos.length && !text.trim()) { toast("Add a photo or a description first"); return; }
     if (!AI.hasKey()) { App.aiSettings(true); return; }
+    const photos = this.photos; // keep across the sheet re-render
     const phases = ["Identifying foods…", "Estimating portions…", "Computing macros…", "Judging healthfulness…"];
     this.open(`
       <div class="analyzing">
@@ -730,11 +758,7 @@ const Sheet = {
     const ph = setInterval(() => { pi = (pi + 1) % phases.length; const el = $("#phase"); if (el) el.textContent = phases[pi]; }, 2600);
 
     try {
-      const result = await AI.analyze({
-        imageBase64: this.photo?.base64,
-        mediaType: this.photo?.mediaType,
-        text,
-      });
+      const result = await AI.analyze({ images: photos, text });
       this.result = result;
       this.renderResult(checkOnly);
     } catch (e) {
