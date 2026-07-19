@@ -1,6 +1,6 @@
 /* MacroLens service worker — cache app shell for offline use.
    API calls to api.anthropic.com always go to the network. */
-const CACHE = "macrolens-v1";
+const CACHE = "macrolens-v2";
 const SHELL = ["./", "./index.html", "./style.css", "./app.js", "./manifest.webmanifest", "./icon-180.png", "./icon-512.png"];
 
 self.addEventListener("install", (e) => {

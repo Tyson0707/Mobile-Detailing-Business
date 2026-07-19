@@ -5,22 +5,88 @@
    ============================================================ */
 "use strict";
 
-/* ---------------- Storage ---------------- */
-const Store = {
-  KEY: "macrolens.v1",
-  data: null,
+/* ---------------- Accounts ---------------- */
+const Accounts = {
+  KEY: "macrolens.accounts",
+  reg: null,
   load() {
-    try { this.data = JSON.parse(localStorage.getItem(this.KEY)) || null; }
-    catch { this.data = null; }
-    if (!this.data) {
-      this.data = { onboarded: false, profile: {}, plan: {}, apiKey: "", log: {} };
-    }
-    return this.data;
+    try { this.reg = JSON.parse(localStorage.getItem(this.KEY)) || null; }
+    catch { this.reg = null; }
+    if (!this.reg) this.reg = { accounts: [], lastActive: null };
+    this.migrateLegacy();
+    return this.reg;
   },
-  save() { localStorage.setItem(this.KEY, JSON.stringify(this.data)); },
+  save() { localStorage.setItem(this.KEY, JSON.stringify(this.reg)); },
+  // Pre-account versions stored everything under one key — fold it into the first account
+  migrateLegacy() {
+    const legacy = localStorage.getItem("macrolens.v1");
+    if (!legacy) return;
+    try {
+      const data = JSON.parse(legacy);
+      const id = "acct_" + Date.now().toString(36);
+      this.reg.accounts.push({ id, name: (data.profile && data.profile.name) || "Me", created: Date.now(), pinHash: null, salt: null });
+      localStorage.setItem("macrolens.data." + id, legacy);
+      this.reg.lastActive = id;
+      this.save();
+    } catch { /* corrupted legacy data — drop it */ }
+    localStorage.removeItem("macrolens.v1");
+  },
+  get(id) { return this.reg.accounts.find((a) => a.id === id); },
+  create(name) {
+    const id = "acct_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const acct = { id, name: name || "New user", created: Date.now(), pinHash: null, salt: null };
+    this.reg.accounts.push(acct);
+    this.save();
+    return acct;
+  },
+  remove(id) {
+    this.reg.accounts = this.reg.accounts.filter((a) => a.id !== id);
+    if (this.reg.lastActive === id) this.reg.lastActive = null;
+    localStorage.removeItem("macrolens.data." + id);
+    this.save();
+  },
+  async hashPin(pin, salt) {
+    const msg = salt + ":" + pin;
+    if (crypto.subtle) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(msg));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+    // non-secure-context fallback (http on LAN): weak but better than nothing
+    let h = 2166136261;
+    for (let i = 0; i < msg.length; i++) { h ^= msg.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return "fnv" + (h >>> 0).toString(16);
+  },
+  async setPin(id, pin) {
+    const a = this.get(id);
+    if (!a) return;
+    if (!pin) { a.pinHash = null; a.salt = null; }
+    else {
+      a.salt = Math.random().toString(36).slice(2, 10);
+      a.pinHash = await this.hashPin(pin, a.salt);
+    }
+    this.save();
+  },
+  async verifyPin(id, pin) {
+    const a = this.get(id);
+    if (!a || !a.pinHash) return true;
+    return (await this.hashPin(pin, a.salt)) === a.pinHash;
+  },
 };
 
-const S = Store.load();
+/* ---------------- Per-account storage ---------------- */
+let CURRENT = null; // active account id
+let S = null;       // active account's data
+const Store = {
+  key() { return "macrolens.data." + CURRENT; },
+  load(accountId) {
+    CURRENT = accountId;
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem(this.key())); } catch { /* fresh */ }
+    S = d || { onboarded: false, profile: {}, plan: {}, apiKey: "", log: {} };
+    return S;
+  },
+  save() { if (CURRENT) localStorage.setItem(this.key(), JSON.stringify(S)); },
+};
 
 /* ---------------- Utilities ---------------- */
 const $ = (sel) => document.querySelector(sel);
@@ -83,11 +149,93 @@ function computePlan(p) {
 }
 
 /* ============================================================
+   LOGIN — account picker
+   ============================================================ */
+const Login = {
+  show() {
+    $("#main").classList.add("hidden");
+    $("#onboarding").classList.add("hidden");
+    $("#login").classList.remove("hidden");
+    const accts = Accounts.reg.accounts;
+    $("#login-body").innerHTML = `
+      <div class="ob-hero">🔍</div>
+      <h1>MacroLens</h1>
+      <p class="lead">${accts.length ? "Who's tracking?" : "Snap your food, know your macros.<br>Create an account to get started."}</p>
+      <div class="choice-list" style="margin-top:28px">
+        ${accts.map((a) => `
+          <button onclick="Login.pick('${a.id}')">
+            <b>${esc(a.name)}</b>
+            <span>${a.pinHash ? "🔒 PIN protected" : "Tap to open"}</span>
+          </button>`).join("")}
+        <button onclick="Login.newAccount()" style="border-style:dashed">
+          <b>＋ ${accts.length ? "New account" : "Create my account"}</b>
+          <span>Own profile, plan &amp; progress</span>
+        </button>
+      </div>
+      <div id="pin-area"></div>`;
+    $("#login").scrollTo(0, 0);
+  },
+
+  pick(id) {
+    const a = Accounts.get(id);
+    if (!a) return;
+    if (!a.pinHash) return this.enter(id);
+    $("#pin-area").innerHTML = `
+      <label>PIN for ${esc(a.name)}
+        <input id="pin-in" type="password" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off">
+      </label>
+      <button class="btn primary big" onclick="Login.tryPin('${id}')">Unlock</button>`;
+    $("#pin-in").focus();
+    $("#pin-in").addEventListener("keydown", (e) => { if (e.key === "Enter") this.tryPin(id); });
+  },
+
+  async tryPin(id) {
+    if (await Accounts.verifyPin(id, $("#pin-in").value)) this.enter(id);
+    else { toast("Wrong PIN"); $("#pin-in").value = ""; }
+  },
+
+  enter(id) {
+    Accounts.reg.lastActive = id;
+    Accounts.save();
+    Store.load(id);
+    $("#login").classList.add("hidden");
+    if (S.onboarded) App.boot();
+    else OB.startFresh();
+  },
+
+  newAccount() {
+    const acct = Accounts.create("");
+    this.enter(acct.id); // fresh data → straight into onboarding
+  },
+
+  logout() {
+    Accounts.reg.lastActive = null;
+    Accounts.save();
+    CURRENT = null; S = null;
+    Sheet.close();
+    this.show();
+  },
+};
+
+/* ============================================================
    ONBOARDING
    ============================================================ */
 const OB = {
   step: 0, TOTAL: 6,
   draft: { sex: "male", units: "imperial", activity: null, goal: null, pace: null },
+
+  // Fresh account: wipe the wizard's previous state before starting
+  startFresh() {
+    this.step = 0;
+    this.draft = { sex: "male", units: "imperial", activity: null, goal: null, pace: null };
+    ["#ob-name", "#ob-age", "#ob-hft", "#ob-hin", "#ob-wlb", "#ob-hcm", "#ob-wkg", "#ob-key", "#ob-pin"]
+      .forEach((sel) => { const el = $(sel); if (el) el.value = ""; });
+    $$("#ob-activity button, #ob-goal button").forEach((b) => b.classList.remove("on"));
+    $("#ob-pace-wrap").classList.add("hidden");
+    $("#ob-goal-next").classList.add("hidden");
+    $$(".ob-step").forEach((s) => s.classList.toggle("hidden", +s.dataset.step !== 0));
+    this.start();
+  },
 
   start() {
     $("#onboarding").classList.remove("hidden");
@@ -227,7 +375,7 @@ const OB = {
       </div>`;
   },
 
-  finish(withKey) {
+  async finish(withKey) {
     if (withKey) {
       const k = $("#ob-key").value.trim();
       if (!k) { toast("Paste your API key, or tap Skip"); return; }
@@ -242,6 +390,14 @@ const OB = {
     S.plan = d._plan || computePlan(d);
     S.onboarded = true;
     Store.save();
+    // Sync the account record: display name + optional PIN
+    const acct = Accounts.get(CURRENT);
+    if (acct) {
+      acct.name = d.name === "there" ? "Me" : d.name;
+      const pin = $("#ob-pin") ? $("#ob-pin").value.trim() : "";
+      if (pin) await Accounts.setPin(CURRENT, pin);
+      Accounts.save();
+    }
     $("#onboarding").classList.add("hidden");
     App.boot();
     toast(`Plan ready — ${S.plan.calories.toLocaleString()} kcal/day 💪`);
@@ -676,7 +832,7 @@ const App = {
   boot() {
     $("#main").classList.remove("hidden");
     this.bindTabs();
-    this.renderToday();
+    this.showView("today"); // always land on Today, even if the previous session left another tab active
   },
 
   bindTabs() {
@@ -875,7 +1031,13 @@ const App = {
   renderSettings() {
     const p = S.profile, plan = S.plan;
     const goalTxt = { cut: "Lose fat", maintain: "Maintain", bulk: "Build muscle" }[p.goal];
+    const acct = Accounts.get(CURRENT);
     $("#settings-body").innerHTML = `
+      <div class="set-group">
+        <div class="set-row"><span class="k">Account</span><span class="v">${esc(acct?.name || p.name || "")}</span></div>
+        <div class="set-row tappable" onclick="App.changePin()"><span class="k">Account PIN</span><span class="v">${acct?.pinHash ? "On" : "Off"}</span></div>
+        <div class="set-row tappable" onclick="Login.logout()"><span class="k">Switch account / log out</span><span class="v"></span></div>
+      </div>
       <div class="set-group">
         <div class="set-row"><span class="k">Daily target</span><span class="v">${plan.calories.toLocaleString()} kcal</span></div>
         <div class="set-row"><span class="k">Macros</span><span class="v">${plan.protein}P / ${plan.carbs}C / ${plan.fat}F</span></div>
@@ -891,8 +1053,8 @@ const App = {
       <p class="set-note">Analysis runs directly from your phone to Anthropic's API with your own key. Nothing is sent anywhere else; all logs stay on this device.</p>
 
       <div class="set-group">
-        <div class="set-row tappable" onclick="App.exportData()"><span class="k">Export data (JSON)</span><span class="v"></span></div>
-        <div class="set-row tappable" onclick="App.resetAll()"><span class="k" style="color:var(--danger)">Erase everything</span><span class="v"></span></div>
+        <div class="set-row tappable" onclick="App.exportData()"><span class="k">Export my data (JSON)</span><span class="v"></span></div>
+        <div class="set-row tappable" onclick="App.resetAll()"><span class="k" style="color:var(--danger)">Delete this account</span><span class="v"></span></div>
       </div>
       <p class="set-note">MacroLens v1.0 — built for ${esc(p.name || "you")}. Estimates are estimates: even lab analysis of identical meals varies ±10-20%. Consistency beats precision.</p>
     `;
@@ -926,9 +1088,29 @@ const App = {
     URL.revokeObjectURL(a.href);
   },
 
+  changePin() {
+    const acct = Accounts.get(CURRENT);
+    Sheet.open(`
+      <div class="sheet-title">Account PIN</div>
+      <p class="hint">${acct?.pinHash ? "Enter a new PIN, or leave empty to remove the current one." : "Add a PIN so only you can open this account on this phone."}</p>
+      <label>PIN (4–8 digits)<input id="new-pin" type="password" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off"></label>
+      <button class="btn primary big" onclick="App.savePin()">Save</button>
+      <button class="btn ghost" onclick="Sheet.close()">Cancel</button>
+    `);
+  },
+
+  async savePin() {
+    await Accounts.setPin(CURRENT, $("#new-pin").value.trim());
+    Sheet.close();
+    App.renderSettings();
+    toast("PIN updated");
+  },
+
   resetAll() {
-    if (!confirm("Erase your profile, plan, and all logged meals? This cannot be undone.")) return;
-    localStorage.removeItem(Store.KEY);
+    const acct = Accounts.get(CURRENT);
+    if (!confirm(`Delete the account "${acct?.name || ""}" with its profile, plan, and all logged meals? This cannot be undone.`)) return;
+    Accounts.remove(CURRENT);
+    CURRENT = null; S = null;
     location.reload();
   },
 };
@@ -938,6 +1120,9 @@ window.addEventListener("DOMContentLoaded", () => {
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js").catch(() => {});
   }
-  if (S.onboarded) App.boot();
-  else OB.start();
+  Accounts.load();
+  const last = Accounts.reg.lastActive && Accounts.get(Accounts.reg.lastActive);
+  // Auto-open the last account unless it's PIN-locked; otherwise show the picker
+  if (last && !last.pinHash) Login.enter(last.id);
+  else Login.show();
 });

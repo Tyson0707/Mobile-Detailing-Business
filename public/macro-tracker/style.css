@@ -83,7 +83,8 @@ h3 { font-size: 18px; }
 .btn:active { opacity: 0.75; }
 .btn:disabled { opacity: 0.5; }
 
-/* ---------- Onboarding ---------- */
+/* ---------- Onboarding & Login ---------- */
+#login,
 #onboarding {
   position: fixed; inset: 0; z-index: 50;
   background: var(--bg);
@@ -95,7 +96,7 @@ h3 { font-size: 18px; }
 .ob-progress i { flex: 1; height: 4px; border-radius: 2px; background: var(--line); }
 .ob-progress i.on { background: var(--accent); }
 .ob-hero { font-size: 64px; text-align: center; margin: 40px 0 16px; }
-.ob-step h1 { text-align: center; margin-bottom: 12px; }
+.ob-step h1, #login-body h1 { text-align: center; margin-bottom: 12px; }
 .lead { font-size: 17px; line-height: 1.5; color: var(--muted); text-align: center; }
 .lead.small { font-size: 15px; text-align: left; }
 

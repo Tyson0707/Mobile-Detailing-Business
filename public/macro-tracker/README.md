@@ -8,9 +8,24 @@ Personal AI macro tracker for iPhone. Snap a photo of your food (or describe it)
 2. **Open that URL in Safari** on your iPhone.
 3. Tap **Share → Add to Home Screen**. It installs like a native app: full screen, its own icon, works offline for logging.
 
+## Accounts
+
+MacroLens supports multiple accounts, so friends can use it too:
+
+- On launch you get an **account picker** — tap your account or create a new one
+- Each account has its **own profile, plan, meal logs, trends, and API key** — fully isolated from the others
+- Optionally protect your account with a **4–8 digit PIN** (set it during onboarding or later in Settings); PIN-locked accounts always ask on launch, PIN-free accounts open automatically
+- **Switch account / log out** and **Delete this account** live in Settings
+
+Accounts are stored per device (there's no cloud sync). Two ways to share the app:
+1. **Friend has their own phone (most common):** they just open the same URL and add it to their home screen — they create their account on their device.
+2. **Sharing one phone:** create multiple accounts on the picker; PINs keep them private.
+
+To move data between devices, use **Settings → Export my data (JSON)**.
+
 ## First launch
 
-The app walks you through onboarding:
+After creating your account, the app walks you through onboarding:
 
 - Your stats (age, sex, height, weight) and activity level
 - Your goal (lose fat / maintain / build muscle) and pace
