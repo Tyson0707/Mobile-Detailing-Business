@@ -112,11 +112,16 @@
           <button class="btn primary big" onclick="OB.next()">Looks good</button>
         </section>
 
-        <!-- Step 5: API key -->
+        <!-- Step 5: AI provider + key -->
         <section class="ob-step hidden" data-step="5">
           <h2>Power up the AI</h2>
-          <p class="lead small">Photo &amp; text food analysis runs on Claude (Anthropic's AI). Paste an API key from <b>console.anthropic.com → API keys</b>. It's stored only on this device.</p>
-          <label>Anthropic API key<input id="ob-key" type="password" placeholder="sk-ant-…" autocomplete="off"></label>
+          <p class="lead small">Photo &amp; text food analysis needs an AI key — stored only on this device. Pick a provider:</p>
+          <div class="seg" id="ob-provider">
+            <button data-v="gemini">Gemini · Free</button>
+            <button data-v="claude">Claude · Best</button>
+          </div>
+          <p class="hint" id="ob-provider-hint"></p>
+          <label>API key<input id="ob-key" type="password" placeholder="" autocomplete="off"></label>
           <label>Account PIN — optional<input id="ob-pin" type="password" inputmode="numeric" maxlength="8" placeholder="4–8 digits, locks your account" autocomplete="off"></label>
           <button class="btn primary big" onclick="OB.finish(true)">Save &amp; start tracking</button>
           <button class="btn ghost" onclick="OB.finish(false)">Skip for now (manual logging only)</button>

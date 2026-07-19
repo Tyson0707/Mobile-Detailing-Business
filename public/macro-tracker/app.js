@@ -222,12 +222,12 @@ const Login = {
    ============================================================ */
 const OB = {
   step: 0, TOTAL: 6,
-  draft: { sex: "male", units: "imperial", activity: null, goal: null, pace: null },
+  draft: { sex: "male", units: "imperial", activity: null, goal: null, pace: null, provider: "gemini" },
 
   // Fresh account: wipe the wizard's previous state before starting
   startFresh() {
     this.step = 0;
-    this.draft = { sex: "male", units: "imperial", activity: null, goal: null, pace: null };
+    this.draft = { sex: "male", units: "imperial", activity: null, goal: null, pace: null, provider: "gemini" };
     ["#ob-name", "#ob-age", "#ob-hft", "#ob-hin", "#ob-wlb", "#ob-hcm", "#ob-wkg", "#ob-key", "#ob-pin"]
       .forEach((sel) => { const el = $(sel); if (el) el.value = ""; });
     $$("#ob-activity button, #ob-goal button").forEach((b) => b.classList.remove("on"));
@@ -275,6 +275,7 @@ const OB = {
       $("#ob-imperial").classList.toggle("hidden", this.draft.units === "metric");
       $("#ob-metric").classList.toggle("hidden", this.draft.units !== "metric");
     });
+    segTap("#ob-provider", "provider", () => this.updateProviderUI());
     $("#ob-activity").addEventListener("click", (e) => {
       const b = e.target.closest("button"); if (!b) return;
       this.draft.activity = parseFloat(b.dataset.v);
@@ -300,6 +301,14 @@ const OB = {
     $$("#ob-units button").forEach((b) => b.classList.toggle("on", b.dataset.v === this.draft.units));
     $("#ob-imperial").classList.toggle("hidden", this.draft.units === "metric");
     $("#ob-metric").classList.toggle("hidden", this.draft.units !== "metric");
+    this.updateProviderUI();
+  },
+
+  updateProviderUI() {
+    const p = PROVIDERS[this.draft.provider] || PROVIDERS.gemini;
+    $$("#ob-provider button").forEach((b) => b.classList.toggle("on", b.dataset.v === this.draft.provider));
+    $("#ob-provider-hint").textContent = p.hint;
+    $("#ob-key").placeholder = p.placeholder;
   },
 
   renderPace() {
@@ -376,10 +385,12 @@ const OB = {
   },
 
   async finish(withKey) {
+    S.provider = this.draft.provider || "gemini";
     if (withKey) {
       const k = $("#ob-key").value.trim();
       if (!k) { toast("Paste your API key, or tap Skip"); return; }
-      S.apiKey = k;
+      if (S.provider === "gemini") S.geminiKey = k;
+      else S.apiKey = k;
     }
     const d = this.draft;
     S.profile = {
@@ -405,10 +416,31 @@ const OB = {
 };
 
 /* ============================================================
-   CLAUDE API — food analysis
+   AI — food analysis (Claude or Gemini)
    ============================================================ */
+const PROVIDERS = {
+  gemini: {
+    label: "Google Gemini",
+    model: "Gemini 2.5 Flash",
+    cost: "Free",
+    hint: "Free — no credit card needed. Get a key at aistudio.google.com → \"Get API key\". Strong accuracy; the free tier covers a couple hundred analyses per day.",
+    placeholder: "AIza…",
+  },
+  claude: {
+    label: "Anthropic Claude",
+    model: "Claude Opus 4.8",
+    cost: "~1–3¢ / meal",
+    hint: "The most accurate photo analysis (Claude Opus 4.8). Pay-as-you-go, roughly 1–3¢ per meal. Get a key at console.anthropic.com → API keys.",
+    placeholder: "sk-ant-…",
+  },
+};
+
 const AI = {
   MODEL: "claude-opus-4-8",
+  GEMINI_MODEL: "gemini-2.5-flash",
+
+  provider() { return S.provider === "gemini" ? "gemini" : "claude"; },
+  hasKey() { return this.provider() === "gemini" ? !!S.geminiKey : !!S.apiKey; },
 
   schema: {
     type: "object",
@@ -483,17 +515,24 @@ User context (use it for the verdict and fit_with_goals):
   },
 
   async analyze({ imageBase64, mediaType, text }) {
-    if (!S.apiKey) throw new Error("NO_KEY");
+    if (!this.hasKey()) throw new Error("NO_KEY");
+    const userText = (text && text.trim())
+      ? `Analyze this food. Additional context from me: ${text.trim()}`
+      : "Analyze this food photo. Break down every item with portions and full macros, then give the health analysis.";
+    const parsed = this.provider() === "gemini"
+      ? await this.callGemini({ imageBase64, mediaType, userText })
+      : await this.callClaude({ imageBase64, mediaType, userText });
+    // Normalize + attach per-item multiplier for portion adjustment
+    parsed.items = (parsed.items || []).map((it) => ({ ...it, mult: 1 }));
+    return parsed;
+  },
+
+  async callClaude({ imageBase64, mediaType, userText }) {
     const content = [];
     if (imageBase64) {
       content.push({ type: "image", source: { type: "base64", media_type: mediaType, data: imageBase64 } });
     }
-    content.push({
-      type: "text",
-      text: (text && text.trim())
-        ? `Analyze this food. Additional context from me: ${text.trim()}`
-        : "Analyze this food photo. Break down every item with portions and full macros, then give the health analysis.",
-    });
+    content.push({ type: "text", text: userText });
 
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
@@ -529,12 +568,66 @@ User context (use it for the verdict and fit_with_goals):
     if (data.stop_reason === "refusal") throw new Error("The AI declined to analyze this image. Try a different photo or describe the food in text.");
     const textBlock = (data.content || []).find((b) => b.type === "text");
     if (!textBlock) throw new Error("Empty response from the AI — try again.");
-    let parsed;
-    try { parsed = JSON.parse(textBlock.text); }
+    try { return JSON.parse(textBlock.text); }
     catch { throw new Error("Couldn't parse the analysis — try again."); }
-    // Normalize + attach per-item multiplier for portion adjustment
-    parsed.items = (parsed.items || []).map((it) => ({ ...it, mult: 1 }));
-    return parsed;
+  },
+
+  // Gemini's responseSchema rejects additionalProperties — strip it recursively
+  geminiSchema() {
+    const strip = (s) => {
+      if (Array.isArray(s)) return s.map(strip);
+      if (s && typeof s === "object") {
+        const o = {};
+        for (const [k, v] of Object.entries(s)) if (k !== "additionalProperties") o[k] = strip(v);
+        return o;
+      }
+      return s;
+    };
+    return strip(this.schema);
+  },
+
+  async callGemini({ imageBase64, mediaType, userText }) {
+    const parts = [];
+    if (imageBase64) parts.push({ inlineData: { mimeType: mediaType, data: imageBase64 } });
+    parts.push({ text: userText });
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.GEMINI_MODEL}:generateContent?key=${encodeURIComponent(S.geminiKey)}`;
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: this.systemPrompt() }] },
+        contents: [{ role: "user", parts }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: this.geminiSchema(),
+          maxOutputTokens: 16384,
+        },
+      }),
+    });
+
+    if (!res.ok) {
+      let msg = `Gemini API error (${res.status})`;
+      try {
+        const e = await res.json();
+        if (e?.error?.message) msg = e.error.message;
+      } catch { /* keep generic message */ }
+      if (res.status === 400 || res.status === 403) msg = "Gemini API key was rejected. Check it in Settings → AI provider.";
+      if (res.status === 429) msg = "Gemini free-tier limit hit — wait a minute and try again (or switch to Claude in Settings).";
+      if (res.status === 503) msg = "Gemini is overloaded right now — try again in a moment.";
+      throw new Error(msg);
+    }
+
+    const data = await res.json();
+    const cand = data.candidates && data.candidates[0];
+    const txt = cand?.content?.parts?.map((p) => p.text || "").join("");
+    if (!txt) {
+      throw new Error(cand?.finishReason === "SAFETY"
+        ? "Gemini declined to analyze this image. Try a different photo or describe the food in text."
+        : "Empty response from Gemini — try again.");
+    }
+    try { return JSON.parse(txt); }
+    catch { throw new Error("Couldn't parse the analysis — try again."); }
   },
 };
 
@@ -625,15 +718,7 @@ const Sheet = {
   async analyze(checkOnly) {
     const text = $("#food-text") ? $("#food-text").value : "";
     if (!this.photo && !text.trim()) { toast("Add a photo or a description first"); return; }
-    if (!S.apiKey) {
-      this.open(`
-        <div class="sheet-title">Add your API key</div>
-        <p class="hint">AI analysis needs an Anthropic API key (console.anthropic.com → API keys). It's stored only on this phone.</p>
-        <label>Anthropic API key<input id="late-key" type="password" placeholder="sk-ant-…"></label>
-        <button class="btn primary big" onclick="S.apiKey=$('#late-key').value.trim();Store.save();Sheet.openAdd();toast('Key saved — try again')">Save key</button>
-      `);
-      return;
-    }
+    if (!AI.hasKey()) { App.aiSettings(true); return; }
     const phases = ["Identifying foods…", "Estimating portions…", "Computing macros…", "Judging healthfulness…"];
     this.open(`
       <div class="analyzing">
@@ -1047,10 +1132,9 @@ const App = {
       </div>
 
       <div class="set-group">
-        <div class="set-row tappable" onclick="App.editKey()"><span class="k">Anthropic API key</span><span class="v">${S.apiKey ? "•••" + S.apiKey.slice(-4) : "Not set"}</span></div>
-        <div class="set-row"><span class="k">AI model</span><span class="v">Claude Opus 4.8</span></div>
+        <div class="set-row tappable" onclick="App.aiSettings()"><span class="k">AI provider</span><span class="v">${PROVIDERS[AI.provider()].model} · ${AI.hasKey() ? "key set" : "no key"}</span></div>
       </div>
-      <p class="set-note">Analysis runs directly from your phone to Anthropic's API with your own key. Nothing is sent anywhere else; all logs stay on this device.</p>
+      <p class="set-note">Analysis runs directly from your phone to the AI provider with your own key — Gemini is free, Claude is the most accurate. Nothing is sent anywhere else; all logs stay on this device.</p>
 
       <div class="set-group">
         <div class="set-row tappable" onclick="App.exportData()"><span class="k">Export my data (JSON)</span><span class="v"></span></div>
@@ -1068,15 +1152,46 @@ const App = {
     OB.next(); // jump past welcome into step 1
   },
 
-  editKey() {
+  _aiSel: null,
+  aiSettings(fromAdd = false) {
+    this._aiSel = AI.provider();
     Sheet.open(`
-      <div class="sheet-title">API key</div>
-      <p class="hint">From console.anthropic.com → API keys. Stored only in this phone's browser storage.</p>
-      <label>Anthropic API key<input id="set-key" type="password" value="${esc(S.apiKey)}" placeholder="sk-ant-…"></label>
-      <button class="btn primary big" onclick="S.apiKey=$('#set-key').value.trim();Store.save();Sheet.close();App.renderSettings();toast('Key saved')">Save</button>
-      <button class="btn ghost" onclick="Sheet.close()">Cancel</button>
+      <div class="sheet-title">AI provider</div>
+      ${fromAdd ? `<p class="hint">Analysis needs an AI key first — it's stored only on this phone.</p>` : ""}
+      <div class="seg" id="prov-seg" style="margin-top:10px">
+        <button data-v="gemini">Gemini · Free</button>
+        <button data-v="claude">Claude · Best</button>
+      </div>
+      <p class="hint" id="prov-hint"></p>
+      <label>API key<input id="prov-key" type="password" autocomplete="off"></label>
+      <button class="btn primary big" onclick="App.saveAiSettings(${fromAdd})">Save</button>
+      <button class="btn ghost" onclick="${fromAdd ? "Sheet.openAdd()" : "Sheet.close()"}">Cancel</button>
     `);
-    $("#sheet").classList.remove("hidden");
+    const sync = () => {
+      const p = PROVIDERS[this._aiSel];
+      $$("#prov-seg button").forEach((b) => b.classList.toggle("on", b.dataset.v === this._aiSel));
+      $("#prov-hint").textContent = p.hint;
+      const keyEl = $("#prov-key");
+      keyEl.placeholder = p.placeholder;
+      keyEl.value = this._aiSel === "gemini" ? (S.geminiKey || "") : (S.apiKey || "");
+    };
+    $("#prov-seg").addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      this._aiSel = b.dataset.v;
+      sync();
+    });
+    sync();
+  },
+
+  saveAiSettings(fromAdd) {
+    const k = $("#prov-key").value.trim();
+    S.provider = this._aiSel;
+    if (this._aiSel === "gemini") S.geminiKey = k;
+    else S.apiKey = k;
+    Store.save();
+    toast(k ? "Saved — using " + PROVIDERS[this._aiSel].model : "Provider saved (no key yet)");
+    if (fromAdd) Sheet.openAdd();
+    else { Sheet.close(); this.renderSettings(); }
   },
 
   exportData() {

@@ -33,14 +33,14 @@ After creating your account, the app walks you through onboarding:
 
 ## Enabling AI photo analysis
 
-Analysis runs on **Claude Opus 4.8** using your own Anthropic API key:
+Pick a provider during onboarding (or later in **Settings → AI provider**). Each account has its own provider and keys:
 
-1. Go to [console.anthropic.com](https://console.anthropic.com) → **API keys** → create a key
-2. Paste it during onboarding, or later in **Settings → Anthropic API key**
+| Provider | Cost | How to get a key |
+|---|---|---|
+| **Google Gemini** (Gemini 2.5 Flash) | **Free** — no credit card; the free tier covers a couple hundred analyses/day | [aistudio.google.com](https://aistudio.google.com) → **Get API key** |
+| **Anthropic Claude** (Claude Opus 4.8) | ~1–3¢ per meal, pay-as-you-go — the most accurate photo analysis | [console.anthropic.com](https://console.anthropic.com) → **API keys** |
 
-The key and all your data live only in your phone's browser storage. Photos go directly from your phone to Anthropic's API — no middleman server.
-
-> Typical cost: a photo analysis is roughly 1–3¢ per meal at Opus 4.8 pricing.
+Both keys can be saved at once; switch between them anytime. Keys and all your data live only in your phone's browser storage. Photos go directly from your phone to the provider's API — no middleman server. If Gemini's free tier rate-limits you mid-day, wait a minute or flip to Claude in Settings.
 
 ## Features
 
