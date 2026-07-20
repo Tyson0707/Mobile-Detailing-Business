@@ -458,8 +458,8 @@ const PROVIDERS = {
   claude: {
     label: "Anthropic Claude",
     model: "Claude Opus 4.8",
-    cost: "~1–3¢ / meal",
-    hint: "The most accurate photo analysis (Claude Opus 4.8). Pay-as-you-go, roughly 1–3¢ per meal. Get a key at console.anthropic.com → API keys.",
+    cost: "~2–4¢ / meal",
+    hint: "The most accurate photo analysis (Claude Opus 4.8). Pay-as-you-go, roughly 2–4¢ per analysis (and your food library makes repeats free). Get a key at console.anthropic.com → API keys.",
     placeholder: "sk-ant-…",
   },
 };
@@ -576,9 +576,12 @@ User context (use it for the verdict and fit_with_goals):
       },
       body: JSON.stringify({
         model: this.MODEL,
-        max_tokens: 8000,
+        // Cost controls: medium effort trims thinking/output tokens (the
+        // expensive side at $25/MTok) while keeping Opus-level analysis;
+        // max_tokens caps any runaway response.
+        max_tokens: 4000,
         thinking: { type: "adaptive" },
-        output_config: { format: { type: "json_schema", schema: this.schema } },
+        output_config: { format: { type: "json_schema", schema: this.schema }, effort: "medium" },
         system: this.systemPrompt(),
         messages: [{ role: "user", content }],
       }),
@@ -600,8 +603,24 @@ User context (use it for the verdict and fit_with_goals):
     if (data.stop_reason === "refusal") throw new Error("The AI declined to analyze this image. Try a different photo or describe the food in text.");
     const textBlock = (data.content || []).find((b) => b.type === "text");
     if (!textBlock) throw new Error("Empty response from the AI — try again.");
-    try { return JSON.parse(textBlock.text); }
+    let parsed;
+    try { parsed = JSON.parse(textBlock.text); }
     catch { throw new Error("Couldn't parse the analysis — try again."); }
+    parsed._costUSD = this.trackUsage(data.usage);
+    return parsed;
+  },
+
+  // Opus 4.8 pricing: $5 / 1M input tokens, $25 / 1M output tokens
+  trackUsage(usage) {
+    if (!usage) return null;
+    const inTok = (usage.input_tokens || 0) + (usage.cache_creation_input_tokens || 0) + (usage.cache_read_input_tokens || 0);
+    const outTok = usage.output_tokens || 0;
+    const cost = (inTok * 5 + outTok * 25) / 1e6;
+    S.usage = S.usage || { inTok: 0, outTok: 0, cost: 0, calls: 0 };
+    S.usage.inTok += inTok; S.usage.outTok += outTok;
+    S.usage.cost += cost; S.usage.calls += 1;
+    Store.save();
+    return cost;
   },
 
   // Gemini's responseSchema rejects additionalProperties — strip it recursively
@@ -662,8 +681,9 @@ User context (use it for the verdict and fit_with_goals):
   },
 };
 
-/* Downscale an image file to keep requests fast + within limits */
-function fileToScaledBase64(file, maxEdge = 2048, quality = 0.87) {
+/* Downscale an image file — 1280px is plenty for plate-level detail and
+   costs a fraction of the tokens of a full-resolution photo */
+function fileToScaledBase64(file, maxEdge = 1280, quality = 0.82) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file);
     const img = new Image();
@@ -944,7 +964,9 @@ const Sheet = {
 
     this.open(`
       <div class="sheet-title">${esc(r.meal_name)}</div>
-      ${r._fromLibrary ? `<p class="hint" style="margin-top:2px">📌 From your food library — saved from a previous analysis. Adjust portions if needed.</p>` : ""}
+      ${r._fromLibrary ? `<p class="hint" style="margin-top:2px">📌 From your food library — saved from a previous analysis. Adjust portions if needed.</p>`
+        : r._costUSD != null ? `<p class="hint" style="margin-top:2px">💰 This analysis cost ≈ ${(r._costUSD * 100).toFixed(1)}¢ — log it once and it's free from your library forever.</p>`
+        : ""}
 
       <div class="result-score">
         <div class="score-circle" style="background:${scoreColor}">${h.score}</div>
@@ -1288,6 +1310,7 @@ const App = {
 
       <div class="set-group">
         <div class="set-row tappable" onclick="App.aiSettings()"><span class="k">AI provider</span><span class="v">${PROVIDERS[AI.provider()].model} · ${AI.hasKey() ? "key set" : "no key"}</span></div>
+        ${S.usage?.calls ? `<div class="set-row"><span class="k">Opus spend (this account)</span><span class="v">$${S.usage.cost.toFixed(2)} · ${S.usage.calls} ${S.usage.calls === 1 ? "analysis" : "analyses"}</span></div>` : ""}
       </div>
       <p class="set-note">Analysis runs directly from your phone to the AI provider with your own key — Gemini is free, Claude is the most accurate. Nothing is sent anywhere else; all logs stay on this device.</p>
 
