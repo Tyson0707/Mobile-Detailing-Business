@@ -174,7 +174,17 @@ h3 { font-size: 19px; letter-spacing: -0.2px; }
 @keyframes viewfade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .topbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 2px 16px; }
 .greeting { font-size: 25px; font-weight: 800; letter-spacing: -0.6px; }
-.date-sub { color: var(--muted); font-size: 14px; font-weight: 500; margin-top: 1px; }
+.date-sub { color: var(--muted); font-size: 14px; font-weight: 600; margin-top: 3px; display: flex; align-items: center; gap: 8px; }
+.day-nav {
+  width: 26px; height: 26px; border-radius: 8px; border: 1.5px solid var(--line);
+  background: var(--card); color: var(--text); font-size: 16px; font-weight: 800; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0;
+  box-shadow: var(--shadow-sm);
+}
+.day-nav:disabled { opacity: 0.3; cursor: default; box-shadow: none; }
+.day-nav:active:not(:disabled) { transform: scale(0.9); }
+.day-label { min-width: 96px; text-align: center; }
+.date-sub .day-label[onclick] { color: var(--accent); cursor: pointer; font-weight: 700; }
 .streak {
   background: var(--card); border: 1.5px solid var(--line); border-radius: 22px;
   padding: 7px 14px; font-weight: 800; font-size: 14px; box-shadow: var(--shadow-sm);
