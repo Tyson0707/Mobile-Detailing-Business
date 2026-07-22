@@ -84,8 +84,29 @@ const Store = {
     try { d = JSON.parse(localStorage.getItem(this.key())); } catch { /* fresh */ }
     S = d || { onboarded: false, profile: {}, plan: {}, apiKey: "", log: {}, foods: {} };
     if (!S.foods) S.foods = {}; // accounts created before the food library existed
+    this.reconcileFutureDays();
     this.backfillFoods();
     return S;
+  },
+
+  // Recover meals the old UTC-date bug filed under a future day. Any log dated
+  // after today (local) is impossible real data — it was an evening meal pushed
+  // forward one day by UTC. Pull those meals back onto the prior calendar day.
+  reconcileFutureDays() {
+    const today = todayKey();
+    let moved = 0;
+    for (const key of Object.keys(S.log || {})) {
+      if (key <= today) continue;
+      const src = S.log[key];
+      const [y, m, dd] = key.split("-").map(Number);
+      const prev = dateKey(new Date(y, m - 1, dd - 1));
+      const dst = (S.log[prev] = S.log[prev] || { meals: [], weight: null });
+      dst.meals = (dst.meals || []).concat(src.meals || []);
+      if (dst.weight == null && src.weight != null) dst.weight = src.weight;
+      moved += (src.meals || []).length;
+      delete S.log[key];
+    }
+    if (moved) { S._recoveredMeals = (S._recoveredMeals || 0) + moved; this.save(); }
   },
 
   // One-time: seed the food library from meals logged before the library existed
@@ -123,10 +144,26 @@ const $$ = (sel) => [...document.querySelectorAll(sel)];
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 const round = (n, d = 0) => { const f = 10 ** d; return Math.round((+n || 0) * f) / f; };
 
+// LOCAL calendar date (YYYY-MM-DD). Using toISOString() here was a bug: it
+// returns UTC, so the "day" rolled over in the early evening for anyone west
+// of UTC (e.g. Mountain Time flips at ~5–6pm), wiping the Today view early.
+function dateKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
 function todayKey(offset = 0) {
   const d = new Date();
   d.setDate(d.getDate() + offset);
-  return d.toISOString().slice(0, 10);
+  return dateKey(d);
+}
+function prettyDate(key) {
+  const [y, m, d] = key.split("-").map(Number);
+  const date = new Date(y, m - 1, d);
+  if (key === todayKey()) return "Today";
+  if (key === todayKey(-1)) return "Yesterday";
+  return date.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" });
 }
 function dayEntry(key = todayKey()) {
   if (!S.log[key]) S.log[key] = { meals: [], weight: null };
@@ -257,7 +294,7 @@ const OB = {
   startFresh() {
     this.step = 0;
     this.draft = { sex: "male", units: "imperial", activity: null, goal: null, pace: null, provider: "gemini" };
-    ["#ob-name", "#ob-age", "#ob-hft", "#ob-hin", "#ob-wlb", "#ob-hcm", "#ob-wkg", "#ob-key", "#ob-pin"]
+    ["#ob-name", "#ob-age", "#ob-hft", "#ob-hin", "#ob-wlb", "#ob-hcm", "#ob-wkg", "#ob-key", "#ob-pin", "#ob-notes"]
       .forEach((sel) => { const el = $(sel); if (el) el.value = ""; });
     $$("#ob-activity button, #ob-goal button").forEach((b) => b.classList.remove("on"));
     $("#ob-pace-wrap").classList.add("hidden");
@@ -284,6 +321,7 @@ const OB = {
         $("#ob-hft").value = Math.floor(totalIn / 12); $("#ob-hin").value = Math.round(totalIn % 12);
         $("#ob-wlb").value = round(p.weightKg / KG_PER_LB, 1);
       }
+      if ($("#ob-notes")) $("#ob-notes").value = p.notes || "";
       this.syncSegs();
     } else {
       this.syncSegs();
@@ -422,10 +460,11 @@ const OB = {
       else S.apiKey = k;
     }
     const d = this.draft;
+    d.notes = $("#ob-notes") ? $("#ob-notes").value.trim() : (d.notes || "");
     S.profile = {
       name: d.name, age: d.age, sex: d.sex, units: d.units,
       heightCm: d.heightCm, weightKg: d.weightKg,
-      activity: d.activity, goal: d.goal, pace: d.pace,
+      activity: d.activity, goal: d.goal, pace: d.pace, notes: d.notes,
     };
     S.plan = d._plan || computePlan(d);
     S.onboarded = true;
@@ -441,6 +480,8 @@ const OB = {
     $("#onboarding").classList.add("hidden");
     App.boot();
     toast(`Plan ready — ${S.plan.calories.toLocaleString()} kcal/day 💪`);
+    // If notes were given and a key exists, let the AI fine-tune the targets
+    if (d.notes && AI.hasKey()) App.tunePlanFromNotes(true);
   },
 };
 
@@ -540,7 +581,64 @@ User context (use it for the verdict and fit_with_goals):
 - ${p.sex}, ${p.age}y, ${round(p.heightCm)}cm, ${round(p.weightKg, 1)}kg. Goal: ${p.goal === "cut" ? "fat loss" : p.goal === "bulk" ? "muscle gain" : "maintenance"}.
 - Daily targets: ${plan.calories} kcal, ${plan.protein}g protein, ${plan.carbs}g carbs, ${plan.fat}g fat.
 - Already eaten today: ${Math.round(t.calories)} kcal, ${Math.round(t.protein)}g P, ${Math.round(t.carbs)}g C, ${Math.round(t.fat)}g F.
-- Remaining today: ${Math.max(0, Math.round(plan.calories - t.calories))} kcal, ${Math.max(0, Math.round(plan.protein - t.protein))}g protein.`;
+- Remaining today: ${Math.max(0, Math.round(plan.calories - t.calories))} kcal, ${Math.max(0, Math.round(plan.protein - t.protein))}g protein.${p.notes ? `
+- The user's own notes about their diet, preferences, and situation (weigh these in the verdict, pros/cons, and fit_with_goals — e.g. honor allergies, dietary style, and personal targets): "${p.notes}"` : ""}`;
+  },
+
+  planSchema: {
+    type: "object",
+    additionalProperties: false,
+    required: ["calories", "protein_g", "carbs_g", "fat_g", "reason"],
+    properties: {
+      calories: { type: "integer" },
+      protein_g: { type: "integer" },
+      carbs_g: { type: "integer" },
+      fat_g: { type: "integer" },
+      reason: { type: "string", description: "One or two plain sentences on what you changed and why, addressed to the user. If nothing needed changing, say the baseline already fits their notes." },
+    },
+  },
+
+  // Adjust the computed macro targets based on the user's free-text notes.
+  async adjustPlan(profile, baseline) {
+    if (!this.hasKey()) throw new Error("NO_KEY");
+    const sys = `You tune a daily macro plan for a personal nutrition app. A baseline plan was computed with the Mifflin-St Jeor equation. Adjust the four daily targets ONLY if the user's notes warrant it (dietary style like keto/vegan/low-carb, training demands, medical/allergy considerations, or an explicit personal target such as "protein around 200g"). Keep changes safe, evidence-based, and modest — never below ~1200 kcal or ~0.6 g/kg fat. If the notes don't call for changes, return the baseline numbers unchanged and say so. Keep calories roughly consistent with 4×protein + 4×carbs + 9×fat.`;
+    const user = `Profile: ${profile.sex}, ${profile.age}y, ${round(profile.heightCm)}cm, ${round(profile.weightKg, 1)}kg, goal ${profile.goal}.
+Baseline targets: ${baseline.calories} kcal, ${baseline.protein}g protein, ${baseline.carbs}g carbs, ${baseline.fat}g fat.
+User's notes: "${profile.notes}"
+Return the adjusted daily targets.`;
+
+    if (this.provider() === "gemini") {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${this.GEMINI_MODEL}:generateContent?key=${encodeURIComponent(S.geminiKey)}`;
+      const res = await fetch(url, {
+        method: "POST", headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: sys }] },
+          contents: [{ role: "user", parts: [{ text: user }] }],
+          generationConfig: { responseMimeType: "application/json", responseSchema: this.geminiSchema(this.planSchema), maxOutputTokens: 2048 },
+        }),
+      });
+      if (!res.ok) throw new Error(`Gemini error (${res.status})`);
+      const data = await res.json();
+      const txt = data.candidates?.[0]?.content?.parts?.map((x) => x.text || "").join("");
+      if (!txt) throw new Error("Empty response");
+      return JSON.parse(txt);
+    }
+
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-api-key": S.apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+      body: JSON.stringify({
+        model: this.MODEL, max_tokens: 1500,
+        output_config: { format: { type: "json_schema", schema: this.planSchema }, effort: "low" },
+        system: sys, messages: [{ role: "user", content: user }],
+      }),
+    });
+    if (!res.ok) throw new Error(`API error (${res.status})`);
+    const data = await res.json();
+    this.trackUsage(data.usage);
+    const textBlock = (data.content || []).find((b) => b.type === "text");
+    if (!textBlock) throw new Error("Empty response");
+    return JSON.parse(textBlock.text);
   },
 
   async analyze({ images = [], text }) {
@@ -624,7 +722,7 @@ User context (use it for the verdict and fit_with_goals):
   },
 
   // Gemini's responseSchema rejects additionalProperties — strip it recursively
-  geminiSchema() {
+  geminiSchema(schema = this.schema) {
     const strip = (s) => {
       if (Array.isArray(s)) return s.map(strip);
       if (s && typeof s === "object") {
@@ -634,7 +732,7 @@ User context (use it for the verdict and fit_with_goals):
       }
       return s;
     };
-    return strip(this.schema);
+    return strip(schema);
   },
 
   async callGemini({ images, userText }) {
@@ -773,8 +871,10 @@ const Sheet = {
     this.photos = []; this.result = null;
     const hour = new Date().getHours();
     this.mealType = hour < 10 ? "Breakfast" : hour < 14 ? "Lunch" : hour < 17 ? "Snack" : "Dinner";
+    const day = App.viewDate || todayKey();
     this.open(`
       <div class="sheet-title">Add food</div>
+      ${day !== todayKey() ? `<p class="hint" style="color:var(--accent);font-weight:700;margin-top:2px">📅 Adding to ${esc(prettyDate(day))}</p>` : ""}
       <p class="hint">Snap it, describe it, or both — the more context, the more accurate.</p>
       <div class="add-modes">
         <div class="add-mode" onclick="$('#cam-input').click()"><span class="big-ico">📷</span>Camera</div>
@@ -1025,7 +1125,8 @@ const Sheet = {
   log() {
     const r = this.result;
     const t = this.scaledTotals();
-    dayEntry().meals.push({
+    const targetDay = App.viewDate || todayKey();
+    dayEntry(targetDay).meals.push({
       id: Date.now(),
       time: new Date().toTimeString().slice(0, 5),
       mealType: this.mealType,
@@ -1046,7 +1147,7 @@ const Sheet = {
     Store.save();
     this.close();
     App.renderToday();
-    toast(`Logged ${Math.round(t.calories)} kcal ✔️`);
+    toast(`Logged ${Math.round(t.calories)} kcal${targetDay !== todayKey() ? " to " + prettyDate(targetDay) : ""} ✔️`);
   },
 
   viewMeal(dayKey, id) {
@@ -1108,7 +1209,7 @@ const App = {
   showView(name) {
     $$("#tabbar button[data-view]").forEach((b) => b.classList.toggle("active", b.dataset.view === name));
     $$(".view").forEach((v) => v.classList.toggle("hidden", v.id !== "view-" + name));
-    if (name === "today") this.renderToday();
+    if (name === "today") { this.viewDate = todayKey(); this.renderToday(); }
     if (name === "trends") this.renderTrends();
     if (name === "settings") this.renderSettings();
     window.scrollTo(0, 0);
@@ -1137,12 +1238,28 @@ const App = {
     return n;
   },
 
+  viewDate: null,
+
+  shiftDay(delta) {
+    const [y, m, d] = (this.viewDate || todayKey()).split("-").map(Number);
+    const key = dateKey(new Date(y, m - 1, d + delta));
+    if (key > todayKey()) return; // no logging into the future
+    this.viewDate = key;
+    this.renderToday();
+  },
+  goToday() { this.viewDate = todayKey(); this.renderToday(); },
+
   renderToday() {
-    const plan = S.plan, t = this.dayTotals(todayKey());
+    const key = this.viewDate || (this.viewDate = todayKey());
+    const isToday = key === todayKey();
+    const plan = S.plan, t = this.dayTotals(key);
     const hour = new Date().getHours();
     const greet = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
-    $("#greeting").textContent = `${greet}, ${S.profile.name || "you"}`;
-    $("#today-date").textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+    $("#greeting").textContent = isToday ? `${greet}, ${S.profile.name || "you"}` : `${S.profile.name || "You"}'s day`;
+    $("#today-date").innerHTML =
+      `<button class="day-nav" onclick="App.shiftDay(-1)" aria-label="Previous day">‹</button>` +
+      `<span class="day-label"${isToday ? "" : ' onclick="App.goToday()"'}>${esc(prettyDate(key))}${isToday ? "" : " · tap for today"}</span>` +
+      `<button class="day-nav" onclick="App.shiftDay(1)" aria-label="Next day"${isToday ? " disabled" : ""}>›</button>`;
     $("#streak-chip").textContent = `🔥 ${this.streak()}`;
 
     // Ring
@@ -1165,7 +1282,7 @@ const App = {
     setBar("#f-bar", "#f-num", t.fat, plan.fat);
 
     // Meals
-    const meals = dayEntry().meals;
+    const meals = dayEntry(key).meals;
     $("#meal-cal-sum").textContent = meals.length ? `${Math.round(t.calories)} kcal eaten` : "";
     const verdictPill = (h) => {
       if (!h) return "";
@@ -1175,7 +1292,7 @@ const App = {
     };
     $("#meal-list").innerHTML = meals.length
       ? meals.map((m) => `
-        <div class="meal-card" onclick="Sheet.viewMeal('${todayKey()}',${m.id})">
+        <div class="meal-card" onclick="Sheet.viewMeal('${key}',${m.id})">
           <div class="meal-top">
             <div>
               <div class="meal-name">${esc(m.name)}</div>
@@ -1190,10 +1307,10 @@ const App = {
           </div>
           ${verdictPill(m.health)}
         </div>`).join("")
-      : `<div class="empty-meals">Nothing logged yet.<br>Tap <b>＋</b> to snap your first meal 📷</div>`;
+      : `<div class="empty-meals">${isToday ? "Nothing logged yet.<br>Tap <b>＋</b> to snap your first meal 📷" : "Nothing logged for this day.<br>Tap <b>＋</b> to add a meal here."}</div>`;
 
     // Weight
-    const w = dayEntry().weight;
+    const w = dayEntry(key).weight;
     $("#weight-unit").textContent = S.profile.units === "metric" ? "kg" : "lb";
     $("#weight-input").value = w != null
       ? (S.profile.units === "metric" ? round(w, 1) : round(w / KG_PER_LB, 1))
@@ -1203,10 +1320,11 @@ const App = {
   saveWeight() {
     const v = parseFloat($("#weight-input").value);
     if (!v) { toast("Enter a weight first"); return; }
+    const key = this.viewDate || todayKey();
     const kg = S.profile.units === "metric" ? v : v * KG_PER_LB;
-    dayEntry().weight = kg;
-    // keep profile weight fresh so the plan tracks reality
-    S.profile.weightKg = kg;
+    dayEntry(key).weight = kg;
+    // keep profile weight fresh (only when logging today's weight)
+    if (key === todayKey()) S.profile.weightKg = kg;
     Store.save();
     toast("Weight saved");
   },
@@ -1305,6 +1423,7 @@ const App = {
         <div class="set-row tappable" onclick="App.editTargets()"><span class="k">Daily targets</span><span class="v">${plan.calories.toLocaleString()} kcal · ${plan.protein}P/${plan.carbs}C/${plan.fat}F${plan.custom ? " · custom" : ""}</span></div>
         <div class="set-row"><span class="k">Goal</span><span class="v">${goalTxt}</span></div>
         <div class="set-row"><span class="k">Current weight</span><span class="v">${displayWeight(p.weightKg)}</span></div>
+        <div class="set-row tappable" onclick="App.editNotes()"><span class="k">Notes for the AI</span><span class="v">${p.notes ? esc(p.notes.slice(0, 24)) + (p.notes.length > 24 ? "…" : "") : "None"}</span></div>
         <div class="set-row tappable" onclick="App.editProfile()"><span class="k">Edit profile &amp; rebuild plan</span><span class="v"></span></div>
       </div>
 
@@ -1322,6 +1441,24 @@ const App = {
     `;
   },
 
+  editNotes() {
+    Sheet.open(`
+      <div class="sheet-title">Notes for the AI</div>
+      <p class="hint">Diet style, allergies, training, injuries, personal targets. Used in your plan and every food verdict.</p>
+      <label>Your notes<textarea id="set-notes" rows="5" placeholder="e.g. Vegetarian. Marathon training. Lactose intolerant. Protein target ~200g.">${esc(S.profile.notes || "")}</textarea></label>
+      <button class="btn primary big" onclick="App.saveNotes()">Save notes</button>
+      <button class="btn" onclick="App.saveNotes(true)">✨ Save &amp; re-tune my plan with AI</button>
+      <button class="btn ghost" onclick="Sheet.close()">Cancel</button>
+    `);
+  },
+
+  saveNotes(thenTune) {
+    S.profile.notes = $("#set-notes").value.trim();
+    Store.save();
+    if (thenTune) { this.tunePlanFromNotes(false); }
+    else { Sheet.close(); this.renderSettings(); toast("Notes saved"); }
+  },
+
   editProfile() {
     // Re-run onboarding from the profile step, keeping data
     OB.step = 0;
@@ -1330,8 +1467,45 @@ const App = {
     OB.next(); // jump past welcome into step 1
   },
 
+  // One AI call that re-tunes the targets from the user's notes.
+  async tunePlanFromNotes(silentIfNoNotes) {
+    const notes = (S.profile.notes || "").trim();
+    if (!notes) { if (!silentIfNoNotes) toast("Add notes in Edit profile first"); return; }
+    if (!AI.hasKey()) { if (!silentIfNoNotes) App.aiSettings(true); return; }
+    const baseline = computePlan(S.profile); // always tune from the clean computed baseline
+    toast("Tuning your plan from your notes…", 4000);
+    try {
+      const adj = await AI.adjustPlan(S.profile, baseline);
+      S.plan = {
+        ...baseline,
+        calories: Math.max(1000, Math.round(adj.calories)),
+        protein: Math.max(20, Math.round(adj.protein_g)),
+        carbs: Math.max(0, Math.round(adj.carbs_g)),
+        fat: Math.max(10, Math.round(adj.fat_g)),
+        custom: true, tunedReason: adj.reason,
+      };
+      Store.save();
+      if ($("#view-settings") && !$("#view-settings").classList.contains("hidden")) this.renderSettings();
+      Sheet.open(`
+        <div class="sheet-title">Plan tuned ✨</div>
+        <p class="hint">${esc(adj.reason)}</p>
+        <div class="totals-strip">
+          <div><div class="num">${S.plan.calories.toLocaleString()}</div><div class="lbl">kcal</div></div>
+          <div><div class="num" style="color:var(--protein)">${S.plan.protein}g</div><div class="lbl">protein</div></div>
+          <div><div class="num" style="color:var(--carbs)">${S.plan.carbs}g</div><div class="lbl">carbs</div></div>
+          <div><div class="num" style="color:var(--fat)">${S.plan.fat}g</div><div class="lbl">fat</div></div>
+        </div>
+        <button class="btn primary big" onclick="Sheet.close();App.renderToday()">Done</button>
+        <button class="btn ghost" onclick="App.resetTargets();Sheet.close()">Undo — use the plain computed plan</button>
+      `);
+    } catch (e) {
+      toast(e.message.includes("NO_KEY") ? "Add an AI key first" : "Couldn't tune the plan — try again");
+    }
+  },
+
   editTargets() {
     const p = S.plan;
+    const hasNotes = !!(S.profile.notes || "").trim();
     Sheet.open(`
       <div class="sheet-title">Daily targets</div>
       <p class="hint">The recommended plan is a starting point — set your own numbers if you know what works for you.</p>
@@ -1340,7 +1514,9 @@ const App = {
       <label>Carbs (g)<input id="t-c" type="number" inputmode="numeric" value="${p.carbs}"></label>
       <label>Fat (g)<input id="t-f" type="number" inputmode="numeric" value="${p.fat}"></label>
       <p class="hint" id="t-check"></p>
+      ${p.tunedReason ? `<p class="hint">✨ AI-tuned: ${esc(p.tunedReason)}</p>` : ""}
       <button class="btn primary big" onclick="App.saveTargets()">Save targets</button>
+      <button class="btn" onclick="App.tunePlanFromNotes(false)">✨ ${hasNotes ? "Re-tune from my notes with AI" : "Tune from notes (add notes first)"}</button>
       <button class="btn ghost" onclick="App.resetTargets()">↺ Reset to recommended plan</button>
     `);
     const check = () => {
