@@ -1608,20 +1608,33 @@ const App = {
 
   changePin() {
     const acct = Accounts.get(CURRENT);
+    const on = !!acct?.pinHash;
     Sheet.open(`
       <div class="sheet-title">Account PIN</div>
-      <p class="hint">${acct?.pinHash ? "Enter a new PIN, or leave empty to remove the current one." : "Add a PIN so only you can open this account on this phone."}</p>
-      <label>PIN (4–8 digits)<input id="new-pin" type="password" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off"></label>
-      <button class="btn primary big" onclick="App.savePin()">Save</button>
+      <p class="hint">${on
+        ? "A PIN is ON — this account asks for it every time the app opens. Set a new one below, or turn it off."
+        : "A PIN is OFF — this account opens without asking. Turn it on to keep it private on a shared phone."}</p>
+      <label>${on ? "New PIN" : "PIN"} (4–8 digits)<input id="new-pin" type="password" inputmode="numeric" maxlength="8" placeholder="••••" autocomplete="off"></label>
+      <button class="btn primary big" onclick="App.savePin()">${on ? "Change PIN" : "Turn on PIN"}</button>
+      ${on ? `<button class="btn danger" onclick="App.turnOffPin()">Turn off PIN</button>` : ""}
       <button class="btn ghost" onclick="Sheet.close()">Cancel</button>
     `);
   },
 
   async savePin() {
-    await Accounts.setPin(CURRENT, $("#new-pin").value.trim());
+    const pin = $("#new-pin").value.trim();
+    if (!/^\d{4,8}$/.test(pin)) { toast("Enter 4–8 digits"); return; }
+    await Accounts.setPin(CURRENT, pin);
     Sheet.close();
     App.renderSettings();
-    toast("PIN updated");
+    toast("PIN turned on 🔒");
+  },
+
+  async turnOffPin() {
+    await Accounts.setPin(CURRENT, ""); // empty clears the PIN
+    Sheet.close();
+    App.renderSettings();
+    toast("PIN turned off");
   },
 
   resetAll() {
