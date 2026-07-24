@@ -1652,8 +1652,6 @@ window.addEventListener("DOMContentLoaded", () => {
     navigator.serviceWorker.register("/macro-tracker/sw.js").catch(() => {});
   }
   Accounts.load();
-  const last = Accounts.reg.lastActive && Accounts.get(Accounts.reg.lastActive);
-  // Auto-open the last account unless it's PIN-locked; otherwise show the picker
-  if (last && !last.pinHash) Login.enter(last.id);
-  else Login.show();
+  // Always open on the account picker so you can choose (or create) an account.
+  Login.show();
 });
