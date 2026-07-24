@@ -1,6 +1,6 @@
 /* MacroLens service worker — cache app shell for offline use.
    API calls to AI providers always go to the network. */
-const CACHE = "macrolens-v5";
+const CACHE = "macrolens-v6";
 const BASE = "/macro-tracker";
 const SHELL = [
   `${BASE}/index.html`,
